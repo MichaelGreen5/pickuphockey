@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block body_block %}
+
+<h1>Player List</h1>
+{% for player in all_players %}
+    
+    <p>{{player.first_name}} {{player.last_name}}</p>
+    
+    
+{% endfor %} 
+
+{% endblock %} 
