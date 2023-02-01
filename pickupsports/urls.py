@@ -20,5 +20,7 @@ from pickuphockey import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.baseview, name = 'base'),
-    path('tonight/<int:pk>/', views.SkateDetailView.as_view(), name='tonights_skate')
+    path('tonight/<int:pk>/', views.skate_details, name='tonights_skate'),
+    
+
 ]

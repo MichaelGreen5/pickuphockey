@@ -7,7 +7,7 @@ from django.urls import reverse
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null= True)
     skill = models.DecimalField(max_digits=4, decimal_places=1)
-    RSVP = models.BooleanField(default=False)
+    
 
 
     def get_absolute_url(self):
@@ -28,8 +28,11 @@ class Skate(models.Model):
     time = models.DateTimeField(auto_now=False)
     location = models.CharField(max_length=200)
     price = models.IntegerField()
-    participants =models.ManyToManyField(Player, through='Invitation', related_name='events', blank=True, limit_choices_to={'is_attending': True})
+    participants =models.ManyToManyField(Player, through='Invitation', related_name='Player', blank=True)
 
+  
+
+    
     def __str__(self):
         return ("Skate at " + self.location + " hosted by " +self.host )
 
@@ -40,6 +43,21 @@ class Invitation(models.Model):
     event = models.ForeignKey(Skate, on_delete=models.CASCADE)
     date_invited = models.DateTimeField(auto_now_add=True)
     is_attending = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.is_attending:
+            return self.guest.user.first_name + " " + self.guest.user.last_name + " is going to " + self.event.location
+        else:
+            return self.guest.user.first_name + " " + self.guest.user.last_name + " was invited to " + self.event.location
+
+
+
+class GuestList(models.Model):
+    if Invitation.is_attending == True:
+        particapants = Invitation.guest.field.name
+
+    guests = models.ManyToManyField(Invitation) 
+
 
    
 
