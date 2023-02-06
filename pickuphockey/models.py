@@ -7,6 +7,7 @@ from django.urls import reverse
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null= True)
     skill = models.DecimalField(max_digits=4, decimal_places=1)
+    event_host = models.BooleanField(default= False)
     
 
 
@@ -29,6 +30,9 @@ class Skate(models.Model):
     location = models.CharField(max_length=200)
     price = models.IntegerField()
     participants =models.ManyToManyField(Player, through='Invitation', related_name='Player', blank=True)
+
+    def get_absolute_url(self):
+        return reverse('organizer_dashboard')
 
   
 

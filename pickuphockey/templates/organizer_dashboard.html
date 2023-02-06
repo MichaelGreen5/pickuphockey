@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body_block %}
+<h1>Organizer dashboard</h1>
+<h2>My Skates</h2>
+{% for event in my_skates %}
+<table>
+<tr><a href= "{% url 'tonights_skate' pk=event.pk %}">{{event.location}}-{{event.time}}</a></tr>
+
+{% endfor %}
+</table>
+
+
+<h2> My Players</h2>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<H1> Sign up as a host</H1>
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %} 
+        {% bootstrap_form form %}
+<input type="submit" value="Sign Up">
+    </form>
+
+</div>
+{% endblock %} 

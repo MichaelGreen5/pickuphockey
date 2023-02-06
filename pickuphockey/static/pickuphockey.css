@@ -1,0 +1,32 @@
+*{
+  font-family: 'Manrope', sans-serif !important;
+  box-sizing: border-box;
+  margin:0;
+  padding:0;
+  font-size:15px;
+}
+
+.nav {
+  display:flex;
+  background-color: rgb(253, 253, 253);
+  padding:16px 32px;
+  border-bottom:0.1px solid rgb(225, 225, 225);
+  justify-content:space-between;
+  align-items:center;
+
+}
+
+.nav-main{
+  display:flex;
+  gap:32px;
+}
+.nav-link{
+  text-decoration: none;
+}
+.nav-links{
+  display:flex;
+  gap: 40px;
+  list-style: none;
+}
+
+        

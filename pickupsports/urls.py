@@ -19,8 +19,14 @@ from pickuphockey import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.baseview, name = 'base'),
+    path('', views.baseview, name = 'home'),
     path('tonight/<int:pk>/', views.skate_details, name='tonights_skate'),
+    path('host/', views.organizer_dashboard, name = 'organizer_dashboard'),
+    path('host/create/skate', views.SkateCreateView.as_view(), name = 'create_skate'),
+    path('signup/', views.SignUpOptions, name = 'sign_up_options'),
+    path('signup/guest', views.PlayerSignUp.as_view(), name = 'player_sign_up'),
+    path('signup/host', views.SignUpHost.as_view(), name = 'host_sign_up')
+ 
     
 
 ]
