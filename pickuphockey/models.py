@@ -1,15 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 
 
+
+
+class Profile(models.Model): 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_host = models.BooleanField(default= False)
+
+    def __str__(self):
+        return self.user.username
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null= True)
     skill = models.DecimalField(max_digits=4, decimal_places=1)
-    event_host = models.BooleanField(default= False)
-    
-
 
     def get_absolute_url(self):
         return reverse('playerlist')
@@ -18,27 +24,31 @@ class Player(models.Model):
         self.save()
 
     def __str__(self):
-        return (self.user.first_name + " " + self.user.last_name)
+        return (self.user.username)
 
   
+class Host(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null= True)
+
+    def __str__(self):
+        return self.user.first_name + ", host account"
 
 
 
 class Skate(models.Model):
-    host = models.CharField(max_length=200, default="James Pijewski")
+    host = models.ManyToManyField(User)
     time = models.DateTimeField(auto_now=False)
     location = models.CharField(max_length=200)
     price = models.IntegerField()
     participants =models.ManyToManyField(Player, through='Invitation', related_name='Player', blank=True)
 
     def get_absolute_url(self):
-        return reverse('organizer_dashboard')
-
+        return reverse('OrgDash/organizer_dashboard')
   
 
     
     def __str__(self):
-        return ("Skate at " + self.location + " hosted by " +self.host )
+        return ("Skate at " + self.location )
 
 
 

@@ -1,8 +1,8 @@
 {% extends 'base.html' %} 
-{% load django_bootstrap5 %} 
 {% block body_block %}
-
-<h1> Sign up as a guest</h1>
+{% load django_bootstrap5 %} 
+<h1>Hello {{user.username}}</h1>
+<H2>Answer the following questions</H2>
 <div class="container">
     <form action="" method="post">
         {% csrf_token %} 

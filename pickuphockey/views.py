@@ -1,10 +1,12 @@
-from django.shortcuts import render
-from django.views.generic import CreateView, DetailView, ListView
-from pickuphockey.models import Skate, Player, Invitation
+from django.shortcuts import render, redirect
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from pickuphockey.models import Skate, Player, Invitation, Profile
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
 from django.db.models import Q
-from pickuphockey.forms import SkateForm
+from pickuphockey.forms import SkateForm, ProfileForm, SignUp   
 from django.urls import reverse_lazy
-from pickuphockey.forms import UserSignupForm
+
 from django.contrib.auth import login
 
 def baseview(request):
@@ -20,7 +22,7 @@ def SignUpOptions(request):
 
 
 
-def skate_details(request, pk):
+def skate_details(request, pk): # use some of this to make orgdash
     skate = Skate.objects.get(pk=pk)
     event_id = skate.id
     attending_players =Invitation.objects.filter(Q(is_attending= True) & Q(event= event_id))
@@ -34,28 +36,46 @@ class SkateCreateView(CreateView):
     model = Skate
 
 
+
+
+
+
+
+
+
+class SignUp(CreateView):
+    form_class = SignUp
+    success_url = reverse_lazy('create_profile')
+    template_name = 'sign_up.html'
+
+    def form_valid(self, form):
+        request = super().form_valid(form)
+        user = form.save()
+        login(self.request, user)
+        return request 
+
+class CreateProfile(CreateView, LoginRequiredMixin):
     
-
-class PlayerSignUp(CreateView):
-    form_class = UserSignupForm
+    
+    form_class = ProfileForm
     success_url = reverse_lazy('home')
-    template_name = 'sign_up_player.html'
+    template_name = "create_profile.html"
+    model: Profile
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = form.save()
-        login(self.request, user)
-        return response 
 
-class SignUpHost(CreateView):
-    form_class = UserSignupForm
-    success_url = reverse_lazy('organizer_dashboard')
-    template_name = 'sign_up_host.html'
+   
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = form.save()
-        login(self.request, user)
-        return response 
+
+# def CreateNewProfile(request, user_key_id):
+#     user_id = User.objects.get(id=User.id) #TODO fix this
+#     print(user_id)
+#     if request.method == 'POST':
+#         form = ProfileForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#         return redirect('home')
+#     else:
+#         form = ProfileForm(initial={'user': user_id.id})
+#     return render(request, 'create_profile.html', {'form': form})
 
 

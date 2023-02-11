@@ -1,0 +1,16 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<div class="container">
+<h1>Event at {{event.location}} hosted by {{event.host}}</h1>
+<h3>Time: {{event.time}}</h3>
+<br>
+<h3>Price: {{event.price}}</h3>
+<br>
+<h3>Guest list: {{event.attending_players}}</h3>
+
+
+
+
+</div>
+
+{% endblock %} 

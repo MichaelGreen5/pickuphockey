@@ -14,21 +14,36 @@
     <nav class="nav">
         <div class="nav-main">
         <ul class="nav-links">
+            {% if user.is_authenticated %} 
             <li class="nav-link">
                 <a class = "brand" href="#">PickUpHockey</a>
             </li>
             <li class="nav-link">
-                <a href="#">Organizer Dashboard</a>
+                <a href="{% url 'OrgDash:organizer_dashboard' %}">Organizer Dashboard</a>
             </li>
             <li class="nav-link">
                 <a  href="">About</a>
             </li>
             <li class="nav-link">
-                <a  href="">Login</a>
+                <a  href="{% url 'logout' %}">Log Out</a>
             </li>
             <li class="nav-link">
-                <a  href="{% url 'sign_up_options' %}">Sign Up</a>
+                <a  href="#">{{user.username}}</a>
             </li>
+            {% else %}
+            <li class="nav-link">
+                <a class = "brand" href="#">PickUpHockey</a>
+            </li>
+            <li class="nav-link">
+                <a  href="">About</a>
+            </li>
+            <li class="nav-link">
+                <a  href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-link">
+                <a  href="{% url 'sign_up' %}">Sign Up</a>
+            </li>
+          {% endif %} 
        </ul>
     </div>
     </nav>

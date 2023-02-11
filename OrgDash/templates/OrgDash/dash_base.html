@@ -1,0 +1,43 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+
+<div class="container">
+    <h1>My events</h1>
+        <div row="row">
+           <form action="{% url 'OrgDash:create_event' %}">
+            <button class="btn btn-primary">Create New Event</button>
+
+            <br>
+            <br>
+            <br>
+        </form>
+            <h1>Today's Events</h1>
+            {% for item in todays_events %}
+            
+            <ul>
+                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+            
+            </ul>
+            {% endfor %}
+        
+
+            <h2>Upcoming events</h2>
+            {% for item in upcoming_events %}
+            
+            <ul>
+            Event at {{item.location}}, {{item.time}}. ${{item.price}} per person
+            </ul>
+            {% endfor %}
+
+            <h2>Past events</h2>
+            {% for item in past_events %}
+            
+            <ul>
+            Event at {{item.location}}, {{item.time}}. ${{item.price}} per person
+            </ul>
+            {% endfor %}
+         
+        
+        </div>
+</div>
+{% endblock %}
