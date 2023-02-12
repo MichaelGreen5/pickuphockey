@@ -23,19 +23,29 @@ class ProfileForm(forms.ModelForm):
         self.fields['is_host'].label = 'Will you be hosting your own events?'
     
 
-
+user = get_user_model()
 
 class SkateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+       super(SkateForm, self).__init__(*args, **kwargs)
+       self.fields['host'].disabled = True
+    
+   
 
     class Meta():
         model = Skate
         fields = ('host', 'time', 'location', 'price',)
 
         widgets = {
+        'host' : forms.Select(attrs={'class': 'form-control'}),
         'time' : forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         
 
     }
+    
+
+
+            
 
 class HostForm(forms.ModelForm):
    class Meta():

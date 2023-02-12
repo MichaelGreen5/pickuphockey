@@ -36,8 +36,9 @@ class Host(models.Model):
 
 
 class Skate(models.Model):
-    host = models.ManyToManyField(User)
-    time = models.DateTimeField(auto_now=False)
+    host = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
+    date = models.DateField(auto_now = False, default= None)
+    time = models.TimeField(auto_now=False, default= None)
     location = models.CharField(max_length=200)
     price = models.IntegerField()
     participants =models.ManyToManyField(Player, through='Invitation', related_name='Player', blank=True)
@@ -60,9 +61,9 @@ class Invitation(models.Model):
 
     def __str__(self):
         if self.is_attending:
-            return self.guest.user.first_name + " " + self.guest.user.last_name + " is going to " + self.event.location
+            return self.guest.user.username + " is going to " + self.event.location
         else:
-            return self.guest.user.first_name + " " + self.guest.user.last_name + " was invited to " + self.event.location
+            return self.guest.user.username +  " was invited to " + self.event.location
 
 
 

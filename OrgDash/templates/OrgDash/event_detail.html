@@ -6,7 +6,24 @@
 <br>
 <h3>Price: {{event.price}}</h3>
 <br>
-<h3>Guest list: {{event.attending_players}}</h3>
+<h3>Guest list: {{event.participants}}</h3>
+
+<form action="{% url 'OrgDash:event_update' object.pk %}">
+    <button class="btn btn-warning">Edit</button>
+
+    <br>
+    <br>
+    <br>
+</form>
+
+<form action="{% url 'OrgDash:delete_event' object.pk %}">
+    <button class="btn btn-danger">Delete </button>
+   
+
+    <br>
+    <br>
+    <br>
+</form>
 
 
 

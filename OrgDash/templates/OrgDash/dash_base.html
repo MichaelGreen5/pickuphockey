@@ -12,20 +12,23 @@
             <br>
         </form>
             <h1>Today's Events</h1>
+            
             {% for item in todays_events %}
+                
             
             <ul>
                 <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
             
             </ul>
             {% endfor %}
+           
         
 
             <h2>Upcoming events</h2>
             {% for item in upcoming_events %}
             
             <ul>
-            Event at {{item.location}}, {{item.time}}. ${{item.price}} per person
+                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
             </ul>
             {% endfor %}
 
@@ -33,7 +36,7 @@
             {% for item in past_events %}
             
             <ul>
-            Event at {{item.location}}, {{item.time}}. ${{item.price}} per person
+                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
             </ul>
             {% endfor %}
          

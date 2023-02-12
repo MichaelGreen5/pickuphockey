@@ -34,6 +34,9 @@ class SkateCreateView(CreateView):
     redirect_field_name = 'pickuphockey/organizer_dashboard.html'
     form_class= SkateForm
     model = Skate
+    
+   
+    
 
 
 
