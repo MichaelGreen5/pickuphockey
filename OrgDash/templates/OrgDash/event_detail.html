@@ -6,7 +6,7 @@
 <br>
 <h3>Price: {{event.price}}</h3>
 <br>
-<h3>Guest list: {{event.participants}}</h3>
+
 
 <form action="{% url 'OrgDash:event_update' object.pk %}">
     <button class="btn btn-warning">Edit</button>
@@ -23,6 +23,18 @@
     <br>
     <br>
     <br>
+</form>
+
+<form action="{% url 'OrgDash:guest_list' object.pk %}">
+    <button class="btn btn-primary">View Guest List</button>
+</form>
+</div>
+<br>
+<br>
+<br>
+<div>
+<form action="{% url 'OrgDash:create_invite' object.pk %}">
+    <button class="btn btn-primary">Create Invite</button>
 </form>
 
 

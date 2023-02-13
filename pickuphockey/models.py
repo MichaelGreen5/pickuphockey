@@ -26,12 +26,6 @@ class Player(models.Model):
     def __str__(self):
         return (self.user.username)
 
-  
-class Host(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null= True)
-
-    def __str__(self):
-        return self.user.first_name + ", host account"
 
 
 
@@ -49,11 +43,12 @@ class Skate(models.Model):
 
     
     def __str__(self):
-        return ("Skate at " + self.location )
+        return ("Skate at " + self.location + " "  + str(self.date) + " " + str(self.time))
 
 
 
 class Invitation(models.Model):
+    host = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
     guest = models.ForeignKey(Player, on_delete=models.CASCADE)
     event = models.ForeignKey(Skate, on_delete=models.CASCADE)
     date_invited = models.DateTimeField(auto_now_add=True)
@@ -61,17 +56,12 @@ class Invitation(models.Model):
 
     def __str__(self):
         if self.is_attending:
-            return self.guest.user.username + " is going to " + self.event.location
+            return self.guest.user.username + " is going to "  + self.event.location 
         else:
-            return self.guest.user.username +  " was invited to " + self.event.location
+            return self.guest.user.username +  " was invited to "  + self.event.location
 
 
 
-class GuestList(models.Model):
-    if Invitation.is_attending == True:
-        particapants = Invitation.guest.field.name
-
-    guests = models.ManyToManyField(Invitation) 
 
 
    

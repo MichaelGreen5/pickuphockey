@@ -1,5 +1,5 @@
 from django import forms
-from pickuphockey.models import Skate, Host, Profile
+from pickuphockey.models import Skate, Profile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -46,8 +46,3 @@ class SkateForm(forms.ModelForm):
 
 
             
-
-class HostForm(forms.ModelForm):
-   class Meta():
-        model = Host
-        fields = ('user',)
