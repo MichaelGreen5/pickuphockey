@@ -33,6 +33,7 @@ class CreateInviteForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
        super(CreateInviteForm, self).__init__(*args, **kwargs)
        self.fields['host'].disabled = True
+       self.fields['event'].disabled = True
        
 
     class Meta:
@@ -40,8 +41,17 @@ class CreateInviteForm(forms.ModelForm):
         model = Invitation
 
 class CreatePlayerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CreatePlayerForm, self).__init__(*args, **kwargs)
+        self.fields['created_by'].disabled = True
+    
     class Meta:
-        fields = ('user', 'skill')
+        fields = ('created_by', 'first_name','last_name', 'email', 'skill')
+        model = Player
+
+class PlayerUpdateForm(forms.ModelForm):
+    class Meta:
+        fields = ('first_name', 'last_name', 'email', 'skill')
         model = Player
 
 

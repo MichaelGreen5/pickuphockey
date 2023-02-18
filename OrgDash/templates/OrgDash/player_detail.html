@@ -1,0 +1,32 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<div class="container">
+<h1>{{player.first_name}} {{player.last_name}}</h1>
+<ul>
+    <li>{{player.email}}</li>
+    <li>{{player.skill}}</li>
+
+
+</ul>
+
+
+
+<form action="{% url 'OrgDash:update_player' object.pk %}">
+    <button class="btn btn-warning">Edit</button>
+
+    <br>
+    <br>
+    <br>
+</form>
+
+<form action="{% url 'OrgDash:delete_player' object.pk %}">
+    <button class="btn btn-danger">Delete </button>
+   
+
+    <br>
+    <br>
+    <br>
+</form>
+<input type=button class="btn btn-secondary" value="Go Back" onClick="javascript:history.go(-1);">
+
+{% endblock %} 

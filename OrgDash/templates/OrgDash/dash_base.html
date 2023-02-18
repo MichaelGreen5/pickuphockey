@@ -45,12 +45,14 @@
 </div>
 
 <div row="row">
-    <form action="{% url 'OrgDash:create_player' %}">
-     <button class="btn btn-primary">Create Player</button>
+    <h1>My Players</h1>
+    <form action="{% url 'OrgDash:player_list' %}">
+     <button class="btn btn-primary">Manage My Players</button>
 
      <br>
      <br>
      <br>
  </form>
+</div>
 
 {% endblock %}

@@ -2,13 +2,16 @@
 {% block body_block %}
 <div class="container">
 <h1>Event at {{event.location}} hosted by {{event.host}}</h1>
+<h3>Date: {{event.date}}</h3>
 <h3>Time: {{event.time}}</h3>
 <br>
 <h3>Price: {{event.price}}</h3>
 <br>
+<br>
 
 
-<form action="{% url 'OrgDash:event_update' object.pk %}">
+
+<form action="{% url 'OrgDash:event_update' event.pk %}">
     <button class="btn btn-warning">Edit</button>
 
     <br>
@@ -16,7 +19,7 @@
     <br>
 </form>
 
-<form action="{% url 'OrgDash:delete_event' object.pk %}">
+<form action="{% url 'OrgDash:delete_event' event.pk %}">
     <button class="btn btn-danger">Delete </button>
    
 
@@ -24,16 +27,29 @@
     <br>
     <br>
 </form>
+<h1>Guest List</h1>
+<br>
 
-<form action="{% url 'OrgDash:guest_list' object.pk %}">
-    <button class="btn btn-primary">View Guest List</button>
+<form action="{% url 'OrgDash:invite_list' event.pk %}">
+    <button class="btn btn-primary">Manage Invitations</button>
+</form>
+<br>
+
+{% for guest in guest_list %}
+<ul>
+    <li>{{guest.guest}}</li>
+</ul>
+{% endfor %} 
+
+<form action="{% url 'OrgDash:make_teams' event.pk %}">
+    <button class="btn btn-primary">View Teams</button>
 </form>
 </div>
 <br>
 <br>
 <br>
 <div>
-<form action="{% url 'OrgDash:create_invite' object.pk %}">
+<form action="{% url 'OrgDash:create_invite' event.pk %}">
     <button class="btn btn-primary">Create Invite</button>
 </form>
 

@@ -1,0 +1,26 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+
+<h1>Light Team</h1>
+{% for player in light_team %}
+    {% for item in player %}
+<ol>
+    {{item}}
+    
+</ol>
+{% endfor %} 
+{% endfor %} 
+
+{{light_skill_total}}
+
+<h1>Dark Team</h1>
+{% for player in dark_team %}
+    {% for item in player %}
+<ol>
+    {{item}}
+    
+</ol>
+{% endfor %} 
+{% endfor %}
+{{dark_skill_total}} 
+{% endblock %} 

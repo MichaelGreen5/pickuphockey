@@ -12,6 +12,11 @@
          <br>
      </form>
 
+     {% for player in object_list %} 
+     <ul>
+        <a href="{{player.id}}">{{player.first_name}} {{player.last_name}} {{player.skill}} </a>
+     </ul>
+     {% endfor %} 
 
 
 </div>

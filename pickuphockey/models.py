@@ -6,16 +6,13 @@ from django.contrib.auth import get_user_model
 
 
 
-class Profile(models.Model): 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_host = models.BooleanField(default= False)
-
-    def __str__(self):
-        return self.user.username
 
 class Player(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null= True)
+    first_name = models.CharField(max_length=150, default= None)
+    last_name = models.CharField(max_length=150, default= None)
+    email = models.EmailField(max_length=150, default= None)
     skill = models.DecimalField(max_digits=4, decimal_places=1)
+    created_by = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
 
     def get_absolute_url(self):
         return reverse('playerlist')
@@ -24,7 +21,7 @@ class Player(models.Model):
         self.save()
 
     def __str__(self):
-        return (self.user.username)
+        return (self.first_name + " " + self.last_name)
 
 
 
@@ -56,9 +53,9 @@ class Invitation(models.Model):
 
     def __str__(self):
         if self.is_attending:
-            return self.guest.user.username + " is going to "  + self.event.location 
+            return self.guest.first_name + " is going to "  + self.event.location 
         else:
-            return self.guest.user.username +  " was invited to "  + self.event.location
+            return self.guest.first_name +  " was invited to "  + self.event.location
 
 
 

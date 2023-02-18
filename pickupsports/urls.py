@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from pickuphockey import views
 from django.contrib.auth import views as auth_views
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,12 +26,14 @@ urlpatterns = [
    
     path('host/create/skate', views.SkateCreateView.as_view(), name = 'create_skate'),
     path('signup/', views.SignUp.as_view(), name = 'sign_up'),
-    path('signup/profile', views.CreateProfile.as_view(), name = 'create_profile'),
     path("logout/", auth_views.LogoutView.as_view(), name= 'logout'),
     path("login/", auth_views.LoginView.as_view(), name = 'login'),
-    path('organize/', include('OrgDash.urls')),
-    
- 
-    
+    path('organize/', include('OrgDash.urls')),  
 
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__', include(debug_toolbar.urls))
+    ] + urlpatterns
