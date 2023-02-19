@@ -35,7 +35,9 @@ class Skate(models.Model):
     participants =models.ManyToManyField(Player, through='Invitation', related_name='Player', blank=True)
 
     def get_absolute_url(self):
-        return reverse('OrgDash/organizer_dashboard')
+        return reverse('OrgDash:organizer_dashboard',kwargs={'slug': (str(self.date) + str(self.time))})
+
+         
   
 
     
@@ -51,11 +53,26 @@ class Invitation(models.Model):
     date_invited = models.DateTimeField(auto_now_add=True)
     is_attending = models.BooleanField(default=False)
 
+    def get_absolute_url(self):
+        return reverse('OrgDash:invite_list')
+
+
+
+
     def __str__(self):
         if self.is_attending:
             return self.guest.first_name + " is going to "  + self.event.location 
         else:
             return self.guest.first_name +  " was invited to "  + self.event.location
+
+
+class GuestList(models.Model):
+    event = models.ForeignKey(Skate, on_delete=models.CASCADE)
+    guest_list =  models.FilteredRelation('Invitation', condition= models.Q(is_attending = True))
+
+
+
+
 
 
 

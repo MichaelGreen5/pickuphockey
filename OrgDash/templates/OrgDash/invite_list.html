@@ -2,13 +2,18 @@
 {% block body_block %}
 
 <div class="container">
-    <h1>Invitations</h1>
+    <h1>Invitations to {{active_event}}</h1>
     <div row="row">
    
-
-     {% for invite in object_list %} 
+    
+     {% for invite in all_invited %}
+     
      <ul>
-        {{invite}}
+        {% if invite.is_attending %}
+        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} Yes</a>
+        {% else %}
+        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} No</a>
+        {% endif %}
      </ul>
      {% endfor %} 
 

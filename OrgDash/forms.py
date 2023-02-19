@@ -40,6 +40,19 @@ class CreateInviteForm(forms.ModelForm):
         fields = ('host','event', 'guest', 'is_attending',)
         model = Invitation
 
+class InviteUpdateForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+       super(InviteUpdateForm,self).__init__(*args, **kwargs)
+       self.fields['host'].disabled = True
+       self.fields['event'].disabled = True
+       self.fields['guest'].disabled = True
+
+    
+    class Meta:
+        fields = ('host','event', 'guest', 'is_attending')
+        model = Invitation
+
 class CreatePlayerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreatePlayerForm, self).__init__(*args, **kwargs)

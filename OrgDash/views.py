@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from pickuphockey.models import Skate, Invitation, Player
+from pickuphockey.models import Skate, Invitation, Player, GuestList
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
-from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm
+from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm
 from django.db.models import Q
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
@@ -141,15 +141,35 @@ class PlayerDeleteView(DeleteView):
     template_name = 'OrgDash/confirm_delete.html'
     success_url = reverse_lazy('OrgDash:player_list')
 
-class InviteListView(ListView):
-    model = Invitation
-    template_name = 'OrgDash/invite_list.html'
+def GuestListView(request,pk):
+    active_event = Skate.objects.get(pk=pk)
+    active_user = request.user.pk
+    all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
+    return render(request, 'OrgDash/invite_list.html',{'all_invited':all_invited, 'active_event': active_event})
 
-    def get_queryset(self): #TODO make this work
-        all_invites = super().get_queryset()
-        event_invites = all_invites.filter(event= self.event)
-        print(event_invites)
-        return event_invites
+class UpdateInvite(UpdateView):
+    model = Invitation
+    form_class = InviteUpdateForm
+    template_name = 'OrgDash/update.html'
+    
+
+    def get_success_url(self):
+        current_event = Invitation.objects.get(pk=self.kwargs['pk'])
+        event_pk =current_event.event.pk
+        return reverse_lazy('OrgDash:invite_list',args = [event_pk])
+   
+   
+
+   
+   
+    
+
+
+    
+
+   
+
+ 
     
 
             
