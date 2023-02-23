@@ -19,6 +19,9 @@ path('dashboard/my-players/', views.PlayerListiview.as_view(), name = 'player_li
 path('dashboard/my-players/<int:pk>', views.PlayerDetail.as_view(), name = 'player_detail'),
 path('dashboard/my-players/<int:pk>/edit/', views.PlayerUpdateView.as_view(), name = 'update_player'),
 path('dashboard/my-players/<int:pk>/delete/', views.PlayerDeleteView.as_view(), name = 'delete_player'),
+path('dashboard/<int:pk>/send-invites', views.SendInvites, name = 'send_invites'),
+path('dashboard/<int:pk>/manage-invites/delete', views.DeleteInvite.as_view(), name = 'delete_invite'),
+
 
 
 ]

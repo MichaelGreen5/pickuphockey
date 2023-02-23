@@ -4,20 +4,33 @@
 <div class="container">
     <h1>Invitations to {{active_event}}</h1>
     <div row="row">
+    <h2>There are {{spots_left}} spots available</h2>
    
     
      {% for invite in all_invited %}
      
      <ul>
-        {% if invite.is_attending %}
-        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} Yes</a>
-        {% else %}
-        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} No</a>
+        {% if invite.will_you_attend == 'Yes' %}
+        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} Yes</a> <a href="{% url 'OrgDash:delete_invite' invite.pk %}"> Delete </a>
+        {% elif invite.will_you_attend == 'No' %}
+        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} No</a><a href="{% url 'OrgDash:delete_invite' invite.pk %}"> Delete </a>
+        {% elif invite.will_you_attend == 'Waitlist' %}
+        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} Waitlisted</a><a href="{% url 'OrgDash:delete_invite' invite.pk %}"> Delete </a>
+        {% else %} 
+        <a href = "{% url 'OrgDash:update_invite' invite.pk %}">{{invite.guest}} Not Responded</a><a href="{% url 'OrgDash:delete_invite' invite.pk %}"> Delete </a>
         {% endif %}
      </ul>
      {% endfor %} 
 
 
 </div>
+
+<form action="{% url 'OrgDash:event_detail' active_event.pk %}">
+    <button class="btn btn-primary">Back to event</button>
+
+    <br>
+    <br>
+    <br>
+</form>
 
 {% endblock %} 

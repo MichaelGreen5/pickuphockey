@@ -18,7 +18,7 @@ def baseview(request):
 def skate_details(request, pk): # use some of this to make orgdash
     skate = Skate.objects.get(pk=pk)
     event_id = skate.id
-    attending_players =Invitation.objects.filter(Q(is_attending= True) & Q(event= event_id))
+    attending_players =Invitation.objects.filter(Q(will_you_attend= 1) & Q(event= event_id))
     return render(request, 'tonights_skate.html', {'attending_players': attending_players, 'skate': skate})
     
 

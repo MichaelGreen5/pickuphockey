@@ -8,7 +8,7 @@ class CreateEventForm(forms.ModelForm):
        self.fields['host'].disabled = True
     
     class Meta:
-        fields = ('host','date', 'time', 'location', 'price')
+        fields = ('host','date', 'time', 'location', 'price', "max_guests")
         model = Skate
 
         widgets = {
@@ -20,7 +20,7 @@ class CreateEventForm(forms.ModelForm):
 
 class UpdateEventForm(forms.ModelForm):
     class Meta:
-        fields = ('date', 'time', 'location', 'price')
+        fields = ('date', 'time', 'location', 'price', "max_guests")
         model = Skate
 
         widgets = {
@@ -37,20 +37,37 @@ class CreateInviteForm(forms.ModelForm):
        
 
     class Meta:
-        fields = ('host','event', 'guest', 'is_attending',)
+        fields = ('host','event', 'guest', 'will_you_attend')
         model = Invitation
 
 class InviteUpdateForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
-       super(InviteUpdateForm,self).__init__(*args, **kwargs)
-       self.fields['host'].disabled = True
-       self.fields['event'].disabled = True
-       self.fields['guest'].disabled = True
+        
+        super(InviteUpdateForm,self).__init__(*args, **kwargs)
+        self.fields['host'].disabled = True
+        self.fields['event'].disabled = True
+        self.fields['guest'].disabled = True
+
 
     
     class Meta:
-        fields = ('host','event', 'guest', 'is_attending')
+        fields = ('host','event', 'guest', 'will_you_attend')
+        model = Invitation
+
+class InviteWaitlistForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super(InviteWaitlistForm,self).__init__(*args, **kwargs)
+        self.fields['host'].disabled = True
+        self.fields['event'].disabled = True
+        self.fields['guest'].disabled = True
+        self.fields['will_you_attend'].choices = ('No','No'), ('Waitlist','Put me on the waitlist')
+       
+        
+
+    class Meta:
+        fields = ('host','event', 'guest', 'will_you_attend')
         model = Invitation
 
 class CreatePlayerForm(forms.ModelForm):

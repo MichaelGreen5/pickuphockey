@@ -1,0 +1,38 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<h1>Select the Players you would like to invite:</h1>
+<div class="container">
+    <form method="POST" action="" >
+        {% csrf_token %}
+{% for player in my_players %} 
+<div class="row">
+<input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players" checked>{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+</div>
+{% endfor %}
+<button type="submit" >Invite Selected Players</button>
+</div>
+</form>
+<!-- <script>
+const form = document.querySelector('form');
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const banner = document.createElement('div');
+  banner.textContent = '{{number_of_invites}} players have been invited';
+  banner.style.backgroundColor = 'green';
+  banner.style.color = 'white';
+  banner.style.padding = '10px';
+  banner.style.position = 'fixed';
+  banner.style.top = '0';
+  banner.style.left = '0';
+  banner.style.width = '100%';
+  banner.style.textAlign = 'center';
+
+  document.body.appendChild(banner);
+});
+
+</script> -->
+
+
+{% endblock %} 

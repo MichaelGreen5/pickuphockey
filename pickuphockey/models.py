@@ -13,6 +13,7 @@ class Player(models.Model):
     email = models.EmailField(max_length=150, default= None)
     skill = models.DecimalField(max_digits=4, decimal_places=1)
     created_by = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
+   
 
     def get_absolute_url(self):
         return reverse('playerlist')
@@ -32,18 +33,16 @@ class Skate(models.Model):
     time = models.TimeField(auto_now=False, default= None)
     location = models.CharField(max_length=200)
     price = models.IntegerField()
-    participants =models.ManyToManyField(Player, through='Invitation', related_name='Player', blank=True)
+    max_guests = models.IntegerField(default=0)
+    
 
     def get_absolute_url(self):
         return reverse('OrgDash:organizer_dashboard',kwargs={'slug': (str(self.date) + str(self.time))})
 
-         
-  
 
     
     def __str__(self):
         return ("Skate at " + self.location + " "  + str(self.date) + " " + str(self.time))
-
 
 
 class Invitation(models.Model):
@@ -51,13 +50,17 @@ class Invitation(models.Model):
     guest = models.ForeignKey(Player, on_delete=models.CASCADE)
     event = models.ForeignKey(Skate, on_delete=models.CASCADE)
     date_invited = models.DateTimeField(auto_now_add=True)
-    is_attending = models.BooleanField(default=False)
+    is_attending = models.BooleanField(default=False) #TODO need to delete
+    STATUS_CHOICES = [
+        ('Yes','Yes'),
+        ('No','No'),
+        ('Waitlist','Put me on the waitlist'),
+    ]
+    will_you_attend = models.CharField(max_length=256, choices=STATUS_CHOICES, default ='No')
+    
 
     def get_absolute_url(self):
         return reverse('OrgDash:invite_list')
-
-
-
 
     def __str__(self):
         if self.is_attending:
@@ -66,9 +69,31 @@ class Invitation(models.Model):
             return self.guest.first_name +  " was invited to "  + self.event.location
 
 
-class GuestList(models.Model):
-    event = models.ForeignKey(Skate, on_delete=models.CASCADE)
-    guest_list =  models.FilteredRelation('Invitation', condition= models.Q(is_attending = True))
+    class Meta():
+        unique_together= ("guest", "event")
+
+
+
+class Group(models.Model):
+    created_by = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
+    group_name = models.TextField(max_length= 260)
+    players_list = models.ManyToManyField(Player, through='PlayerGroup', default= None)
+    
+
+    def __str__(self):
+        return self.group_name
+
+class PlayerGroup(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    Player = models.ForeignKey(Player, on_delete=models.CASCADE)
+
+    
+    
+
+
+
+
+
 
 
 

@@ -5,8 +5,10 @@
 <h3>Date: {{event.date}}</h3>
 <h3>Time: {{event.time}}</h3>
 <br>
-<h3>Price: {{event.price}}</h3>
+<h3>Price: ${{event.price}}</h3>
 <br>
+<h3>{{spots_left}} spots remaining. {{event.max_guests}} total spots</h3>
+<h3>{{invites_sent}} guests have been invited</h3>
 <br>
 
 
@@ -29,6 +31,10 @@
 </form>
 <h1>Guest List</h1>
 <br>
+<form action="{% url 'OrgDash:send_invites' event.pk %}">
+    <button class="btn btn-primary">Invite Multiple Players to this Event</button>
+</form>
+<br>
 
 <form action="{% url 'OrgDash:invite_list' event.pk %}">
     <button class="btn btn-primary">Manage Invitations</button>
@@ -50,7 +56,7 @@
 <br>
 <div>
 <form action="{% url 'OrgDash:create_invite' event.pk %}">
-    <button class="btn btn-primary">Create Invite</button>
+    <button class="btn btn-primary">Create Single Invite</button>
 </form>
 
 
