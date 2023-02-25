@@ -11,6 +11,11 @@
          <br>
          <br>
      </form>
+     <form action="{% url 'OrgDash:upload_sheet' %}">
+        <button class="btn btn-primary">Create Players from Spreadsheet</button>
+
+      <br>
+    </form>
 
      {% for player in object_list %} 
      <ul>

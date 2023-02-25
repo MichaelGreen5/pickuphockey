@@ -16,6 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR =Path.joinpath(BASE_DIR, 'pickuphockey/templates')
 STATIC_ROOT = Path.joinpath(BASE_DIR, 'static')
+ 
 
 
 # Quick-start development settings - unsuitable for production
@@ -42,7 +43,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'pickuphockey',
     'django_bootstrap5',
-    'OrgDash'
+    'OrgDash',
+    'schedule'
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "django.template.context_processors.request"
             ],
         },
     },

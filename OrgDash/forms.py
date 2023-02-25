@@ -1,5 +1,6 @@
 from django import forms
 from pickuphockey.models import Skate, Invitation, Player
+from OrgDash.models import UploadSheet
 
 class CreateEventForm(forms.ModelForm):
     
@@ -83,5 +84,12 @@ class PlayerUpdateForm(forms.ModelForm):
     class Meta:
         fields = ('first_name', 'last_name', 'email', 'skill')
         model = Player
+
+
+class UploadSheetForm(forms.ModelForm):
+    class Meta:
+        fields= ('file',)
+        model = UploadSheet
+
 
 

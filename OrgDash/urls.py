@@ -15,6 +15,7 @@ path('dashboard/<int:pk>/edit/', views.EventUpdateView.as_view(), name = 'event_
 path('dashboard/<int:pk>/teams', views.TeamsView, name = 'make_teams'),
 path('dashboard/<int:pk>/invite/', views.CreateInvite.as_view(), name = 'create_invite'),
 path('dashboard/players/create/', views.CreatePlayer.as_view(), name = 'create_player'),
+path('dashboard/my-players/upload-sheet', views.UploadSheet, name = 'upload_sheet'),
 path('dashboard/my-players/', views.PlayerListiview.as_view(), name = 'player_list'),
 path('dashboard/my-players/<int:pk>', views.PlayerDetail.as_view(), name = 'player_detail'),
 path('dashboard/my-players/<int:pk>/edit/', views.PlayerUpdateView.as_view(), name = 'update_player'),

@@ -1,18 +1,26 @@
-from pickuphockey.models import Invitation
-#player data will be name and email from my_players list
-active_host = 'Lauren.Ciccarelli'
-current_event = 'Event at The Edge Bedford'
-player_data = [ {'field1': 'value1', 'field2': 'value2'},
-    {'field1': 'value3', 'field2': 'value4'},
-    {'field1': 'value5', 'field2': 'value6'},]
-def GenerateInvites(active_host, current_event, guest_contact):
-    guest_data = [ {'field1': 'value1', 'field2': 'value2'},
-    {'field1': 'value3', 'field2': 'value4'},
-    {'field1': 'value5', 'field2': 'value6'},]
 
-    for item in guest_data :
-        instance = Invitation(**item)
-        instance.save()
+def PlayerDataFromExcel(file, start_row):
+    import openpyxl
+
+    wb= openpyxl.load_workbook(file)
+    sheet= wb.active
+
+
+    max_row=sheet.max_row
+
+    max_column=sheet.max_column
+    player_data = []
+    for i in range(start_row,max_row+1):
+        for j in range(1,max_column+1):
+            cell_obj=sheet.cell(row=i,column=j)  
+            player_data.append(cell_obj.value)
+    return player_data
+
+
+
+
+
+
 
 
 

@@ -3,11 +3,13 @@ from pickuphockey.models import Skate, Invitation, Player
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
-from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm
+from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm, UploadSheetForm
+from OrgDash.models import UploadSheet
 from django.db.models import Q
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from OrgDash.team_sort import SortTeams
+import openpyxl
 
 
 
@@ -221,18 +223,57 @@ class DeleteInvite(DeleteView):
         current_event = Invitation.objects.get(pk=self.kwargs['pk'])
         event_pk =current_event.event.pk
         return reverse_lazy('OrgDash:invite_list',args = [event_pk])
-    
-   
-   
-
-   
-   
-    
 
 
-    
+def UploadSheet(request):#TODO validate only sheet docs allowed. exception handiling. should not create duplicate players 
+    if request.method == 'POST':
+        form = UploadSheetForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_sheet = form.cleaned_data['file']
+            
+            wb= openpyxl.load_workbook(uploaded_sheet)
+            sheet= wb.active
 
-   
+
+            max_row=sheet.max_row
+
+            max_column=sheet.max_column
+            
+            for i in range(2,max_row+1): #assumes first row of sheet has labels, data starts at row 2
+                player_row_values = []
+                for j in range(1,max_column+1):
+                    
+                    cell_obj=sheet.cell(row=i,column=j)  
+                    player_row_values.append(cell_obj.value)
+                
+                player_keys = ['first_name', 'last_name', 'email', 'skill']
+                player_data = dict(zip(player_keys, player_row_values))
+                player_data['created_by']=request.user
+               #TODO create player objects based on dict
+                    
+                player = Player(**player_data)
+                player.save()
+            
+            
+
+
+
+
+            
+            return render(request, 'OrgDash/player_list.html')
+    else:
+        form = UploadSheetForm()
+    return render(request, 'OrgDash/upload_sheet.html', {'form': form}) 
+
+
+
+
+
+
+
+
+
+
 
  
     

@@ -1,12 +1,12 @@
 from django.contrib import admin
-from pickuphockey.models import Player, Skate, Invitation, Group, PlayerGroup
-
+from pickuphockey.models import Player, Skate, Invitation
+from OrgDash.models import UploadSheet
 
 admin.site.register(Skate)
 admin.site.register(Player)
 admin.site.register(Invitation)
-admin.site.register(Group)
-admin.site.register(PlayerGroup)
+admin.site.register(UploadSheet)
+
 
 
 
