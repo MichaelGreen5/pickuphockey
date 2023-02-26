@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block body_block %}
-
+{% if messages %} 
 <h1>Player List</h1>
 {% for player in all_players %}
     
@@ -8,5 +8,7 @@
     
     
 {% endfor %} 
+
+
 
 {% endblock %} 

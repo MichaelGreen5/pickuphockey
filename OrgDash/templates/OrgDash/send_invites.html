@@ -4,7 +4,7 @@
 <div class="container">
     <form method="POST" action="" >
         {% csrf_token %}
-{% for player in my_players %} 
+{% for player in players_not_yet_invited %} 
 <div class="row">
 <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players" checked>{{player.first_name}} {{player.last_name}} {{player.email}} </input>
 </div>
@@ -12,6 +12,11 @@
 <button type="submit" >Invite Selected Players</button>
 </div>
 </form>
+<h3>Players already invited to this event</h3>
+{% for invite in existing_invites %} 
+<li>{{invite.guest.first_name}} {{invite.guest.last_name}} {{invite.guest.email}}</li>
+{% endfor %} 
+
 <!-- <script>
 const form = document.querySelector('form');
 

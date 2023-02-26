@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from pickuphockey.models import Skate, Invitation, Player
-from django.contrib.auth import get_user_model
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
 from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm, UploadSheetForm
@@ -84,15 +84,22 @@ def SendInvites(request,pk): #TODO needs to email invitations
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
     my_players = Player.objects.filter(created_by=active_user)
-    context = {'my_players':my_players, 'event': active_event}
+    existing_invites = Invitation.objects.filter(event=active_event)
+    existing_guest_emails =[invite.guest.email for invite in existing_invites]
+    players_not_yet_invited =[]    
+    for player in my_players:
+        if player.email not in existing_guest_emails:
+            players_not_yet_invited.append(player)
+    context = {'my_players':my_players, 'event': active_event, 'players_not_yet_invited': players_not_yet_invited, 'existing_invites':existing_invites}
     if request.method == 'POST':
         selected_player_ids = request.POST.getlist('selected_players')
-        number_of_invites = len(selected_player_ids)
+        
     
         for player_id in selected_player_ids:
             player = Player.objects.get(pk=player_id)
             invite_data = {'host': request.user, 'guest': player,'event': active_event}
             invite = Invitation(**invite_data)
+
             
             
             
@@ -225,7 +232,10 @@ class DeleteInvite(DeleteView):
         return reverse_lazy('OrgDash:invite_list',args = [event_pk])
 
 
-def UploadSheet(request):#TODO validate only sheet docs allowed. exception handiling. should not create duplicate players 
+
+def UploadSheet(request):
+    my_players = Player.objects.filter(created_by = request.user)
+    player_emails = [player.email for player in my_players]
     if request.method == 'POST':
         form = UploadSheetForm(request.POST, request.FILES)
         if form.is_valid():
@@ -238,7 +248,7 @@ def UploadSheet(request):#TODO validate only sheet docs allowed. exception handi
             max_row=sheet.max_row
 
             max_column=sheet.max_column
-            
+            player_count = 0
             for i in range(2,max_row+1): #assumes first row of sheet has labels, data starts at row 2
                 player_row_values = []
                 for j in range(1,max_column+1):
@@ -249,21 +259,27 @@ def UploadSheet(request):#TODO validate only sheet docs allowed. exception handi
                 player_keys = ['first_name', 'last_name', 'email', 'skill']
                 player_data = dict(zip(player_keys, player_row_values))
                 player_data['created_by']=request.user
-               #TODO create player objects based on dict
+                
+                
                     
                 player = Player(**player_data)
-                player.save()
+                player_count += 1
+                if player.email in player_emails:
+                    player_count -= 1
+                    
+                    
+                else:
+                   player.save()
+                   
+        
+        
+            messages.success(request, str(player_count) + ' Players added')
             
             
-
-
-
-
-            
-            return render(request, 'OrgDash/player_list.html')
+        return redirect('OrgDash:player_list')
     else:
         form = UploadSheetForm()
-    return render(request, 'OrgDash/upload_sheet.html', {'form': form}) 
+        return render(request, 'OrgDash/upload_sheet.html', {'form': form}) 
 
 
 

@@ -16,7 +16,41 @@
 
       <br>
     </form>
+    {% if messages %}
 
+    {% for message in messages %}
+    
+<script>
+
+
+  const banner = document.createElement('div');
+  banner.className = 'message_bannner'
+  banner.textContent = '{{message}}';
+  banner.style.backgroundColor = 'green';
+  banner.style.color = 'white';
+  banner.style.padding = '10px';
+  banner.style.position = 'fixed';
+  banner.style.top = '0';
+  banner.style.left = '0';
+  banner.style.width = '100%';
+  banner.style.textAlign = 'center';
+  banner.style.opacity = '1';
+  banner.style.transition = 'opacity 2s'
+
+
+  document.body.appendChild(banner);
+
+  window.addEventListener('load', function() { //will not fade out
+  setTimeout(function() {
+    document.getElementsByClassName('message_bannner').style.opacity = '0';
+  }, 2000); // 2000 milliseconds delay
+});
+
+
+</script>
+    {% endfor %}
+
+{% endif %}
      {% for player in object_list %} 
      <ul>
         <a href="{{player.id}}">{{player.first_name}} {{player.last_name}} {{player.skill}} </a>

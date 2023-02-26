@@ -24,6 +24,9 @@ class Player(models.Model):
     def __str__(self):
         return (self.first_name + " " + self.last_name)
 
+    class Meta():
+        unique_together= ("created_by", "email")
+
 
 
 
@@ -50,7 +53,6 @@ class Invitation(models.Model):
     guest = models.ForeignKey(Player, on_delete=models.CASCADE)
     event = models.ForeignKey(Skate, on_delete=models.CASCADE)
     date_invited = models.DateTimeField(auto_now_add=True)
-    is_attending = models.BooleanField(default=False) #TODO need to delete
     STATUS_CHOICES = [
         ('Yes','Yes'),
         ('No','No'),
@@ -63,7 +65,7 @@ class Invitation(models.Model):
         return reverse('OrgDash:invite_list')
 
     def __str__(self):
-        if self.is_attending:
+        if self.will_you_attend == 'Yes':
             return self.guest.first_name + " is going to "  + self.event.location 
         else:
             return self.guest.first_name +  " was invited to "  + self.event.location
