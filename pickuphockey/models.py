@@ -37,10 +37,13 @@ class Skate(models.Model):
     location = models.CharField(max_length=200)
     price = models.IntegerField()
     max_guests = models.IntegerField(default=0)
+    recurring_event = models.BooleanField(default= False)
     
 
     def get_absolute_url(self):
         return reverse('OrgDash:organizer_dashboard',kwargs={'slug': (str(self.date) + str(self.time))})
+    
+        
 
 
     

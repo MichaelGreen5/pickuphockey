@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from pickuphockey.models import Skate, Invitation, Player
+from OrgDash.models import AutoRecurringSkate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
-from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm, UploadSheetForm
+from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm, UploadSheetForm, CreateAutoRecurringSkateForm
 from OrgDash.models import UploadSheet
 from django.db.models import Q
 from django.urls import reverse_lazy, reverse
@@ -77,7 +78,12 @@ def EventDash(request, pk): #TODO waitlist. button to change rsvp to no
     invites_sent = len(all_invited)
     guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
     spots_left = active_event.max_guests - len(guest_list)
+   
+        
     context = {'event': active_event, 'guest_list': guest_list, 'spots_left': spots_left, 'invites_sent':invites_sent}
+    if active_event.recurring_event:
+        recurring_obj = AutoRecurringSkate.objects.get(event=active_event)
+        context['recurring_obj'] = recurring_obj
     return render(request, 'OrgDash/event_detail.html', context)
 
 def SendInvites(request,pk): #TODO needs to email invitations
@@ -280,6 +286,21 @@ def UploadSheet(request):
     else:
         form = UploadSheetForm()
         return render(request, 'OrgDash/upload_sheet.html', {'form': form}) 
+    
+
+
+class CreateAutoRecurringEvent(CreateView): #TODO link up event
+    template_name = 'OrgDash/create_recurring_event.html'
+    form_class= CreateAutoRecurringSkateForm
+    model = AutoRecurringSkate
+
+
+
+    def get_success_url(self):
+        return reverse('OrgDash:event_detail', args=[str(self.kwargs['pk'])])
+
+    def get_initial(self):
+        return {'event': self.kwargs['pk']}
 
 
 

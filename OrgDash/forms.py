@@ -1,6 +1,6 @@
 from django import forms
 from pickuphockey.models import Skate, Invitation, Player
-from OrgDash.models import UploadSheet
+from OrgDash.models import UploadSheet, AutoRecurringSkate
 
 class CreateEventForm(forms.ModelForm):
     
@@ -9,7 +9,7 @@ class CreateEventForm(forms.ModelForm):
        self.fields['host'].disabled = True
     
     class Meta:
-        fields = ('host','date', 'time', 'location', 'price', "max_guests")
+        fields = ('host','date', 'time', 'location', 'price', 'max_guests', 'recurring_event')
         model = Skate
 
         widgets = {
@@ -21,7 +21,7 @@ class CreateEventForm(forms.ModelForm):
 
 class UpdateEventForm(forms.ModelForm):
     class Meta:
-        fields = ('date', 'time', 'location', 'price', "max_guests")
+        fields = ('date', 'time', 'location', 'price', 'max_guests', 'recurring_event')
         model = Skate
 
         widgets = {
@@ -90,6 +90,27 @@ class UploadSheetForm(forms.ModelForm):
     class Meta:
         fields= ('file',)
         model = UploadSheet
+
+class CreateAutoRecurringSkateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CreateAutoRecurringSkateForm, self).__init__(*args, **kwargs)
+        self.fields['event'].disabled = True
+    class Meta:
+        fields = ('event','frequency', 'days_until_next', 'send_invites_days_before', 'send_invites_time', 'send_rosters_hours_before')
+        labels = {
+            'frequency': 'How often does this event repeat?',
+            'days_until_next': 'How many days until the next event? (ex: Enter 7 for an event that repeats every week)',
+            'send_invites_days_before': 'How many days before the event would you like your invitations to be sent?',
+            'send_invites_time': 'What time should the invitations be sent at?',
+            'send_rosters_hours_before': 'How many hours before the event would you like the guest list sent out?'
+
+        }
+        model = AutoRecurringSkate
+        widgets = {
+        
+        'send_invites_time' : forms.TimeInput(attrs={'type': 'time'}),
+        
+        }
 
 
 

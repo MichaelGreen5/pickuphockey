@@ -7,6 +7,10 @@
 <br>
 <h3>Price: ${{event.price}}</h3>
 <br>
+<br>
+{% if event.recurring_event %}
+<h2>This event repeats {{recurring_obj.frequency}}</h2>
+{% endif %} 
 <h3>{{spots_left}} spots remaining. {{event.max_guests}} total spots</h3>
 <h3>{{invites_sent}} guests have been invited</h3>
 <br>

@@ -8,6 +8,7 @@ urlpatterns = [
 path('dashboard/', views.OrganizerDashboard, name = 'organizer_dashboard'),
 path('create/new/', views.SkateCreateView.as_view(), name = 'create_event'),
 path('dashboard/<int:pk>', views.EventDash, name = 'event_detail'),
+path('dashdashboard/<int:pk>/create-auto-reccour', views.CreateAutoRecurringEvent.as_view(), name ='create_recurring_event'),
 path('dashboard/<int:pk>/manage-invites', views.GuestListView, name = 'invite_list'),
 path('dashboard/manage-invites/edit/<int:pk>', views.UpdateInvite.as_view(), name = 'update_invite'),
 path('dashboard/<int:pk>/delete/', views.SkateDeleteView.as_view(), name = 'delete_event'),

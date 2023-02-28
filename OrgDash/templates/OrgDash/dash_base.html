@@ -14,30 +14,52 @@
             <h1>Today's Events</h1>
             
             {% for item in todays_events %}
+                {% if item.recurring_event == True %}
                 
             
             <ul>
                 <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+                <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Manage recurring event settings</a>
             
             </ul>
+                {% else %}
+                <ul>
+                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+    
+                
+                </ul>
+                {% endif %}
             {% endfor %}
            
         
 
             <h2>Upcoming events</h2>
             {% for item in upcoming_events %}
-            
+                {% if item.recurring_event == True %}
+                <ul>
+                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+                    <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Manage recurring event settings</a>
+                </ul>
+                {% else %} 
             <ul>
                 <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
             </ul>
+            {% endif %} 
             {% endfor %}
 
             <h2>Past events</h2>
             {% for item in past_events %}
+                {% if item.recurring_event == True %}
+                <ul>
+                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+                    <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Manage recurring event settings</a>
+                </ul>
+                {% else %}
             
             <ul>
                 <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
             </ul>
+            {% endif %} 
             {% endfor %}
          
         
