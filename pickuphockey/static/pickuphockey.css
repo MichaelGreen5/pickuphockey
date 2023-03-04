@@ -1,29 +1,37 @@
 *{
   font-family: 'Manrope', sans-serif !important;
+  -webkit-text-fill-color: #282A3A;
   box-sizing: border-box;
   margin:0;
   padding:0;
   font-size:15px;
+  background-color:whitesmoke;
 }
+
+
 
 .nav {
   display:flex;
-  background-color: rgb(253, 253, 253);
+  background-color:#22577E;
   padding:16px 32px;
-  border-bottom:0.1px solid rgb(225, 225, 225);
+  border-bottom:0.3px solid #95D1CC;
   justify-content:space-between;
   align-items:center;
 
 }
 
 .nav-main{
+  background-color:#22577E;
   display:flex;
   gap:32px;
 }
-.nav-link{
+.nav-link, a{
+  -webkit-text-fill-color: whitesmoke;
+  background-color:#22577E;
   text-decoration: none;
 }
 .nav-links{
+  background-color:#22577E;
   display:flex;
   gap: 40px;
   list-style: none;

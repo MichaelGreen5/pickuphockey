@@ -11,57 +11,96 @@
             <br>
             <br>
         </form>
-            <h1>Today's Events</h1>
+            
+            <table class="event-table">
+                <tbody>
+                    <h1>Today's Events</h1>
+                <tr>
+                    <th>Location</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                    <th>Event Details</th>
+                </tr>
             
             {% for item in todays_events %}
                 {% if item.recurring_event == True %}
                 
-            
-            <ul>
-                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Manage recurring event settings</a>
-            
-            </ul>
-                {% else %}
-                <ul>
-                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-    
+           <tr>
+            <td>
+                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person. Set to Repeat</a>
                 
-                </ul>
+            
+            </td>
+        </tr>
+                {% else %}
+                <td>
+                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+                    <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Make this event repeat</a>
+                
+                </td>
                 {% endif %}
             {% endfor %}
-           
-        
 
+        </table>
+    </tbody>
+        
+    <table class="event-table">
+        <tbody>
             <h2>Upcoming events</h2>
+        <tr>
+            <th>Location</th>
+            <th>Time</th>
+            <th>Price</th>
+            <th>Event Details</th>
+        </tr>
+            
             {% for item in upcoming_events %}
                 {% if item.recurring_event == True %}
-                <ul>
-                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                    <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Manage recurring event settings</a>
-                </ul>
-                {% else %} 
-            <ul>
-                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-            </ul>
+                <tr>
+                    <td>
+                        <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person. Set to Repeat</a>
+                        
+                    
+                    </td>
+                </tr>
+                        {% else %}
+                        <td>
+                            <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+                            <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Make this event repeat</a>
+                        
+                        </td>
             {% endif %} 
             {% endfor %}
-
+        </table>
+    </tbody>
+    <table class="event-table">
+        <tbody>
             <h2>Past events</h2>
+        <tr>
+            <th>Location</th>
+            <th>Time</th>
+            <th>Price</th>
+            <th>Event Details</th>
+        </tr>
             {% for item in past_events %}
                 {% if item.recurring_event == True %}
-                <ul>
-                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                    <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Manage recurring event settings</a>
-                </ul>
-                {% else %}
-            
-            <ul>
-                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-            </ul>
+                <tr>
+                    <td>
+                        <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person. Set to Repeat</a>
+                        
+                    
+                    </td>
+                </tr>
+                        {% else %}
+                        <td>
+                            <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
+                            <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Make this event repeat</a>
+                        
+                        </td>
             {% endif %} 
             {% endfor %}
-         
+        </table>
+    </tbody> 
         
         </div>
 </div>

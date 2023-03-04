@@ -9,25 +9,37 @@ class CreateEventForm(forms.ModelForm):
        self.fields['host'].disabled = True
     
     class Meta:
-        fields = ('host','date', 'time', 'location', 'price', 'max_guests', 'recurring_event')
+        fields = (
+            'host','date', 'time', 'location', 'price', 'max_guests', 
+            'recurring_event',  'frequency','send_invites_datetime', 
+            'finalize_event_datetime')
         model = Skate
 
         widgets = {
         'host' : forms.Select(attrs={'class': 'form-control'}),
         'time' : forms.TimeInput(attrs={'type': 'time'}),
         'date' : forms.DateInput(attrs={'type': 'date'}),
+        
+        # 'frequency' : forms.NullBooleanSelect(attrs={'class':'hidden', 'id':'recurring'}),
+        'send_invites_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'}),
+        'finalize_event_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'})
         }
         
 
 class UpdateEventForm(forms.ModelForm):
     class Meta:
-        fields = ('date', 'time', 'location', 'price', 'max_guests', 'recurring_event')
+        fields = (
+            'date', 'time', 'location', 'price', 'max_guests', 'recurring_event',
+              'frequency','send_invites_datetime','finalize_event_datetime')
         model = Skate
 
         widgets = {
         
         'time' : forms.TimeInput(attrs={'type': 'time'}),
         'date' : forms.DateInput(attrs={'type': 'date'}),
+        # 'frequency' : forms.NullBooleanSelect(attrs={'class':'hidden', 'id':'recurring'}),
+        'send_invites_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'}),
+        'finalize_event_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'})
         }
 
 class CreateInviteForm(forms.ModelForm):

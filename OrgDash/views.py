@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from pickuphockey.models import Skate, Invitation, Player
 from OrgDash.models import AutoRecurringSkate
 from django.contrib import messages
@@ -9,8 +9,12 @@ from OrgDash.models import UploadSheet
 from django.db.models import Q
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
+from datetime import timedelta, datetime
 from OrgDash.team_sort import SortTeams
 import openpyxl
+
+
+
 
 
 
@@ -34,8 +38,13 @@ class SkateCreateView(CreateView):
     model = Skate
 
     def get_initial(self):
+    
         return {'host': self.request.user}
+     
+    
+    
 
+    
 class SkateDeleteView(DeleteView): 
     model = Skate
     template_name = 'OrgDash/confirm_delete.html'
@@ -71,19 +80,17 @@ def TeamsView(request, pk):
     return render (request,'OrgDash/make_teams.html',context)
 
 
-def EventDash(request, pk): #TODO waitlist. button to change rsvp to no
+def EventDash(request, pk): #TODO waitlist. button to change rsvp to no. Be able to update auto settings.
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
     all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
     invites_sent = len(all_invited)
     guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
     spots_left = active_event.max_guests - len(guest_list)
-   
+    
         
     context = {'event': active_event, 'guest_list': guest_list, 'spots_left': spots_left, 'invites_sent':invites_sent}
-    if active_event.recurring_event:
-        recurring_obj = AutoRecurringSkate.objects.get(event=active_event)
-        context['recurring_obj'] = recurring_obj
+  
     return render(request, 'OrgDash/event_detail.html', context)
 
 def SendInvites(request,pk): #TODO needs to email invitations
@@ -301,6 +308,19 @@ class CreateAutoRecurringEvent(CreateView): #TODO link up event
 
     def get_initial(self):
         return {'event': self.kwargs['pk']}
+    
+
+class UpdateAutoRecurringEvent(UpdateView):
+    form_class= CreateAutoRecurringSkateForm
+    model = AutoRecurringSkate
+    template_name = "OrgDash/create_recurring_event.html"
+
+    def get_success_url(self):
+        current_event = AutoRecurringSkate.objects.get(pk=self.kwargs['pk'])
+        event_pk =current_event.event.pk
+        return reverse_lazy('OrgDash:event_detail',args = [event_pk])
+    
+
 
 
 

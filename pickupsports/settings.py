@@ -44,10 +44,14 @@ INSTALLED_APPS = [
     'pickuphockey',
     'django_bootstrap5',
     'OrgDash',
-    'schedule',
-    'djangobower',
+    'huey.contrib.djhuey',
 ]
 
+HUEY = {
+    'name': 'pickuphockey.huey',
+    'immediate': False,
+    'result_store': False,
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

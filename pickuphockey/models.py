@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
+
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-
 
 
 
@@ -38,12 +40,33 @@ class Skate(models.Model):
     price = models.IntegerField()
     max_guests = models.IntegerField(default=0)
     recurring_event = models.BooleanField(default= False)
+    STATUS_CHOICES = [
+        (7,'Every Week'),
+        (14,'Every Two Weeks'),    
+    ]
+    frequency = models.IntegerField(choices=STATUS_CHOICES, default= 'Every Week', blank= True)
+     
+    send_invites_datetime = models.DateTimeField(auto_now= False,  default=timezone.now, blank=True)
+    finalize_event_datetime = models.DateTimeField(auto_now= False, default=timezone.now, blank=True) 
+
+       
+
     
 
     def get_absolute_url(self):
         return reverse('OrgDash:organizer_dashboard',kwargs={'slug': (str(self.date) + str(self.time))})
     
-        
+    def get_next_skate_info(self):
+        added_days = timedelta(days=int(self.frequency))
+        next_event_date = self.date + added_days
+        next_invite_date = self.send_invites_datetime + added_days
+        next_finalize_event_datetime = self.send_invites_datetime + added_days
+
+        return {'host': self.host, 'date': next_event_date, 'time':self.time,'price': self.price, 'location': self.location,
+                 'max_guests': self.max_guests, 'recurring_event': self.recurring_event,'frequency': self.frequency,
+                   'send_invites_datetime':next_invite_date, 'finalize_event_datetime': next_finalize_event_datetime}
+
+    
 
 
     

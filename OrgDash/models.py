@@ -19,8 +19,8 @@ class UploadSheet(models.Model):
 class AutoRecurringSkate(models.Model):
     event = models.ForeignKey(Skate, on_delete=models.CASCADE)
     STATUS_CHOICES = [
-        (7,'Every Week'),
-        (14,'Every Two Weeks'),
+        ('Every Week','Every Week'),
+        ('Every Two Weeks','Every Two Weeks'),
         ('Every Month','Every Month'),
         ('Custom', 'Custom')
     ]
