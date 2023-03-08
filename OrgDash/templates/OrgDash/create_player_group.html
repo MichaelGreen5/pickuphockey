@@ -1,0 +1,21 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+
+<h1>Create Player Group</h1>
+<div class="container">
+    <form method="POST" action="" >
+        {% csrf_token %}
+        <label for="group_name">Enter Your Group's Name</label>
+        <input name="group_name"id="group_name" type="text"></input>
+        
+{% for player in my_players %} 
+<div class="row">
+
+<input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players" checked>{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+</div>
+{% endfor %}
+<button type="submit" >Create Group</button>
+</div>
+</form>
+</div>
+{% endblock %} 

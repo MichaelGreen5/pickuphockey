@@ -1,0 +1,23 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<h1>{{current_group.name}}</h1>
+<div class="container">
+        <form method="POST" action="" >
+            {% csrf_token %}
+    <h2>Members</h2>
+{% for member in members %}
+<ul><input type="checkbox" id="{{member.pk}}" value="{{member.pk}}" name="members" checked>{{member}}</input></ul>
+{% endfor %} 
+<h2>Non members</h2>
+{% for member in non_members %}
+<ul><input type="checkbox" id="{{member.pk}}" value="{{member.pk}}" name="members" >{{member}}</input></ul>
+
+{% endfor %} 
+
+<button type="submit" >Update Group</button>
+
+</div>
+</form>
+<br>
+<input type=button class="btn btn-primary" value="Done" onClick="javascript:history.go(-1);">
+{% endblock %} 

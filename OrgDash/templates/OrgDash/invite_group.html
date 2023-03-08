@@ -1,0 +1,21 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<div class="container">
+<form method="POST" action="" >
+    {% csrf_token %} 
+     <label for="group_name">Send a message to your guests</label>
+    <input name="invite_mesage"id="invite_mesage" type="text"></input>
+{% for member in member_list %} 
+<ul>
+    {{member}}
+</ul>
+{% endfor %} 
+<input class="btn btn-primary" type="submit" value="Send Invites">
+</form>
+
+
+</div>
+
+
+
+{% endblock %} 

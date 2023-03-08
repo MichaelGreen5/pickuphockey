@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect, HttpResponseRedirect
-from pickuphockey.models import Skate, Invitation, Player
+from django.shortcuts import render, redirect, get_object_or_404
+from pickuphockey.models import Skate, Invitation, Player, PlayerGroup
 from OrgDash.models import AutoRecurringSkate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
-from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm, UploadSheetForm, CreateAutoRecurringSkateForm
+from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm, UploadSheetForm,UpdatePlayerGroupForm
 from OrgDash.models import UploadSheet
 from django.db.models import Q
 from django.urls import reverse_lazy, reverse
@@ -98,14 +98,19 @@ def SendInvites(request,pk): #TODO needs to email invitations
     active_event = Skate.objects.get(pk=pk)
     my_players = Player.objects.filter(created_by=active_user)
     existing_invites = Invitation.objects.filter(event=active_event)
+    my_groups = PlayerGroup.objects.filter(created_by=request.user)
+    
+    
+    
     existing_guest_emails =[invite.guest.email for invite in existing_invites]
     players_not_yet_invited =[]    
     for player in my_players:
         if player.email not in existing_guest_emails:
             players_not_yet_invited.append(player)
-    context = {'my_players':my_players, 'event': active_event, 'players_not_yet_invited': players_not_yet_invited, 'existing_invites':existing_invites}
+    context = {'my_players':my_players, 'event': active_event, 'players_not_yet_invited': players_not_yet_invited, 'existing_invites':existing_invites, 'my_groups':my_groups}
     if request.method == 'POST':
         selected_player_ids = request.POST.getlist('selected_players')
+        
         
     
         for player_id in selected_player_ids:
@@ -120,9 +125,87 @@ def SendInvites(request,pk): #TODO needs to email invitations
         return redirect(reverse('OrgDash:event_detail' ,args=[pk]), context)
     else:
         return render(request, 'OrgDash/send_invites.html', context)
+def InviteGroup(request,slug, pk):
+    current_group = get_object_or_404(PlayerGroup, slug=slug)
+    member_list =current_group.members.all()
+
+    return render(request, 'OrgDash/invite_group.html', {'current_group':current_group, 'member_list':member_list})
+
+def Playergroups(request):
+    active_user = request.user
+    my_players = Player.objects.filter(created_by=active_user.pk)
+    context={'my_players': my_players }
+    if request.method == 'POST':
+        selected_player_ids = request.POST.getlist('selected_players')
+        group_name = request.POST.get('group_name')
+        selected_player_objs = []
+        for player_id in selected_player_ids:
+            player = Player.objects.get(pk=player_id)
+            selected_player_objs.append(player)
+        group_data = {'created_by': active_user, 'name':group_name}
+        group = PlayerGroup(**group_data)
+        group.save()
+        group.members.set(selected_player_objs)
+       
+        print(group)
+        
+        return redirect(reverse('OrgDash:player_list'))
+    else:
+
+        return render(request, 'OrgDash/create_player_group.html', context)
+    
+class PlayerGroupDetail(DetailView):
+    model= PlayerGroup
+    context_object_name = 'group'
+    template_name = 'OrgDash/group_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['members'] = self.object.members.all()
+        return context
+
+class PlayerGroupDelete(DeleteView):
+    model = PlayerGroup
+    template_name = 'OrgDash/confirm_delete.html'
+    success_url = reverse_lazy('OrgDash:player_dash')
+
+def UpdatePlayerGroup(request,pk): #fbv to update who's part of the group
+    active_user = request.user
+    my_players = Player.objects.filter(created_by=active_user.pk)
+    current_group = PlayerGroup.objects.get(pk=pk)
+    members = current_group.members.all()
+    member_emails = [member.email for member in members]
+    non_members =[]
+    for player in my_players:
+        if player.email not in member_emails:
+            non_members.append(player)
+
+
+    if request.method == 'POST':
+        member_ids = request.POST.getlist('members')
+        selected_player_objs =[]
+        for id in member_ids:
+            member = Player.objects.get(pk=id)
+            selected_player_objs.append(member)
+        current_group.members.set(selected_player_objs)
+        return redirect(reverse('OrgDash:player_group_update', args=[current_group.pk]))
 
 
         
+
+
+
+
+   
+
+    
+    context={'non_members': non_members, 'members':members, 'current_group': current_group}
+    return render(request, 'OrgDash/update_group.html', context)
+
+
+
+    
+            
 
 
    
@@ -177,7 +260,7 @@ class PlayerListiview(ListView):
         all_players = super().get_queryset()
         my_players = all_players.filter(created_by = self.request.user)
         return my_players
-
+    
 
 class PlayerDetail(DetailView):
     model = Player
@@ -198,6 +281,12 @@ class PlayerDeleteView(DeleteView):
     model = Player
     template_name = 'OrgDash/confirm_delete.html'
     success_url = reverse_lazy('OrgDash:player_list')
+
+
+def PlayerDash(request):
+    my_groups = PlayerGroup.objects.filter(created_by=request.user)
+    return render(request, 'OrgDash/player_dash.html', {'my_groups': my_groups})
+
 
 def GuestListView(request,pk):
     active_event = Skate.objects.get(pk=pk)
@@ -296,30 +385,6 @@ def UploadSheet(request):
     
 
 
-class CreateAutoRecurringEvent(CreateView): #TODO link up event
-    template_name = 'OrgDash/create_recurring_event.html'
-    form_class= CreateAutoRecurringSkateForm
-    model = AutoRecurringSkate
-
-
-
-    def get_success_url(self):
-        return reverse('OrgDash:event_detail', args=[str(self.kwargs['pk'])])
-
-    def get_initial(self):
-        return {'event': self.kwargs['pk']}
-    
-
-class UpdateAutoRecurringEvent(UpdateView):
-    form_class= CreateAutoRecurringSkateForm
-    model = AutoRecurringSkate
-    template_name = "OrgDash/create_recurring_event.html"
-
-    def get_success_url(self):
-        current_event = AutoRecurringSkate.objects.get(pk=self.kwargs['pk'])
-        event_pk =current_event.event.pk
-        return reverse_lazy('OrgDash:event_detail',args = [event_pk])
-    
 
 
 

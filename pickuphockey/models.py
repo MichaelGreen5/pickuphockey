@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Q
+from django.utils.text import slugify
 
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -102,18 +104,20 @@ class Invitation(models.Model):
 
 
 
-class Group(models.Model):
+class PlayerGroup(models.Model):
+    current_user = get_user_model()
     created_by = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
-    group_name = models.TextField(max_length= 260)
-    players_list = models.ManyToManyField(Player, through='PlayerGroup', default= None)
-    
+    name = models.CharField(max_length=100, default= "Group Name")
+    members = models.ManyToManyField('Player', related_name='groups')
+    slug = models.SlugField(unique=True, default= 'group-name')
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(self.name)
+            super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.group_name
-
-class PlayerGroup(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    Player = models.ForeignKey(Player, on_delete=models.CASCADE)
+        return self.name + " group"
 
     
     
