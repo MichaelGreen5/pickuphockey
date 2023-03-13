@@ -1,5 +1,5 @@
 from django import forms
-from pickuphockey.models import Skate, Invitation, Player, PlayerGroup
+from OrgDash.models import Skate, Invitation, Player, PlayerGroup
 from OrgDash.models import UploadSheet
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
@@ -13,8 +13,7 @@ class CreateEventForm(forms.ModelForm):
     class Meta:
         fields = (
             'host','date', 'time', 'location', 'price', 'max_guests', 
-            'recurring_event',  'frequency','send_invites_datetime', 
-            'finalize_event_datetime')
+            'recurring_event',  )
         model = Skate
 
         widgets = {
@@ -22,9 +21,7 @@ class CreateEventForm(forms.ModelForm):
         'time' : forms.TimeInput(attrs={'type': 'time'}),
         'date' : forms.DateInput(attrs={'type': 'date'}),
         
-        # 'frequency' : forms.NullBooleanSelect(attrs={'class':'hidden', 'id':'recurring'}),
-        'send_invites_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'}),
-        'finalize_event_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'})
+        
         }
         
 
@@ -32,17 +29,27 @@ class UpdateEventForm(forms.ModelForm):
     class Meta:
         fields = (
             'date', 'time', 'location', 'price', 'max_guests', 'recurring_event',
-              'frequency','send_invites_datetime','finalize_event_datetime')
+              )
         model = Skate
 
         widgets = {
         
         'time' : forms.TimeInput(attrs={'type': 'time'}),
         'date' : forms.DateInput(attrs={'type': 'date'}),
-        # 'frequency' : forms.NullBooleanSelect(attrs={'class':'hidden', 'id':'recurring'}),
-        'send_invites_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'}),
-        'finalize_event_datetime' : forms.SplitDateTimeWidget(attrs={'type': 'datetime', 'class':'hidden', 'id':'recurring'})
         }
+
+class EventRepeatForm(forms.ModelForm):
+    class Meta:
+        fields = (
+           'frequency', 'send_invites_datetime', 'finalize_event_datetime' 
+        )
+        model = Skate
+        widgets = {
+        
+        'send_invites_datetime' : forms.DateTimeInput(attrs={'type': 'datetime'}),
+        'finalize_event_datetime' : forms.DateTimeInput(attrs={'type': 'datetime'})
+        }
+
 
 class CreateInviteForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

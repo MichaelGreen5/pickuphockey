@@ -16,5 +16,10 @@
     </ul>
 
 </div>
-{% endfor %} 
+{% endfor %}
+<br>
+<br>
+<form action="{% url 'OrgDash:player_dash' %}">
+  <button class="btn btn-primary">Back to My Players</button>
+</form>
 {% endblock %} 

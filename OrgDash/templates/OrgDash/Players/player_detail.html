@@ -27,6 +27,11 @@
     <br>
     <br>
 </form>
-<input type=button class="btn btn-secondary" value="Go Back" onClick="javascript:history.go(-1);">
+<br>
+<br>
+<form action="{% url 'OrgDash:player_dash' %}">
+    <button class="btn btn-primary">Done </button>
+</form>
+
 
 {% endblock %} 

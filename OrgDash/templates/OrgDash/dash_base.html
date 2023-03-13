@@ -35,7 +35,7 @@
                 {% else %}
                 <td>
                     <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                    <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Make this event repeat</a>
+                    
                 
                 </td>
                 {% endif %}
@@ -66,7 +66,7 @@
                         {% else %}
                         <td>
                             <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                            <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Make this event repeat</a>
+                            
                         
                         </td>
             {% endif %} 
@@ -94,7 +94,7 @@
                         {% else %}
                         <td>
                             <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                            <a href="{% url 'OrgDash:create_recurring_event' item.id %}">Make this event repeat</a>
+                            
                         
                         </td>
             {% endif %} 

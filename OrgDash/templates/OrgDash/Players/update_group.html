@@ -19,5 +19,7 @@
 </div>
 </form>
 <br>
-<input type=button class="btn btn-primary" value="Done" onClick="javascript:history.go(-1);">
+<form action="{% url 'OrgDash:player_group_detail' pk=current_group.pk %}">
+    <button class="btn btn-primary">Done</button>
+</form>
 {% endblock %} 

@@ -19,13 +19,21 @@
 
 
 <form action="{% url 'OrgDash:event_update' event.pk %}">
-    <button class="btn btn-warning">Edit</button>
+    <button class="btn btn-warning">Edit Event Details</button>
 
     <br>
     <br>
     <br>
 </form>
+{% if event.recurring_event %}
+<form action="{% url 'OrgDash:skate_repeat_settings' event.pk %}">
+    <button class="btn btn-warning">Edit Repeat Event Settings</button>
 
+    <br>
+    <br>
+    <br>
+</form>
+{% endif %} 
 <form action="{% url 'OrgDash:delete_event' event.pk %}">
     <button class="btn btn-danger">Delete </button>
    
@@ -36,13 +44,13 @@
 </form>
 <h1>Guest List</h1>
 <br>
-<form action="{% url 'OrgDash:send_invites' event.pk %}">
-    <button class="btn btn-primary">Invite Multiple Players to this Event</button>
+<form action="{% url 'OrgDash:add_invites' event.pk %}">
+    <button class="btn btn-primary">Invite Players</button>
 </form>
 <br>
 
 <form action="{% url 'OrgDash:invite_list' event.pk %}">
-    <button class="btn btn-primary">Manage Invitations</button>
+    <button class="btn btn-primary">View all Invitations</button>
 </form>
 <br>
 

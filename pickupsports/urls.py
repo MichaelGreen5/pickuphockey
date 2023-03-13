@@ -22,9 +22,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.baseview, name = 'home'),
-    path('tonight/<int:pk>/', views.skate_details, name='tonights_skate'),
-   
-    path('host/create/skate', views.SkateCreateView.as_view(), name = 'create_skate'),
     path('signup/', views.SignUp.as_view(), name = 'sign_up'),
     path("logout/", auth_views.LogoutView.as_view(), name= 'logout'),
     path("login/", auth_views.LoginView.as_view(), name = 'login'),

@@ -1,14 +1,15 @@
 {% extends 'base.html' %} 
 {% block body_block %}
 {% load django_bootstrap5 %} 
-<h1>Hello {{user.username}}</h1>
-<H2>Answer the following questions</H2>
+<h1>Make this event repeat</h1>
 <div class="container">
-    <form action="" method="post">
-        {% csrf_token %} 
+    
+    <form method="post">
+        {% csrf_token %}
         {% bootstrap_form form %}
-<input type="submit" value="Sign Up">
+        <input class="btn btn-primary" type="submit" value="Update">
     </form>
 
 </div>
+
 {% endblock %} 
