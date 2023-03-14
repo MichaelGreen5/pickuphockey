@@ -12,37 +12,37 @@
     <title>Base</title>
 </head>
 
-    <nav class="nav">
-        <div class="nav-main">
-        <ul class="nav-links">
+    <nav class="base-nav">
+        <div class="base-nav-main">
+        <ul class="base-nav-links">
             {% if user.is_authenticated %} 
-            <li class="nav-link">
-                <a class = "brand" href="#">PickUpHockey</a>
+            <li class="base-nav-link">
+                <a class = "brand base-nav-link " href="#">PickUpHockey</a>
             </li>
-            <li class="nav-link">
-                <a href="{% url 'OrgDash:organizer_dashboard' %}">Organizer Dashboard</a>
+            <li class="base-nav-link">
+                <a class="base-nav-link" href="{% url 'OrgDash:organizer_dashboard' %}">Organizer Dashboard</a>
             </li>
-            <li class="nav-link">
-                <a  href="">About</a>
+            <li class="base-nav-link">
+                <a class="base-nav-link"  href="">About</a>
             </li>
-            <li class="nav-link">
-                <a  href="{% url 'logout' %}">Log Out</a>
+            <li class="base-nav-link">
+                <a class="base-nav-link"  href="{% url 'logout' %}">Log Out</a>
             </li>
-            <li class="nav-link">
-                <a  href="#">{{user.username}}</a>
+            <li class="base-nav-link">
+                <a class="base-nav-link" href="#">{{user.username}}</a>
             </li>
             {% else %}
-            <li class="nav-link">
-                <a class = "brand" href="#">PickUpHockey</a>
+            <li class="base-nav-link">
+                <a class = "brand base-nav-link" href="#">PickUpHockey</a>
             </li>
-            <li class="nav-link">
-                <a  href="">About</a>
+            <li class="base-nav-link">
+                <a class="base-nav-link"  href="">About</a>
             </li>
-            <li class="nav-link">
-                <a  href="{% url 'login' %}">Login</a>
+            <li class="base-nav-link">
+                <a class="base-nav-link"  href="{% url 'login' %}">Login</a>
             </li>
-            <li class="nav-link">
-                <a  href="{% url 'sign_up' %}">Sign Up</a>
+            <li class="base-nav-link">
+                <a class="base-nav-link"  href="{% url 'sign_up' %}">Sign Up</a>
             </li>
           {% endif %} 
        </ul>
@@ -51,11 +51,13 @@
 
     <body>
     
-    <div class="container">
-    {% block body_block %}
-    {% endblock %}
+    
+                {% block body_block%} 
+                {% endblock %} 
+     
 
-    </div>
+
+   
     
 
 

@@ -12,6 +12,8 @@ class SignUp(UserCreationForm, forms.Form):
 
 
 
+
+
     
 
 

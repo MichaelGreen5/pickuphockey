@@ -47,8 +47,9 @@ class Skate(models.Model):
         (14,'Every Two Weeks'),    
     ]
     frequency = models.IntegerField(choices=STATUS_CHOICES, default= 7, blank= True)
-    send_invites_datetime = models.DateTimeField(auto_now= False,  default=timezone.now, blank=True)
-    finalize_event_datetime = models.DateTimeField(auto_now= False, default=timezone.now, blank=True) 
+    send_invite_days_before = models.IntegerField(default= 3, blank= True)
+    finalize_event_hours_before = models.IntegerField(default=1, blank= True)
+    group_to_invite = models.ForeignKey('PlayerGroup', on_delete= models.CASCADE, blank= True, default=6)
 
        
 
@@ -97,6 +98,12 @@ class Invitation(models.Model):
     class Meta():
         unique_together= ("guest", "event")
 
+class Waitlist(models.Model):
+    event = models.ForeignKey(Skate, on_delete=models.CASCADE, blank= True)
+    guests = models.ManyToManyField('Player')
+
+    def __str__(self):
+        return "Waitlist for " + self.event.location
 
 
 
@@ -104,12 +111,8 @@ class PlayerGroup(models.Model):
     created_by = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
     name = models.CharField(max_length=100, default= "Group Name")
     members = models.ManyToManyField('Player', related_name='groups')
-    slug = models.SlugField(unique=True, default= 'group-name')
+    
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = slugify(self.name)
-            super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name + " group"
@@ -140,11 +143,15 @@ class InviteList(models.Model):
 
     def create_invites(self):
         guest_list = self.guests.all()
+        existing_invites = Invitation.objects.filter(event=self.event)
+        guests_already_invited =[invite.guest for invite in existing_invites]
+        
         for guest in guest_list:
-            invite_data = {'host': self.event.host, 'guest': guest,'event': self.event}
-            invite = Invitation(**invite_data)
-            invite.save()
-            
+            if guest not in guests_already_invited:
+                invite_data = {'host': self.event.host, 'guest': guest,'event': self.event}
+                invite = Invitation(**invite_data)
+                invite.save()
+                
 
 
 

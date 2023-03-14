@@ -41,13 +41,12 @@ class UpdateEventForm(forms.ModelForm):
 class EventRepeatForm(forms.ModelForm):
     class Meta:
         fields = (
-           'frequency', 'send_invites_datetime', 'finalize_event_datetime' 
+           'frequency', 'group_to_invite', 'send_invite_days_before', 'finalize_event_hours_before'
         )
         model = Skate
         widgets = {
         
-        'send_invites_datetime' : forms.DateTimeInput(attrs={'type': 'datetime'}),
-        'finalize_event_datetime' : forms.DateTimeInput(attrs={'type': 'datetime'})
+        
         }
 
 

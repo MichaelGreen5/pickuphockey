@@ -1,119 +1,117 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+
+
+
 {% block body_block %}
+<div class="wrapper">
 
-<div class="container">
-    <h1>My events</h1>
-        <div row="row">
-           <form action="{% url 'OrgDash:create_event' %}">
-            <button class="btn btn-primary">Create New Event</button>
-
-            <br>
-            <br>
-            <br>
-        </form>
-            
-            <table class="event-table">
-                <tbody>
-                    <h1>Today's Events</h1>
-                <tr>
-                    <th>Location</th>
-                    <th>Time</th>
-                    <th>Price</th>
-                    <th>Event Details</th>
-                </tr>
-            
-            {% for item in todays_events %}
-                {% if item.recurring_event == True %}
-                
-           <tr>
-            <td>
-                <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person. Set to Repeat</a>
-                
-            
-            </td>
-        </tr>
-                {% else %}
-                <td>
-                    <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                    
-                
-                </td>
-                {% endif %}
-            {% endfor %}
-
-        </table>
-    </tbody>
-        
-    <table class="event-table">
-        <tbody>
-            <h2>Upcoming events</h2>
-        <tr>
-            <th>Location</th>
-            <th>Time</th>
-            <th>Price</th>
-            <th>Event Details</th>
-        </tr>
-            
-            {% for item in upcoming_events %}
-                {% if item.recurring_event == True %}
-                <tr>
-                    <td>
-                        <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person. Set to Repeat</a>
-                        
-                    
-                    </td>
-                </tr>
-                        {% else %}
-                        <td>
-                            <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                            
-                        
-                        </td>
-            {% endif %} 
-            {% endfor %}
-        </table>
-    </tbody>
-    <table class="event-table">
-        <tbody>
-            <h2>Past events</h2>
-        <tr>
-            <th>Location</th>
-            <th>Time</th>
-            <th>Price</th>
-            <th>Event Details</th>
-        </tr>
-            {% for item in past_events %}
-                {% if item.recurring_event == True %}
-                <tr>
-                    <td>
-                        <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person. Set to Repeat</a>
-                        
-                    
-                    </td>
-                </tr>
-                        {% else %}
-                        <td>
-                            <a href="{{item.id}}"> Event at {{item.location}}, {{item.time}}. ${{item.price}} per person</a>
-                            
-                        
-                        </td>
-            {% endif %} 
-            {% endfor %}
-        </table>
-    </tbody> 
-        
+    <div class="sidebar">
+        {% include 'OrgDash/org_dash_base.html' %}
+    </div>
+<div class="content">
+    <div class="container">
+    
+        <div class="table-header">
+        <h2>Today's Events</h2>
         </div>
+        <table class="table table-hover table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Location</th>
+                <th scope="col">Recurring</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in todays_events %}
+              <tr>
+                <th scope="row"><a href="{{item.id}}">View Event</a></th>
+                <td>{{item.date}}</td>
+                <td>{{item.time}}</td>
+                <td>{{item.location}}</td>
+                {% if item.recurring_event == True %}
+                <td>Yes</td>
+               {% else %}
+               <td>No</td>
+                {% endif %} 
+                {% endfor %}  
+              </tr>
+            </tbody>
+          </table>
+        
+   
+    </tbody>
+    <div class="table-header">
+        <h2>Upcoming Events</h2>
+    </div>
+    <table class="table table-hover table">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Location</th>
+            <th scope="col">Recurring</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in upcoming_events %}
+          <tr>
+            <th scope="row"><a href="{{item.id}}">View Event</a></th>
+            <td>{{item.date}}</td>
+            <td>{{item.time}}</td>
+            <td>{{item.location}}</td>
+            {% if item.recurring_event == True %}
+            <td>Yes</td>
+           {% else %}
+           <td>No</td>
+            {% endif %} 
+            {% endfor %}  
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-header">
+        <h2>Past Events</h2>
+    </div>
+      <table class="table table-hover table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Location</th>
+              <th scope="col">Recurring</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+              {% for item in past_events %}
+            <tr>
+              <th scope="row"><a href="{{item.id}}">View Event</a></th>
+              <td>{{item.date}}</td>
+              <td>{{item.time}}</td>
+              <td>{{item.location}}</td>
+              {% if item.recurring_event == True %}
+              <td>Yes</td>
+             {% else %}
+             <td>No</td>
+              {% endif %} 
+              {% endfor %}  
+            </tr>
+          </tbody>
+        </table>
+        
+        
+ 
+</div>
+</div>
+</div>
 </div>
 
-<div row="row">
-    <h1>My Players</h1>
-    <form action="{% url 'OrgDash:player_dash' %}">
-     <button class="btn btn-primary">Manage My Players</button>
 
-     <br>
-     <br>
-     <br>
- </form>
-</div>
 
 {% endblock %}

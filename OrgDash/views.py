@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
-from OrgDash.models import Skate, Invitation, Player, PlayerGroup, InviteList
+from OrgDash.models import Skate, Invitation, Player, PlayerGroup, InviteList, Waitlist
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
@@ -54,6 +54,11 @@ class SkateRepeatUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse('OrgDash:event_detail', args=[self.object.pk])
+    
+    def get_form_class(self):
+        modelform = super().get_form_class()
+        modelform.base_fields['group_to_invite'].limit_choices_to = {'created_by': self.request.user}
+        return modelform
 
     
 class SkateDeleteView(DeleteView): 
@@ -141,6 +146,17 @@ class UpdateInvite(UpdateView):
         current_event = Invitation.objects.get(pk=self.kwargs['pk'])
         event_pk =current_event.event.pk
         return reverse_lazy('OrgDash:invite_list',args = [event_pk])
+    
+    def form_valid(self, form): #Manages Waitlist guests
+        current_invite = Invitation.objects.get(pk=self.kwargs['pk'])
+        current_event = current_invite.event
+        waitlist= Waitlist.objects.get_or_create(event=current_event)
+        wait_guest = form.cleaned_data.get('guest')
+        if form.cleaned_data.get('will_you_attend') == 'Waitlist':
+            waitlist[0].guests.add(wait_guest)
+        else:
+            waitlist[0].guests.remove(wait_guest)
+        return super().form_valid(form)
 
 
 class DeleteInvite(DeleteView):
@@ -159,8 +175,13 @@ def GuestListView(request,pk):
     active_user = request.user.pk
     all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
     guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
+    wait_list = Waitlist.objects.get_or_create(event=active_event)
+    wait_list_members = wait_list[0].guests.all()
+
     spots_left = event_max_guests - len(guest_list)
-    return render(request, 'OrgDash/Invites/invite_list.html',{'all_invited':all_invited, 'active_event': active_event, 'spots_left': spots_left})
+    context = {'all_invited':all_invited, 'active_event': active_event, 
+                'spots_left': spots_left, 'waitlist':wait_list_members}
+    return render(request, 'OrgDash/Invites/invite_list.html', context)
 
 
 def AddToInviteList(request, pk):
@@ -226,7 +247,7 @@ def FinalizeInvites(request, pk): #TODO needs to be unique invite objs only. no 
         # send_mail(subject, message, from_email, recipient_list)
         
         
-        return redirect(reverse('OrgDash:event_detail' ,args=[pk]))
+        return redirect(reverse('OrgDash:event_detail' ,args=[invite_list_obj.event.pk]))
     else:
         return render(request, 'OrgDash/Invites/finalize_invites.html', {'inv_obj': invite_list_obj, 'invite_list':invite_list})
 
