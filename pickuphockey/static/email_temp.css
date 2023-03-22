@@ -1,0 +1,12 @@
+.email-div{
+    display: flex;
+    width: 50%;
+    background-color: aqua;
+}
+
+.card-photo{
+    display: flex;
+    size: 25%;
+    
+
+}

@@ -1,11 +1,27 @@
 {% extends 'base.html' %} 
 {% block body_block %}
-{% load django_bootstrap5 %} 
-<h1>Upload Excel Sheet</h1>
+{% load django_bootstrap5 %}
+{% load static %} 
+
 <div class="container">
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %} 
-        {% bootstrap_form form %}
-<input type="submit" value="Upload">
-    </form>
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+          <h1 class="display-5 fw-bold">Create Players From Spreadsheet</h1>
+          <h2 class="col-md-8 fs-4 px-3">Upload an excel sheet with your players' information</h2>
+          <p class="px-4">For best results, format the sheet like the example below.</p>
+          <p class="px-4">Be sure that your players' data begins at row 2</p>
+          <img src="{% static 'photos/Sheet_Format.png' %}" class="p-4">
+          <form action="" method="post" class="p-4">
+            {% csrf_token %} 
+            {% bootstrap_form form %}
+            <div class="p-2">
+        <input class="btn btn-primary" type="submit" value="Upload">
+       
+        <a href="{% url 'OrgDash:player_dash' %}" class="btn btn-warning">Cancel</a>
+        </div>
+        </form>
+        </div>
+        
+      </div>
+ 
 {% endblock %} 

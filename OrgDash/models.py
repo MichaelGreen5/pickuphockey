@@ -49,7 +49,7 @@ class Skate(models.Model):
     frequency = models.IntegerField(choices=STATUS_CHOICES, default= 7, blank= True)
     send_invite_days_before = models.IntegerField(default= 3, blank= True)
     finalize_event_hours_before = models.IntegerField(default=1, blank= True)
-    group_to_invite = models.ForeignKey('PlayerGroup', on_delete= models.CASCADE, blank= True, default=6)
+    group_to_invite = models.ForeignKey('PlayerGroup', on_delete= models.CASCADE, blank= True, null=True)
 
        
 

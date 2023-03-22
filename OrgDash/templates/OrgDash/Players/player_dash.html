@@ -2,53 +2,148 @@
 {% block body_block %}
 
 <div class="container">
-    <h1>Players</h1>
-    <div row="row">
-        {% for player in my_players %}
-        <ul>
-        <a href="{{player.id}}">{{player.first_name}} {{player.last_name}}
-        </ul>
-        {% endfor %} 
-        <form action="{% url 'OrgDash:create_player' %}">
-         <button class="btn btn-primary">Create Player</button>
+  <div class=" col-md-10 d-flex justify-content-between">
+  <div class="col-md-4">
+    <h1>Player Dashboard</h1>
+    <h3>Manage the players you plan on inviting to your events</h3>
+    <div class="p-2">
+      <a type="button" class="btn btn-outline-primary" href="{% url 'OrgDash:create_player' %}">Create Player</a>
+    </div>
+    <div class="p-2">
+      <a type="button" class="btn btn-outline-primary" href="{% url 'OrgDash:upload_sheet' %}">Create Players from Spreadsheet</a>
+    </div>
+  </div>
 
-         <br>
-         <br>
-         <br>
-     </form>
-     <form action="{% url 'OrgDash:upload_sheet' %}">
-        <button class="btn btn-primary">Create Players from Spreadsheet</button>
+  <div class="col-md-6 justify-content-center">
+    <h2>My Groups <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="If you usually invite the same group of players to your events, invite them all at once with a group"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+    </svg></a></h2> 
+    <a type="button" class="btn btn-outline-success p-2" href="{% url 'OrgDash:create_player_group' %}">Create Player Group</a>
+    <p></p>
+    <p>Groups are required for automaticlly recurring events</p>
+    {% for group in my_groups %}
+    <div class="row">
+      <ul>{{group}} <a type="button" class="btn btn-outline-warning p-2" href="{% url 'OrgDash:player_group_detail' pk=group.pk %}">Edit</a><button type="button" class="btn btn-primary" data-bs-toggle="modal" id="show-group" data-bs-target="#exampleModal" data-bs-id="{{group}}">View Group</button> <a type="button" class="btn btn-outline-danger" href="{% url 'OrgDash:player_group_delete' group.pk %}">Delete</a></ul>
+    </div>
+    {% endfor %} 
+    </div>
+  </div>
+  <div class="col-md-10">
+    <div class="table-header">
+      <h3>My Players</h3>
+    </div>
+    <table class="table table-hover table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Skill <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Player skill is used to make even teams. Rate your players on a scale from 1-10 as accurately as possible."><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg></a>
+              </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in my_players %}
+          <tr>
+            
+            <td>{{player.first_name}} {{player.last_name}}</td>
+            <td>{{player.email}}</td>
+            <td>{{player.skill}}</td>
+            <td><a type="button" class="btn btn-outline-warning" href="{% url 'OrgDash:update_player' player.pk %}">Edit</a></td>
+            {% endfor %}  
+          </tr>
+        </tbody>
+      </table>
+    
 
-      <br>
-    </form>
-<br>
-    <form action="{% url 'OrgDash:player_list' %}">
-        <button class="btn btn-primary">View and Edit Players</button>
 
-      <br>
-    </form>
-    <br>
-    <br>
-    <h2>Groups</h2>
-    {% for group in my_groups %} 
-    <ul>
-        <a href="{% url 'OrgDash:player_group_detail' pk=group.pk %}">{{group.name}} </a>
-        <form action="{% url 'OrgDash:player_group_delete' group.pk %}">
-            <button class="btn btn-danger">Delete </button>
+  </div>
+</div>
+
+
+
+
+<a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample"  role="button" aria-controls="offcanvasExample">
+  Link with href
+</a>
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <ul id="group-members">
+            <li class="modal-content"></li>
+
+          </ul>
+        </div>
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          
         </form>
-     </ul>
-     {% endfor %} 
-    <form action="{% url 'OrgDash:create_player_group' %}">
-      <button class="btn btn-primary">Create a Group of Players</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <br>
-  </form>
 
-   
-    {% if messages %}
+<script>  
+$(document).ready(function() {
+  $('#show-group').click(function() {
+    $.ajax({
+      url: '{% url "OrgDash:get_player_groups" %}',
+      success: function(response) {
+        $('#my-table tbody').empty();  // clear the table body
+        $.each(response.data, function(index, obj) {
+          $('#group-members').append('<li></li>' + obj);
+          console.log(obj)
+        });
+      }
+    });
+  });
+});
+</script>   
+<script>
+  const exampleModal = document.getElementById('exampleModal')
+exampleModal.addEventListener('show.bs.modal', event => {
+  // Button that triggered the modal
+  const button = event.relatedTarget
+  // Extract info from data-bs-* attributes
+  const group = button.getAttribute('data-bs-id')
+  
+
+  // If necessary, you could initiate an AJAX request here
+  // and then do the updating in a callback.
+  //
+  // Update the modal's content.
+  const modalTitle = exampleModal.querySelector('.modal-title')
+  const modalBodyInput = exampleModal.querySelector('.modal-body')
+
+  modalTitle.textContent = ` ${group}`
+  modalBodyInput.value = group
+})
+</script>  
+{% if messages %}
 
     {% for message in messages %}
-    
 <script>
 
 
@@ -80,4 +175,9 @@
     {% endfor %}
 
 {% endif %}
+
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 {% endblock %} 

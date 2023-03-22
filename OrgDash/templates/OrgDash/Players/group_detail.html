@@ -1,6 +1,7 @@
 {% extends 'base.html' %} 
 {% block body_block %}
 <div class="container">
+  <div class=""></div>
     <h1>{{group.name}}</h1>
     <form action="{% url 'OrgDash:player_group_update' pk=group.pk %}">
         <button class="btn btn-warning">Edit Group</button>

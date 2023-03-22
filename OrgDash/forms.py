@@ -45,9 +45,17 @@ class EventRepeatForm(forms.ModelForm):
         )
         model = Skate
         widgets = {
-        
-        
         }
+
+class InitEventRepeatForm(forms.ModelForm):
+    class Meta:
+        fields = (
+           'recurring_event','frequency', 'group_to_invite', 'send_invite_days_before', 'finalize_event_hours_before'
+        )
+        model = Skate
+        widgets = {
+        }
+
 
 
 class CreateInviteForm(forms.ModelForm):

@@ -1,32 +1,27 @@
 {% extends 'base.html' %} 
 {% block body_block %}
-{% load django_bootstrap5 %} 
-<h1>Create New Event</h1>
+{% load django_bootstrap5 %}
+
 <div class="container">
+    <div class="col-md-6 create-form">
+        <h1>Create New Event</h1>
     <form action="" method="post">
         {% csrf_token %} 
         {% bootstrap_form form %}    
       
-<input type="submit" value="Create">
+<input type="submit" value="Create" class="btn btn-success">
     </form>
-<style>
-
-    .hidden{
-        display: none;
-    }
-</style>
-<script>
-    $("#id_recurring_event").on('click', function(){
-
-$("#recurring").fadeToggle();
-
-}); 
-</script>
+    <br>
+    <button type="button" class="btn btn-warning" onClick="javascript:history.go(-1);">Cancel</button>
+    </div>
+    </div>
 
 
 
 
-</script> 
+
+
+
 
 
 

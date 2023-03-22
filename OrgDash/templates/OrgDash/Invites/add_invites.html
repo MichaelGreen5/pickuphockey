@@ -4,41 +4,122 @@
 
 
 <div class="container">
-  <div class="row">
-    <form method="POST" action="" >
-        {% csrf_token %}
-        <h3>Add Players By Group</h3>
-    {% for group in my_groups %} 
-    <ul>
-        <a href="{% url 'OrgDash:player_group_detail' pk=group.pk %}">{{group.name}}</a>   <button name="add_group" value="{{ group.id }}">Add Group to list</button>
-    </ul>
+    <div class="d-flex-justify-content-around">
+        <div class="p-2 g-col-6">
+            <form method="POST" action="">
+                {% csrf_token %}
+            <h3>Add Players By Group</h3>
+            {% for group in my_groups %}
+            <div class="row">
+            <ul>
+                <a href="{% url 'OrgDash:player_group_detail' pk=group.pk %}">{{group.name}}</a>   <button name="add_group" value="{{ group.id }}">Add Group to list</button>
+            </ul>
+            </div>
+            
+            {% endfor %}
+            </form>
+        </div>
+            
+        <div class="p-2 g-col-6">
+            <h3>Custom selection</h3>      
+            {% for player in yet_to_invite %} 
+                <div class="row">
 
-    {% endfor %}
-<h3>Custom selection</h3>      
-{% for player in yet_to_invite %} 
-<div class="row">
-<ul><input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input></ul>
+                    <ul>
+                        <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                    </ul>
+                    {% endfor %}
+                </div>
+                <button type="submit" name="form_action" value="add_player" >Add Selected players to list</button>
+        </div>
+
+
+
+
+        <div class="p-2 g-col-6">
+            <h1>Selected Players</h1>
+            {% for player in invite_list %}
+            <div class="row">
+
+                <ul>
+                    <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                </ul>
+                {% endfor %}
+            </div>
+            <button type="submit" name="form_action" value="remove_player" >Remove Selected players from list</button>
+            </form>
+        </div>
+
+
+
 </div>
-{% endfor %}
-<button type="submit" name="form_action" value="add_player" >Add Selected players to list</button>
 </div>
-
-
-
-
-
-<h1>Invite List</h1>
-{% for player in invite_list %}
-<ul>
-    <ul><input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input></ul>
-</ul>
-
-{% endfor %}
-<button type="submit" name="form_action" value="remove_player" >Remove Selected players from list</button>
-</form>
-</div>
-
 <br>
 <br>
 <a href="{% url 'OrgDash:finalize_invites' pk=inv_obj.pk %}"><h1>Finalize Event Guests</h1></a>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+    <div class="col">
+      <div class="card mb-4 rounded-3 shadow-sm">
+        <div class="card-header py-3">
+          <h4 class="my-0 fw-normal">Players</h4>
+        </div>
+        <div class="card-body">
+         
+          <ul class="list-unstyled mt-3 mb-4">
+            {% for player in yet_to_invite %} 
+            
+                <ul>
+                    <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                </ul>
+                {% endfor %}
+          </ul>
+          <button class="btn btn-primary" type="submit" name="form_action" value="add_player" >Add Selected players to list</button>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card mb-4 rounded-3 shadow-sm">
+        <div class="card-header py-3">
+          <h4 class="my-0 fw-normal">Instructions</h4>
+        </div>
+        <div class="card-body">
+          
+          
+            <button class="btn btn-primary" type="submit" name="form_action" value="add_player" >Add Selected players to list</button>
+          
+          <button class="btn btn-primary" type="submit" name="form_action" value="remove_player" >Remove Selected players from list</button>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+          <div class="card-header py-3">
+            <h4 class="my-0 fw-normal">Selections</h4>
+          </div>
+          <div class="card-body">
+            
+            <ul class="list-unstyled mt-3 mb-4">
+              {% for player in invite_list %}
+              <div class="row">
+  
+                  <ul>
+                      <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                  </ul>
+                  {% endfor %}
+            </ul>
+            <button class="btn btn-primary" type="submit" name="form_action" value="remove_player" >Remove Selected players from list</button>
+          </div>
+        </div>
+      </div>
+  </div>
 {% endblock %} 

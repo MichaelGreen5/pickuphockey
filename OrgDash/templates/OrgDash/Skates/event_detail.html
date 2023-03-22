@@ -1,85 +1,183 @@
 {% extends 'base.html' %}
-
 {% block body_block %}
-<div class="main">
+{% load static %} 
+<script src="{% static 'pickuphockey.js' %}"></script>
 
-<div class="container content">
+<div class="wrapper">
+  
     
-<h1>Event at {{event.location}} hosted by {{event.host}}</h1>
-<h3>Date: {{event.date}}</h3>
-<h3>Time: {{event.time}}</h3>
-<br>
-<h3>Price: ${{event.price}}</h3>
-<br>
-<br>
-{% if event.recurring_event %}
-<h2>This event repeats {{event.frequency}}</h2>
+        
+    
+    <div class="content">
+        <div class="container">
+            <div class="container py-4">
+                <div class="p-5 mb-4 bg-light rounded-3">
+                  <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold">Event at {{event.location}} </h1>
+                    <h2 class="display-7">{{event.date}} {{event.time}}</h2>
+                    <p class="col-md-8 fs-4">Price: ${{event.price}} Per person</p>
+                    <br>
+                    <h2>{{spots_left}}/{{event.max_guests}} spots remaining </h2>
+                    
+                    {% if event.recurring_event %}
+                    <p class="col-md-8 fs-4">This event repeats every {{event.frequency}} days</p>
+                    {% endif %} 
+                    <a class="btn btn-warning" role="button" href="{% url 'OrgDash:event_update' event.pk %}">Edit Event</a>
+                    {% if event.recurring_event %}
+                    <a class="btn btn-warning" role="button" href="{% url 'OrgDash:skate_repeat_settings' event.pk %}">Manage Recurring Event Settings</a>
+                    {% else %}
+                    <a class="btn btn-warning" role="button" href="{% url 'OrgDash:init_skate_repeat_settings' event.pk %}">Make This Event Repeat</a>
+                    {% endif %}
+                    <br>
+                    <br>
+                    <a class="btn btn-success py-2 " role="button" href="{% url 'OrgDash:invite_list' event.pk %}">Manage Event Invitations</a>
+                    <a class="btn btn-info py-2 " role="button" href="{% url 'OrgDash:make_teams' event.pk %}">Make Teams and Finalize</a>
+                    
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Delete Event
+                    </button>
+                    
+                  </div>
+                 
+                </div>
+                
 
-{% endif %} 
-<h3>{{spots_left}} spots remaining. {{event.max_guests}} total spots</h3>
-<h3>{{invites_sent}} guests have been invited</h3>
-<br>
 
+            
+                <div class="d-flex justify-content-evenly">
+                    <div class="table p-3">
 
+                        <div class="table-header">
+                            <h2>Guest List</h2>
+                        </div>
+                            <table class="table table-hover table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col"><strong>Guest List</strong></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for guest in guest_list %}
+                                  <tr>
+                                    
+                                    <td>{{guest.guest}}</td>
+                                    
+                                    {% endfor %} 
+                                  </tr>
+                                </tbody>
+                              </table>
+                    
+                    </div>
 
-<form action="{% url 'OrgDash:event_update' event.pk %}">
-    <button class="btn btn-warning">Edit Event Details</button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+           
+        <div id="modal-content-placeholder"></div>
+           
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+                     
+                    
+                  
+                  
+                    
+                  
+                
+                
+                
+                    <div class="table p-3">
 
-    <br>
-    <br>
-    <br>
-</form>
-{% if event.recurring_event %}
-<form action="{% url 'OrgDash:skate_repeat_settings' event.pk %}">
-    <button class="btn btn-warning">Edit Repeat Event Settings</button>
+                        <div class="table-header">
+                            <h2>Wait List</h2>
+                        </div>
+                            <table class="table table-hover table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col"><strong>Guest List</strong></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for guest in wait_list %}
+                                  <tr>
+                                    <td>{{guest}}</td>
+                                    {% endfor %} 
+                                  </tr>
+                                </tbody>
+                              </table>
+                    </div>
+                    </div>
+                     
+                    
+                  
+                  
+                    
+                  
+                
+                </div>
+                </div>
+            
+            
+    </div>
+        
+ 
 
-    <br>
-    <br>
-    <br>
-</form>
-{% endif %} 
-<form action="{% url 'OrgDash:delete_event' event.pk %}">
-    <button class="btn btn-danger">Delete </button>
-   
-
-    <br>
-    <br>
-    <br>
-</form>
-<h1>Guest List</h1>
-<br>
-<form action="{% url 'OrgDash:add_invites' event.pk %}">
-    <button class="btn btn-primary">Invite Players</button>
-</form>
-<br>
-
-<form action="{% url 'OrgDash:invite_list' event.pk %}">
-    <button class="btn btn-primary">View all Invitations</button>
-</form>
-<br>
-
-{% for guest in guest_list %}
-<ul>
-    <li>{{guest.guest}}</li>
-</ul>
-{% endfor %} 
-
-<form action="{% url 'OrgDash:make_teams' event.pk %}">
-    <button class="btn btn-primary">View Teams</button>
-</form>
+        
 </div>
-<br>
-<br>
-<br>
-<div>
-<form action="{% url 'OrgDash:create_invite' event.pk %}">
-    <button class="btn btn-primary">Create Single Invite</button>
-</form>
 
+{% if messages %}
 
+{% for message in messages %}
+<script> 
 
+const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
-</div>
-</div> 
+const alert = (message, type) => {
+  const wrapper = document.createElement('div')
+  wrapper.innerHTML = [
+    `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+    `   <div>${message}</div>`,
+    '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+    '</div>'
+  ].join('')
 
+  alertPlaceholder.append(wrapper)
+}
+
+const alertTrigger = document.getElementById(button_id)
+if (alertTrigger) {
+  alertTrigger.addEventListener('click', () => {
+    alert(display_message)
+  })
+}
+
+</script>
+
+<script>
+    $('#deleteModal').on('show.bs.modal', function (event) {
+      var modal = $(this)
+      $.ajax({
+        url: "{% url 'OrgDash:delete_event' event.pk %}",
+        success: function(data) {
+          modal.find('#modal-content-placeholder').html(data);
+        }
+      });
+    })
+    </script>
+{% endfor %}
+{% endif %} 
 {% endblock %} 

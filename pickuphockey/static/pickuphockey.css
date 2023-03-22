@@ -38,22 +38,34 @@
 }
 
 .content{
+  display:flex;
   width: 80%;
-  justify-content: center; 
-  align-items: center;
+
+
   
  
 
 } 
 .wrapper{
   display: flex;
+  flex-wrap: wrap;
 }
 .sidebar{
+  justify-self: left;
+  display: flex;
   height: 100%;
   width: 20%;
+
  
 }
 
 .table-header{
   background-color: lightgrey;
+}
+
+.create-form{
+position: relative;
+margin: 0 auto;
+padding-bottom: 10%;
+
 }
