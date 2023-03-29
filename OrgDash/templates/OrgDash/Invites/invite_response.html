@@ -1,0 +1,26 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+
+{% load django_bootstrap5 %}
+
+
+<div class="container">
+    <div class="col-md-6 create-form">
+        <h1>You're Invited to {{object.event.host}}'s event at {{object.event.location}}</h1>
+        <h2>{{object.event.date}} {{object.event.time}}</h2>
+        <h3>Please RSVP below:</h3>
+        <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div class="p-2">
+            <input class="btn btn-success" type="submit" value="Update">
+        </div>
+        </form>
+        <div class="p-2">
+        <input type=button class="btn btn-danger" value="Cancel" onClick="javascript:history.go(-1);">
+        </div>
+    </div>
+</div>
+
+
+{% endblock %} 

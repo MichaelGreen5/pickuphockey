@@ -11,15 +11,15 @@
           <p class="px-4">For best results, format the sheet like the example below.</p>
           <p class="px-4">Be sure that your players' data begins at row 2</p>
           <img src="{% static 'photos/Sheet_Format.png' %}" class="p-4">
-          <form action="" method="post" class="p-4">
+          <form method="post" enctype="multipart/form-data">
             {% csrf_token %} 
             {% bootstrap_form form %}
-            <div class="p-2">
-        <input class="btn btn-primary" type="submit" value="Upload">
-       
-        <a href="{% url 'OrgDash:player_dash' %}" class="btn btn-warning">Cancel</a>
-        </div>
+            <input class="btn btn-primary" type="submit" value="Upload">
         </form>
+       
+            <a href="{% url 'OrgDash:player_dash' %}" class="btn btn-warning">Cancel</a>
+        
+        
         </div>
         
       </div>

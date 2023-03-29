@@ -1,3 +1,4 @@
+from OrgDash.models import LightTeam, DarkTeam, Bench
 
 def WeakTeam(light, dark):
     light_skill = 0
@@ -35,6 +36,55 @@ def SortTeams(player_data):
             dark.append(pick)
 
     return light, dark
+
+
+
+
+
+def SetTeams(teams, active_event):
+    # set light team
+    light_team_members = [player[0] for player in teams[0]]
+    light_team_tup = LightTeam.objects.get_or_create(event=active_event)
+    light_team_obj = light_team_tup[0]
+    light_team_obj.team.set(light_team_members)
+
+    
+    # set dark team
+    dark_team_members = [player[0] for player in teams[1]]
+    dark_team_tup = DarkTeam.objects.get_or_create(event=active_event)
+    dark_team_obj = dark_team_tup[0]
+    dark_team_obj.team.set(dark_team_members)
+  
+
+
+
+def AddToTeam(team_obj, selected_player_ids):
+    for player_id in selected_player_ids:
+        team_obj.team.add(player_id)
+    
+    
+    
+
+
+def RemoveFromTeam(team_obj, selected_player_ids):
+    for player_id in selected_player_ids:
+        team_obj.team.remove(player_id)
+    
+    
+
+
+
+
+
+
+
+    
+   
+
+
+
+
+
    
 
 

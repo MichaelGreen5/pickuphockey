@@ -26,7 +26,7 @@
                 <div class="row">
 
                     <ul>
-                        <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                        <input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
                     </ul>
                     {% endfor %}
                 </div>
@@ -42,7 +42,7 @@
             <div class="row">
 
                 <ul>
-                    <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                    <li class="p-2"><input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input></li>
                 </ul>
                 {% endfor %}
             </div>
@@ -79,7 +79,7 @@
             {% for player in yet_to_invite %} 
             
                 <ul>
-                    <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                    <li class="p-2"><input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input></li>
                 </ul>
                 {% endfor %}
           </ul>
@@ -113,7 +113,7 @@
               <div class="row">
   
                   <ul>
-                      <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                    <li class="p-2"><input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input></li>
                   </ul>
                   {% endfor %}
             </ul>

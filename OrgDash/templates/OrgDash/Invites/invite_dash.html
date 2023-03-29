@@ -1,14 +1,17 @@
 {% extends 'base.html' %} 
 {% block body_block %}
-<div class="container-fluid ">
-    <h1 class="display-5 fw-bold">Invite Players to event at {{active_event.location}} </h1>
-    <h2 class="display-7">{{active_event.date}} {{active_event.time}}</h2>
-    <p>Add Players to the list, then finalize</p>
+<div class="container">
+    <h1 class="display-5 fw-bold p-2">Invite Players to event at {{active_event.location}} </h1>
+    <h2 class="display-7 p-2">{{active_event.date}} {{active_event.time}}</h2>
+    <p class="px-2">Add Players to the list, then finalize</p>
+    <div class="p-2">
+        <input type=button class="btn btn-danger" value="Back to Invite List" onClick="javascript:history.go(-1);">
+    </div>
     <form method="POST" action="">
         {% csrf_token %}
-    <div class="col-md-8 align-items-center">
-        <div class="d-flex justify-content-center mb-3 bg-body-secondary grid gap-3">
-            <div class=" col-md-6 px-3 ">
+    <div class="col-md-10 align-content-center">
+        <div class="d-flex justify-content-evenly bg-body-secondary grid gap-3">
+            <div class=" col-md-6 p-3 ">
                 <h3>Add Player Group to List</h3>
                     {% for group in my_groups %}
                     <div class="row">
@@ -22,13 +25,13 @@
                     <h3>Add Players to list</h3>
                     <button class="btn btn-info btn-sm" type="submit" name="form_action" value="add_player" >Add Selected players to list</button>
                     <div class="py-3">
-                        <input type="checkbox" id="select-all" onchange="SelectAll('custom-container')">
+                        <input type="checkbox" class="form-check-input" id="select-all" onchange="SelectAll('custom-container')">
                         <label for="select-all"><strong>Select All</strong></label>
                     </div>    
                     {% for player in yet_to_invite %}
                     <div class="row">
                         <ul>
-                            <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                            <input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_add" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
                         </ul>
                     </div>
                     {% endfor %}
@@ -42,13 +45,13 @@
                 
                 <button class="btn btn-info btn-sm" type="submit" name="form_action" value="remove_player" >Remove Selected players from list</button>
                 <div class="py-3">
-                    <input type="checkbox" id="select-all" onchange="SelectAll('chosen-container')">
+                    <input type="checkbox" class="form-check-input" id="select-all" onchange="SelectAll('chosen-container')">
                     <label for="select-all"><strong>Select All</strong></label>
                 </div>
                 {% for player in invite_list %}
                 <div class="row">
                     <ul>
-                        <input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+                        <input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="selected_players_to_remove" >{{player.first_name}} {{player.last_name}} {{player.email}} </input>
                     </ul>
                 </div>
                     {% endfor %}

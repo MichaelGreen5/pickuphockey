@@ -1,13 +1,16 @@
 {% extends 'base.html' %} 
 {% block body_block %}
 {% load django_bootstrap5 %}
-<form action="" method="post">
-    {% csrf_token %} 
-<h1>Are you sure you want to delete {{object}}?</h1>
-<input class="btn btn-danger" type="submit" value="Delete">
-</form>
-<br>
-<br>
-<input type=button class="btn btn-secondary" value="Cancel" onClick="javascript:history.go(-1);">
+<div class="d-flex justify-content-center" >
+<div class="col-md-8 p-5">
+    <form action="" method="post">
+        {% csrf_token %} 
+    <h1 class="p-2">Are you sure you want to delete {{object}}?</h1>
+    <input class="btn btn-danger" type="submit" value="Delete">
+    </form>
+    <br>
+    <input type=button class="btn btn-secondary" value="Cancel" onClick="javascript:history.go(-1);">
+</div>
+</div>
 
 {% endblock %} 

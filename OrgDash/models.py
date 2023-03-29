@@ -131,7 +131,7 @@ def validate_sheet_only(value):
 
 
 class UploadSheet(models.Model):
-    file = models.FileField(upload_to='OrgDash/uploads/',validators=[validate_sheet_only], default= None, null= True, blank= True)
+    file = models.FileField(upload_to='OrgDash/uploads/',validators=[validate_sheet_only])
 
 
 
@@ -152,6 +152,50 @@ class InviteList(models.Model):
                 invite = Invitation(**invite_data)
                 invite.save()
                 
+
+class LightTeam(models.Model):
+    event = models.ForeignKey(Skate, on_delete= models.CASCADE)
+    team = models.ManyToManyField('Player')
+    skill = models.FloatField(default=0)
+
+    def get_total_skill(self):
+        light_team_members = self.team.all()
+        skill_list = [member.skill for member in light_team_members]
+        total_skill = sum(skill_list)
+        self.skill = total_skill
+
+class DarkTeam(models.Model):
+    event = models.ForeignKey(Skate, on_delete= models.CASCADE)
+    team = models.ManyToManyField('Player')
+    skill = models.FloatField(default=0)
+
+    def get_total_skill(self):
+        light_team_members = self.team.all()
+        skill_list = [member.skill for member in light_team_members]
+        total_skill = sum(skill_list)
+        self.skill = total_skill
+
+class Bench(models.Model):
+    event = models.ForeignKey(Skate, on_delete= models.CASCADE)
+    bench_members = models.ManyToManyField('Player')
+
+
+    def SetBench(self, guests, light_team_obj, dark_team_obj):
+        light_team_ids = [player.pk for player in light_team_obj.team.all()]
+        dark_team_ids = [player.pk for player in dark_team_obj.team.all()]
+        bench = []
+        for invite in guests:
+            if invite.guest.pk not in light_team_ids:
+                if invite.guest.pk not in dark_team_ids:
+                    bench.append(invite.guest)
+        self.bench_members.set(bench)
+    
+
+    
+
+    
+
+
 
 
 

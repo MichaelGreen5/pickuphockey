@@ -8,6 +8,7 @@ from pickuphockey.forms import SignUp
 from django.contrib.auth.forms import PasswordResetForm
 from django.urls import reverse_lazy
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LoginView
 
 from django.contrib.auth import login
 
@@ -27,7 +28,9 @@ class SignUp(CreateView):
         user = form.save()
         login(self.request, user)
         return request 
-
+    
+class Login(LoginView):
+    template_name = 'registration/login.html'
 
 def Thanks(request):
     return render(request, 'thanks.html')

@@ -2,6 +2,7 @@
 {% block body_block %}
 
 <div class="container">
+  
   <div class=" col-md-10 d-flex justify-content-between">
   <div class="col-md-4">
     <h1>Player Dashboard</h1>
@@ -9,10 +10,16 @@
     <div class="p-2">
       <a type="button" class="btn btn-outline-primary" href="{% url 'OrgDash:create_player' %}">Create Player</a>
     </div>
+
+
     <div class="p-2">
       <a type="button" class="btn btn-outline-primary" href="{% url 'OrgDash:upload_sheet' %}">Create Players from Spreadsheet</a>
     </div>
   </div>
+
+  {% if messages %}
+  <div class="" role="alert" id="player-create-sucess"></div>
+  {% endif %}
 
   <div class="col-md-6 justify-content-center">
     <h2>My Groups <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="If you usually invite the same group of players to your events, invite them all at once with a group"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
@@ -24,7 +31,7 @@
     <p>Groups are required for automaticlly recurring events</p>
     {% for group in my_groups %}
     <div class="row">
-      <ul>{{group}} <a type="button" class="btn btn-outline-warning p-2" href="{% url 'OrgDash:player_group_detail' pk=group.pk %}">Edit</a><button type="button" class="btn btn-primary" data-bs-toggle="modal" id="show-group" data-bs-target="#exampleModal" data-bs-id="{{group}}">View Group</button> <a type="button" class="btn btn-outline-danger" href="{% url 'OrgDash:player_group_delete' group.pk %}">Delete</a></ul>
+      <ul>{{group}} <a type="button" class="btn btn-outline-warning p-2" href="{% url 'OrgDash:player_group_update' pk=group.pk %}">Edit</a> <a type="button" class="btn btn-outline-danger" href="{% url 'OrgDash:player_group_delete' group.pk %}">Delete</a></ul>
     </div>
     {% endfor %} 
     </div>
@@ -54,6 +61,7 @@
             <td>{{player.email}}</td>
             <td>{{player.skill}}</td>
             <td><a type="button" class="btn btn-outline-warning" href="{% url 'OrgDash:update_player' player.pk %}">Edit</a></td>
+            <td><a type="button" class="btn btn-outline-danger" href="{% url 'OrgDash:delete_player' player.pk %}">Delete</a></td>
             {% endfor %}  
           </tr>
         </tbody>
@@ -67,9 +75,6 @@
 
 
 
-<a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample"  role="button" aria-controls="offcanvasExample">
-  Link with href
-</a>
 
 
 
@@ -141,37 +146,35 @@ exampleModal.addEventListener('show.bs.modal', event => {
   modalBodyInput.value = group
 })
 </script>  
+
+
 {% if messages %}
 
     {% for message in messages %}
-<script>
+
+    <script>
 
 
-  const banner = document.createElement('div');
-  banner.className = 'message_bannner'
-  banner.textContent = '{{message}}';
-  banner.style.backgroundColor = 'green';
-  banner.style.color = 'white';
-  banner.style.padding = '10px';
-  banner.style.position = 'fixed';
-  banner.style.top = '0';
-  banner.style.left = '0';
-  banner.style.width = '100%';
-  banner.style.textAlign = 'center';
-  banner.style.opacity = '1';
-  banner.style.transition = 'opacity 2s'
 
-
-  document.body.appendChild(banner);
-
-  window.addEventListener('load', function() { //will not fade out
-  setTimeout(function() {
-    document.getElementsByClassName('message_bannner').style.opacity = '0';
-  }, 2000); // 2000 milliseconds delay
-});
-
-
-</script>
+      const alertPlaceholder = document.getElementById('player-create-sucess')
+        
+        const alert = (message, type) => {
+        const wrapper = document.createElement('div')
+        wrapper.innerHTML = [
+          `<div class="alert alert-success alert-dismissible" role="alert">`,
+          `   <div>${message}</div>`,
+          '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+          '</div>'
+        ].join('')
+        
+        alertPlaceholder.append(wrapper)
+        }
+        
+        $(document).ready(function() {
+          alert('{{message}}')
+        });
+      
+        </script>
     {% endfor %}
 
 {% endif %}

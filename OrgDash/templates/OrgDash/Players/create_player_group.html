@@ -1,21 +1,52 @@
 {% extends 'base.html' %} 
 {% block body_block %}
 
-<h1>Create Player Group</h1>
-<div class="container">
-    <form method="POST" action="" >
-        {% csrf_token %}
-        <label for="group_name">Enter Your Group's Name</label>
-        <input name="group_name"id="group_name" type="text"></input>
-        
-{% for player in my_players %} 
-<div class="row">
 
-<input type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="selected_players" checked>{{player.first_name}} {{player.last_name}} {{player.email}} </input>
+<div class="container">
+    
+    <div class="d-flex justify-content-center">
+        <div class="col-md-8">
+            <h1 class="p-3">Create Player Group</h1>
+            <form method="POST" action="" >
+                {% csrf_token %}
+                <div class="p-3">
+                    <label for="group_name"><h2> Enter Group Name</h2> </label>
+                    <input name="group_name"id="group_name" type="text"></input> <button type="submit" class="btn btn-success" >Create Group</button>
+                </div>
+                <div class="col-md-4" id="chosen-container">
+                    <div class="p-2">
+                        <input type="checkbox" class="form-check-input" id="select-all" onchange="SelectAll('chosen-container')">
+                        <label for="select-all"><strong>Select All</strong></label>
+                    </div>
+                    
+                    {% for player in my_players %} 
+                    <div class="p-2">
+                        <input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="selected_players" >{{player.first_name}} {{player.last_name}}</input>
+                    </div>
+                    {% endfor %}
+                </div>
+                </form>
+                
+        </div>
+
+        <div class="col-md-4 ">
+            <br>
+            <br>
+            <h2 class="py-6">Existing Groups</h2>
+            {% for group in my_groups %}
+            <p><strong>{{group.name}}</strong> <a type="button" href="{% url 'OrgDash:player_group_update' pk=group.pk %}" class="btn btn-warning">Edit</a> <a type="button" href="{% url 'OrgDash:player_group_delete' pk=group.pk %}" class="btn btn-danger">Delete</a></p> 
+            {% endfor %} 
+        </div>
+    </div>
 </div>
-{% endfor %}
-<button type="submit" >Create Group</button>
-</div>
-</form>
-</div>
+
+<script>
+    function SelectAll(container_id, select_id) {
+        var container = document.getElementById(container_id);
+        var checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+        checkboxes[i].checked = container.querySelector('#select-all').checked;
+        }
+    }
+    </script>
 {% endblock %} 

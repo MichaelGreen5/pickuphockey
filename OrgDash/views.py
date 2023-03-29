@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.http import JsonResponse
-from OrgDash.models import Skate, Invitation, Player, PlayerGroup, InviteList, Waitlist
+from OrgDash.models import Skate, Invitation, Player, PlayerGroup, InviteList, Waitlist, LightTeam, DarkTeam, Bench
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
@@ -11,8 +11,8 @@ from django.db.models import Q
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from datetime import timedelta, datetime
-from OrgDash.team_sort import SortTeams
-import openpyxl
+
+
 
 
 
@@ -78,6 +78,9 @@ class InitSkateRepeatUpdate(UpdateView):
         modelform = super().get_form_class()
         modelform.base_fields['group_to_invite'].limit_choices_to = {'created_by': self.request.user}
         return modelform
+    
+    def get_initial(self):
+        return {'recurring_event': True} 
 
     
 class SkateDeleteView(DeleteView): 
@@ -95,22 +98,69 @@ class EventUpdateView(UpdateView):
         return reverse('OrgDash:event_detail', args=[self.object.pk])
 
 
-def TeamsView(request, pk): 
+def TeamsView(request, pk): #make so no errors if nobody rsvpd yet
+    from OrgDash.team_sort import SortTeams, SetTeams, RemoveFromTeam, AddToTeam
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
+    
+    
+   
+  
+    
     guests = Invitation.objects.filter(Q(host= active_user) & Q(event= active_event) & Q(will_you_attend= 'Yes'))
    
     #Take player skill and make teams
-    player_data =[((str(guest.guest), float(guest.guest.skill))) for guest in guests]
-    teams = SortTeams(player_data)
-    light_team = teams[0]
-    light_skill_total = sum([i[1] for i in light_team])
-    dark_team = teams[1]
-    dark_skill_total = sum([i[1] for i in dark_team])
-    context = {'light_team': light_team, 'dark_team': dark_team,
-                'light_skill_total' : light_skill_total, 'dark_skill_total': dark_skill_total}
+    player_data =[((guest.guest), float(guest.guest.skill)) for guest in guests]
     
-    return render (request,'OrgDash/Skates/make_teams.html',context)
+    # #set light team
+    light_team_tup = LightTeam.objects.get_or_create(event=active_event)
+    light_team_obj = light_team_tup[0]
+    light_team_obj.get_total_skill()
+    
+    # set dark team
+    dark_team_tup = DarkTeam.objects.get_or_create(event=active_event)
+    dark_team_obj = dark_team_tup[0]
+    dark_team_obj.get_total_skill()
+    
+    # set bench
+    bench_obj = Bench.objects.get_or_create(event=active_event)
+    bench_obj[0].SetBench(guests, light_team_obj, dark_team_obj)
+   
+    total_skill = (float(dark_team_obj.skill) + float(light_team_obj.skill))
+    context = {'light_team': light_team_obj.team.all(), 'dark_team': dark_team_obj.team.all(), 'total_skill':total_skill, 'active_event':active_event,
+                'light_team_skill' : light_team_obj.skill, 'dark_team_skill': dark_team_obj.skill, 'bench_members': bench_obj[0].bench_members.all()}
+    
+    
+    if request.method == 'POST':
+        sort_action = request.POST.get('auto_sort')
+        light_form_action = request.POST.get('light_form_action')
+        dark_form_action = request.POST.get('dark_form_action')
+        bench_action = request.POST.get('bench_action')
+        
+        if sort_action == 'auto_sort':
+            teams = SortTeams(player_data)
+            SetTeams(teams, active_event)
+          
+        if light_form_action == 'remove_player_light':
+            selected_player_ids = request.POST.getlist('light_player')
+            RemoveFromTeam(light_team_obj, selected_player_ids)
+            
+        if dark_form_action == 'remove_player_dark':
+            selected_player_ids = request.POST.getlist('dark_player')
+            RemoveFromTeam(dark_team_obj, selected_player_ids)
+            
+        if bench_action == 'add_to_light':
+            selected_player_ids = request.POST.getlist('bench_player')
+            AddToTeam(light_team_obj, selected_player_ids)
+            
+        elif bench_action == 'add_to_dark':
+            selected_player_ids = request.POST.getlist('bench_player')
+            AddToTeam(dark_team_obj, selected_player_ids)
+
+        return redirect(reverse('OrgDash:make_teams', args=[active_event.pk]), context)
+    else:
+    
+        return render (request,'OrgDash/Skates/make_teams.html',context)
 
 
 def EventDash(request, pk): #TODO waitlist. button to change rsvp to no. Be able to update auto settings.
@@ -125,6 +175,37 @@ def EventDash(request, pk): #TODO waitlist. button to change rsvp to no. Be able
     context = {'event': active_event, 'guest_list': guest_list, 'spots_left': spots_left, 'invites_sent':invites_sent, 'wait_list':wait_list}
     return render(request, 'OrgDash/Skates/event_detail.html', context)
 
+def FinalizeRosters(request, pk):
+    current_event = Skate.objects.get(pk=pk)
+    dark_team = DarkTeam.objects.get(event=current_event)
+    light_team = LightTeam.objects.get(event=current_event)
+    dark_team_members = dark_team.team.all()
+    light_team_members = light_team.team.all()
+    
+    player_emails = [player.email for player in light_team_members] +[player.email for player in dark_team_members]
+    
+    
+    
+        
+    
+   
+    event_host = current_event.host
+    context= {'light_team_members': light_team_members, 'dark_team_members':dark_team_members, 'event':current_event}
+    if request.method == 'POST':
+        message_field = request.POST['tinymce_email_invite']
+        
+        
+        
+        subject = "Rosters for" + event_host.first_name + "'s event at " + current_event.location
+        # from_email = event_host.email
+        message = message_field # want this to be link to html template
+        recipient_list = player_emails
+        send_mail(subject, message,  'pickuphockey1@gmail.com', recipient_list, html_message=message_field)
+        
+        
+        return redirect(reverse('OrgDash:event_detail' ,args=[current_event.pk]))
+    else:
+        return render(request, 'OrgDash/Skates/finalize_rosters.html', context)
 
 ##########################INVITATIONS################################
 
@@ -149,7 +230,7 @@ class CreateInvite(CreateView):
 class UpdateInvite(UpdateView):
     model = Invitation
     form_class = InviteUpdateForm
-    template_name = 'OrgDash/update.html'
+   
 
     def get_form_class(self): #TODO do i need to do thes qs again?
         all_invites = super().get_queryset()
@@ -162,6 +243,8 @@ class UpdateInvite(UpdateView):
             return InviteUpdateForm
         else:
             return InviteWaitlistForm
+        
+   
            
     def get_success_url(self):
         current_event = Invitation.objects.get(pk=self.kwargs['pk'])
@@ -178,6 +261,12 @@ class UpdateInvite(UpdateView):
         else:
             waitlist[0].guests.remove(wait_guest)
         return super().form_valid(form)
+    
+    def get_template_names(self):
+        if isinstance(self.get_form(), InviteWaitlistForm):
+            return ['OrgDash/Invites/waitlist_response.html'] 
+        else:
+            return ['OrgDash/Invites/invite_response.html']
 
 
 class DeleteInvite(DeleteView):
@@ -213,10 +302,11 @@ def AddToInviteList(request, pk):
     existing_invites = Invitation.objects.filter(event=active_event)
     already_invited =[player.guest for player in existing_invites]
     invite_list_tup = InviteList.objects.get_or_create(event= active_event)
-    invite_list =invite_list_tup[0].guests.all()
+   
+    invite_list =  invite_list_tup[0].guests.all()
     yet_to_invite = []
     for player in my_players:
-        if player not in invite_list:
+        if player not in already_invited:
                 yet_to_invite.append(player)
     
     context={
@@ -256,17 +346,18 @@ def FinalizeInvites(request, pk): #TODO needs to be unique invite objs only. no 
     player_emails = [player.email for player in invite_list]
     current_event = invite_list_obj.event
     event_host = current_event.host
-    current_user = request.user.pk
     if request.method == 'POST':
         message_field = request.POST['tinymce_email_invite']
-        # invite_list_obj.message = message_field
         invite_list_obj.create_invites()
-        
         subject = "Invitation to " + event_host.first_name + "'s event at " + current_event.location
-        # from_email = event_host.email
         message = message_field # want this to be link to html template
         recipient_list = player_emails
         send_mail(subject, message,  'pickuphockey1@gmail.com', recipient_list, html_message=message_field)
+        if len(recipient_list) == 1:
+            confirm_message = str(len(recipient_list)) + ' Invitation Sent'
+        else:
+            confirm_message = str(len(recipient_list)) + ' Invitations Sent'
+        messages.success(request, confirm_message )
         
         
         return redirect(reverse('OrgDash:event_detail' ,args=[invite_list_obj.event.pk]))
@@ -331,7 +422,7 @@ class CreatePlayer(CreateView):
         return {'created_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('OrgDash:player_list')
+        return reverse('OrgDash:player_dash')
 
 
 class PlayerUpdateView(UpdateView):
@@ -346,7 +437,7 @@ class PlayerUpdateView(UpdateView):
 class PlayerDeleteView(DeleteView): 
     model = Player
     template_name = 'OrgDash/confirm_delete.html'
-    success_url = reverse_lazy('OrgDash:player_list')
+    success_url = reverse_lazy('OrgDash:player_dash')
 
 class PlayerDetail(DetailView):
     model = Player
@@ -364,10 +455,11 @@ class PlayerListiview(ListView):
         return my_players
     
 
-def Playergroups(request):
+def Playergroups(request): #TODO be able to edit group name
     active_user = request.user
     my_players = Player.objects.filter(created_by=active_user.pk)
-    context={'my_players': my_players }
+    my_groups = PlayerGroup.objects.filter(created_by=active_user.pk)
+    context={'my_players': my_players, 'my_groups': my_groups }
     if request.method == 'POST':
         selected_player_ids = request.POST.getlist('selected_players')
         group_name = request.POST.get('group_name')
@@ -443,12 +535,14 @@ def GetPlayerGroups(request):
         return JsonResponse({'group_data': group_data})
 
 def UploadSheet(request):
+    import openpyxl
     my_players = Player.objects.filter(created_by = request.user)
     player_emails = [player.email for player in my_players]
     if request.method == 'POST':
         form = UploadSheetForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_sheet = form.cleaned_data['file']
+            print(uploaded_sheet)
             
             wb= openpyxl.load_workbook(uploaded_sheet)
             sheet= wb.active
@@ -474,7 +568,13 @@ def UploadSheet(request):
                     
                 else:
                    player.save()
-            messages.success(request, str(player_count) + ' Players added')
+            if player_count != 1:
+                message= str(player_count) + ' Players added'
+            else:
+                message = str(player_count) + ' Player added'
+            messages.success(request, message)
+        else:
+            messages.error(request, "Error while creating players" )
             
             
         return redirect('OrgDash:player_dash')

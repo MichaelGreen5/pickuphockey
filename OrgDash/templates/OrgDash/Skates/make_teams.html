@@ -1,26 +1,120 @@
 {% extends 'base.html' %} 
 {% block body_block %}
-
-<h1>Light Team</h1>
-{% for player in light_team %}
-    {% for item in player %}
-<ol>
-    {{item}}
+<div class="container">
+    <h1 class="p-2">Make teams for event at {{active_event.location}}</h1>
+    <h2 class="p-2">{{active_event.date}}, {{active_event.time}}</h2>
     
-</ol>
-{% endfor %} 
-{% endfor %} 
+ 
+    </form>
+    <div class="d-flex justify-content-evenly p-4">
+        <div class="col-md-4">
+            <h1 class="p-2">Light Team</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                <ol start="1">
+                {% for player in light_team %}   
+                    <div class="row">
+                        <li class="p-2"><input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="light_player" > {{player}} {{player.skill}}</li>
+                    </div>
+                {% endfor %} 
+            </ol>
+                <button type="submit" class="btn btn-warning" name="light_form_action" value="remove_player_light" >Remove Selected players from team</button>
+            </form>
+            <div class="p-3">
+                <h3 class="p-2">Team Total Skill</h3>
+                <div class="progress" style="height: 30px">
+                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="{{light_team_skill}}" id="light-skill-bar"
+                    aria-valuemin="0" aria-valuemax="{{total_skill}}" style="Width: 0%;">
+                    <h4>{{light_team_skill}}</h4>
+                    </div>
+                  </div>
+                
 
-{{light_skill_total}}
+            </div>
+        </div>
 
-<h1>Dark Team</h1>
-{% for player in dark_team %}
-    {% for item in player %}
-<ol>
-    {{item}}
-    
-</ol>
-{% endfor %} 
-{% endfor %}
-{{dark_skill_total}} 
+        <div class="col-md-4">
+            <h1 class="p-2">Bench</h1>
+            
+            <form action="" method="post">
+                {% csrf_token %}
+                <ul>
+                {% for player in bench_members %}
+                    <div class="row">
+                        <li class="p-2"><input class="form-check-input" type="checkbox" id="{{player.pk}}" value="{{player.pk}}" name="bench_player" > {{player}} {{player.skill}}</li>
+                    </div>
+
+                {% endfor %}
+                </ul>
+                <button type="submit" class="btn btn-outline-primary" name="bench_action" value="add_to_light" >Add to Light</button>
+                <button type="submit" class="btn btn-primary" name="bench_action" value="add_to_dark" >Add to Dark</button>
+                </form>
+                
+        </div>
+
+        <div class="col-md-4">
+            <h1 class="p-2">Dark Team</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                <ol start="1">
+                {% for player in dark_team %} 
+            
+                    <div class="row">
+                        <li class="p-2"><input type="checkbox" class="form-check-input" id="{{player.pk}}" value="{{player.pk}}" name="dark_player" > {{player}} {{player.skill}}</li>
+                    </div>
+                
+                {% endfor %}
+                </ol>
+                <button type="submit"  class="btn btn-warning" name="dark_form_action" value="remove_player_dark" >Remove Selected players from team</button>
+                </form>
+                <div class="p-3">
+                    <h3 class="p-2">Team Total Skill</h3>
+                    <div class="progress" style="height: 30px">
+                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="{{dark_team_skill}}" id="dark-skill-bar"
+                        aria-valuemin="0" aria-valuemax="{{total_skill}}" style="Width: 0%;">
+                        <h4>{{dark_team_skill}}</h4>
+                        </div>
+                      </div>
+                    
+                </div>
+        </div>
+
+        
+       
+    </div>
+    <div class="d-flex justify-content-evenly p-5">
+            <form action="" method="post">
+                {% csrf_token %}
+            <button type="submit" class="btn btn-success" name="auto_sort" value="auto_sort" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Automatically generate even teams based on who is coming"><h2>Auto Sort Teams</h2></button> 
+            </form>
+
+            <a type="button" class="btn btn-primary" href="{% url 'OrgDash:finalize_rosters' pk=active_event.pk %}"><h2>Finalize and Send Rosters</h2></a>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function() {
+        var dark_skill = $('#dark-skill-bar').attr('aria-valuenow');
+        var max_skill =  $('#dark-skill-bar').attr('aria-valuemax');
+        var skill_percent = ((dark_skill/max_skill) * 100);
+        $("#dark-skill-bar").css("width",  skill_percent +"%");
+        $("#dark-skill-bar").attr("aria-valuenow", skill_percent +"%");
+    });
+
+    $(document).ready(function() {
+        var dark_skill = $('#light-skill-bar').attr('aria-valuenow');
+        var max_skill =  $('#light-skill-bar').attr('aria-valuemax');
+        var skill_percent = ((dark_skill/max_skill) * 100);
+        $("#light-skill-bar").css("width",  skill_percent +"%");
+        $("#light-skill-bar").attr("aria-valuenow", skill_percent +"%");
+    });
+
+</script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 {% endblock %} 
+
+

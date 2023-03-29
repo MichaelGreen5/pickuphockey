@@ -1,6 +1,5 @@
 from django import forms
-from OrgDash.models import Skate, Invitation, Player, PlayerGroup
-from OrgDash.models import UploadSheet
+from OrgDash.models import Skate, Invitation, Player, PlayerGroup, UploadSheet
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 
@@ -48,6 +47,10 @@ class EventRepeatForm(forms.ModelForm):
         }
 
 class InitEventRepeatForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+       super(InitEventRepeatForm, self).__init__(*args, **kwargs)
+       self.fields['recurring_event'].disabled = True
+    
     class Meta:
         fields = (
            'recurring_event','frequency', 'group_to_invite', 'send_invite_days_before', 'finalize_event_hours_before'
@@ -74,29 +77,27 @@ class InviteUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         
         super(InviteUpdateForm,self).__init__(*args, **kwargs)
-        self.fields['host'].disabled = True
-        self.fields['event'].disabled = True
+        
         self.fields['guest'].disabled = True
 
 
     
     class Meta:
-        fields = ('host','event', 'guest', 'will_you_attend')
+        fields = ('guest', 'will_you_attend')
         model = Invitation
 
 class InviteWaitlistForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(InviteWaitlistForm,self).__init__(*args, **kwargs)
-        self.fields['host'].disabled = True
-        self.fields['event'].disabled = True
+        
         self.fields['guest'].disabled = True
         self.fields['will_you_attend'].choices = ('No','No'), ('Waitlist','Put me on the waitlist')
        
         
 
     class Meta:
-        fields = ('host','event', 'guest', 'will_you_attend')
+        fields = ( 'guest', 'will_you_attend')
         model = Invitation
 
 class CreatePlayerForm(forms.ModelForm):

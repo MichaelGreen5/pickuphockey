@@ -15,12 +15,13 @@ path('<int:pk>/edit/', views.EventUpdateView.as_view(), name = 'event_update'),
 path('<int:pk>/recurring', views.SkateRepeatUpdate.as_view(), name = 'skate_repeat_settings'),
 path('<int:pk>/init/recurring', views.InitSkateRepeatUpdate.as_view(), name = 'init_skate_repeat_settings'),
 path('<int:pk>/teams', views.TeamsView, name = 'make_teams'),
+path('<int:pk>/teams/finalize', views.FinalizeRosters, name = 'finalize_rosters'),
 
 
 
 path('<int:pk>/invite/', views.CreateInvite.as_view(), name = 'create_invite'),
 path('<int:pk>/manage-invites', views.GuestListView, name = 'invite_list'),
-path('manage-invites/edit/<int:pk>', views.UpdateInvite.as_view(), name = 'update_invite'),
+path('manage-invites/respond/<int:pk>', views.UpdateInvite.as_view(), name = 'update_invite'),
 path('<int:pk>/add-invites/', views.AddToInviteList, name='add_invites'),
 path('finalize-invites/<int:pk>', views.FinalizeInvites, name = 'finalize_invites'),
 path('<int:pk>/manage-invites/delete', views.DeleteInvite.as_view(), name = 'delete_invite'),

@@ -4,18 +4,16 @@
 <script src="{% static 'pickuphockey.js' %}"></script>
 
 <div class="wrapper">
-  
-    
-        
-    
     <div class="content">
         <div class="container">
             <div class="container py-4">
                 <div class="p-5 mb-4 bg-light rounded-3">
                   <div class="container-fluid py-5">
                     <h1 class="display-5 fw-bold">Event at {{event.location}} </h1>
+                    
                     <h2 class="display-7">{{event.date}} {{event.time}}</h2>
                     <p class="col-md-8 fs-4">Price: ${{event.price}} Per person</p>
+                   
                     <br>
                     <h2>{{spots_left}}/{{event.max_guests}} spots remaining </h2>
                     
@@ -31,16 +29,22 @@
                     <br>
                     <br>
                     <a class="btn btn-success py-2 " role="button" href="{% url 'OrgDash:invite_list' event.pk %}">Manage Event Invitations</a>
+                    {% if spots_left != event.max_guests %}
                     <a class="btn btn-info py-2 " role="button" href="{% url 'OrgDash:make_teams' event.pk %}">Make Teams and Finalize</a>
+                    {% endif %} 
                     
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        Delete Event
-                    </button>
-                    
+                  
+                    <a class="btn btn-danger py-2 " role="button" href="{% url 'OrgDash:delete_event' event.pk %}">Delete Event</a>
+                    {% if messages %}
+                    <div class="" role="alert" id="invite-sucess"></div>
+                    {% endif %}
+                  
                   </div>
                  
                 </div>
+
+               
+                
                 
 
 
@@ -71,26 +75,7 @@
                     </div>
 
   
-  <!-- Modal -->
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-           
-        <div id="modal-content-placeholder"></div>
-           
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
+ 
                      
                     
                   
@@ -142,42 +127,34 @@
 {% if messages %}
 
 {% for message in messages %}
-<script> 
 
-const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
-const alert = (message, type) => {
+
+<script>
+
+
+
+const alertPlaceholder = document.getElementById('invite-sucess')
+  
+  const alert = (message, type) => {
   const wrapper = document.createElement('div')
   wrapper.innerHTML = [
-    `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+    `<div class="alert alert-success alert-dismissible" role="alert">`,
     `   <div>${message}</div>`,
     '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
     '</div>'
   ].join('')
-
+  
   alertPlaceholder.append(wrapper)
-}
+  }
+  
+  $(document).ready(function() {
+    alert('{{message}}')
+  });
 
-const alertTrigger = document.getElementById(button_id)
-if (alertTrigger) {
-  alertTrigger.addEventListener('click', () => {
-    alert(display_message)
-  })
-}
+  </script>
 
-</script>
 
-<script>
-    $('#deleteModal').on('show.bs.modal', function (event) {
-      var modal = $(this)
-      $.ajax({
-        url: "{% url 'OrgDash:delete_event' event.pk %}",
-        success: function(data) {
-          modal.find('#modal-content-placeholder').html(data);
-        }
-      });
-    })
-    </script>
 {% endfor %}
 {% endif %} 
 {% endblock %} 
