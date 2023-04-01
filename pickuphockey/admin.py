@@ -1,5 +1,30 @@
 from django.contrib import admin
-from OrgDash.models import Player, Skate, Invitation, PlayerGroup, UploadSheet, InviteList, Waitlist, LightTeam, DarkTeam
+from OrgDash.models import Player, Skate, Invitation, PlayerGroup, InviteList, Waitlist, LightTeam, DarkTeam, UploadSheet
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+# from .models import EmailVerification
+
+# UserModel = get_user_model()
+
+
+# class VerificationInline(admin.StackedInline):
+#     model = EmailVerification
+#     can_delete = False
+#     verbose_name_plural = 'verification'
+
+
+# class UserAdmin(BaseUserAdmin):
+#     inlines = (VerificationInline,)
+
+
+# admin.site.unregister(UserModel)
+# admin.site.register(UserModel, UserAdmin)
+
+
+
+
+
 
 admin.site.register(Skate)
 admin.site.register(Player)

@@ -28,7 +28,7 @@
                     {% endif %}
                     <br>
                     <br>
-                    <a class="btn btn-success py-2 " role="button" href="{% url 'OrgDash:invite_list' event.pk %}">Manage Event Invitations</a>
+                    <a class="btn btn-green py-2 " role="button" href="{% url 'OrgDash:invite_list' event.pk %}">Manage Event Invitations</a>
                     {% if spots_left != event.max_guests %}
                     <a class="btn btn-info py-2 " role="button" href="{% url 'OrgDash:make_teams' event.pk %}">Make Teams and Finalize</a>
                     {% endif %} 

@@ -4,8 +4,8 @@ from OrgDash.models import Skate, Invitation, Player, PlayerGroup, InviteList, W
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
-from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm, UploadSheetForm,EventRepeatForm, InitEventRepeatForm
-from OrgDash.models import UploadSheet
+from OrgDash.forms import CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm,EventRepeatForm, InitEventRepeatForm, UploadSheetForm
+# from OrgDash.models import UploadSheet
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.urls import reverse_lazy, reverse

@@ -21,16 +21,16 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.baseview, name = 'home'),
+    path('', views.homepage, name = 'home'),
     path('signup/', views.SignUp.as_view(), name = 'sign_up'),
     path("logout/", auth_views.LogoutView.as_view(), name= 'logout'),
-    path("login/", views.Login.as_view(), name = 'login'),
+    path("login/", views.CustomLogin.as_view(), name = 'login'),
     path("thanks/", views.Thanks, name = 'thanks'),
 
-    path('reset_password/', auth_views.PasswordResetView.as_view(template_name = "registration/reset_password.html"), name ='reset_password'),
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name = "registration/password_reset_sent.html"), name ='password_reset_done'),
-    path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name = "registration/password_reset_form.html"), name ='password_reset_confirm'),
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name = "registration/password_reset_done.html"), name ='password_reset_complete'),
+    path('reset-password/', views.PasswordReset.as_view(), name ='reset_password'),
+    path('reset-password-sent/', views.PasswordResetSent.as_view(), name ='password_reset_done'),
+    path('reset/<uidb64>/<token>', views.PasswordResetFormView.as_view(), name ='password_reset_confirm'),
+    path('reset-password-complete/', views.PasswordResetComplete.as_view(), name ='password_reset_complete'),
     
     path('organize/', include('OrgDash.urls')), 
 

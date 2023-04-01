@@ -129,12 +129,8 @@ def validate_sheet_only(value):
     if not ext.lower() in valid_extensions:
         raise ValidationError('File type not supported. Only .xlsx, .xlsm, .xltx, .xltm files are allowed.')
 
-
 class UploadSheet(models.Model):
-    file = models.FileField(upload_to='OrgDash/uploads/',validators=[validate_sheet_only])
-
-
-
+    file = models.FileField(upload_to='OrgDash/uploads/', validators=[validate_sheet_only], default= None, null= True)
 
 class InviteList(models.Model):
     event = models.ForeignKey(Skate, on_delete= models.CASCADE)
