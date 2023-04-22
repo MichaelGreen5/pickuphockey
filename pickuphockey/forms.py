@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm, Passw
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 
+
 # User = get_user_model()
 
 class SignUp(UserCreationForm, forms.Form):
@@ -24,6 +25,8 @@ class CustomPasswordResetForm(PasswordResetForm):
         if not UserModel.objects.filter(email__iexact=email, is_active=True).exists():
             raise forms.ValidationError(("There is no user registered with the specified email address!"))
         return email
+
+
 
 
 

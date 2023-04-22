@@ -1,0 +1,47 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<div class="container">
+    <div class="p-2">
+        <a type="button" class="btn btn-green" href="{% url 'OrgDash:create_goalie' %}">Create a Goalie</a>
+    </div>
+    <div class="p-2">
+        <a type="button" class="btn btn-danger" href="{% url 'OrgDash:player_dash' %}">Back to my Players</a>
+    </div>
+    <div class="col-md-10">
+        <div class="table-header">
+        <h3>My Goalies</h3>
+        </div>
+        <table class="table table-hover table">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Skill <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Player skill is used to make even teams. Rate your players on a scale from 1-10 as accurately as possible."><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg></a>
+                </th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for goalie in my_goalies %}
+            <tr>
+                
+                <td>{{goalie.player.first_name}} {{goalie.player.last_name}}</td>
+                <td>{{goalie.player.email}}</td>
+                <td>{{goalie.player.skill}}</td>
+                <td><a type="button" class="btn btn-outline-warning" href="{% url 'OrgDash:update_goalie' goalie.pk %}">Edit</a></td>
+                <td><a type="button" class="btn btn-outline-danger" href="{% url 'OrgDash:delete_goalie' goalie.pk %}">Delete</a></td>
+                {% endfor %}  
+            </tr>
+            </tbody>
+        </table>
+        
+
+
+    </div>
+    </div>
+</div>
+
+{% endblock %} 

@@ -13,116 +13,92 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'pickuphockey.css' %}">
-    <title>Base</title>
+    <title>PickupHockey.com</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'photos/hockey-helmet-1-svgrepo-com.png' %}">
 </head>
 
 
-
-
-    <nav class="navbar navbar-expand-lg nav-color main-nav" aria-label="Offcanvas navbar large">
-        <div class="container-fluid" >
-          <a class="navbar-brand nav-links" href="{% url 'home' %}">PickupHockey</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2" aria-controls="offcanvasNavbar2">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar2" aria-labelledby="offcanvasNavbar2Label">
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="offcanvasNavbar2Label">Offcanvas</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-              <ul class="navbar-nav justify-content-evenly flex-grow-1 pe-3">
-               
-                {% if user.is_authenticated %} 
-              
-                
-                
-                <li class="nav-item dropdown ">
-                    <a class="nav-link dropdown-toggle nav-links" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                     Events
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{% url 'OrgDash:organizer_dashboard' %}">View My Events</a></li>
-                      <li>
-                        <hr class="dropdown-divider">
-                      </li>
-                      <li><a class="dropdown-item" href="{% url 'OrgDash:create_event' %}">Create New Event</a></li>
-                      
-                    </ul>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle active nav-links" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      My Players
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{% url 'OrgDash:player_dash' %}">Manage My Players</a></li>
-                      
-                      <li>
-                        <hr class="dropdown-divider">
-                      </li>
-                      <li><a class="dropdown-item" href="{% url 'OrgDash:create_player' %}">Create Player</a></li>
-                      
-                    </ul>
-                  </li>
-              
-              <li class="nav-item">
-                <a class="nav-link active nav-links" aria-current="page" href="">About</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active nav-links" aria-current="page" href="">Contact</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active nav-links" aria-current="page" href="">FAQ</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active nav-links" aria-current="page" href="#">About</a>
-              </li>
-             
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e1ece3" class="bi bi-person-circle" viewBox="0 0 16 16">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                      </svg>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{% url 'reset_password' %}">Reset Password</a></li>
-                  <li><a class="dropdown-item"  href="{% url 'logout' %}">Log Out</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#"> Logged in as {{user}}</a></li>
-                </ul>
-              </li>
-            </ul>
-        </ul>
-        {% else %}
-
-        <li class="nav-item">
-            <a class="nav-link active nav-links" aria-current="page" href="">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active nav-links" aria-current="page" href="">Contact</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active nav-links" aria-current="page" href="">FAQ</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle nav-links" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Login or Sign up
-            </a>
+<header class="p-3 mb-3 border-bottom main-nav">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ffffff" class="bi bi-house-door" viewBox="0 0 16 16">
+          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"/>
+        </svg>
+      </a>
+      {% if user.is_authenticated %}
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active nav-links" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+           Events
+          </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'login' %}">Login<a></li>
-            <li><a class="dropdown-item"  href="{% url 'sign_up' %}">Sign up</a></li>
+            <li><a class="dropdown-item" href="{% url 'OrgDash:organizer_dashboard' %}">View My Events</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="{% url 'OrgDash:create_event' %}">Create New Event</a></li>
+            
           </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active nav-links" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            My Players
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'OrgDash:player_dash' %}">Manage My Players</a></li>
+            
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="{% url 'OrgDash:create_player' %}">Create Player</a></li>
+            
+          </ul>
+        </li>
+        <li><a href="{% url 'contact' %}" class="nav-links nav-link px-2 link-body-emphasis">Contact</a></li>
+        
+        <li><a href="{% url 'how_it_works' %}" class="nav-links nav-link px-2 link-body-emphasis">How it Works</a></li>
+        
+      </ul>
 
+      
 
-            {% endif %} 
-            </div>
-          </div>
-        </div>
-      </nav>
+      <div class="dropdown text-end">
+        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#e1ece3" class="bi bi-person-circle" viewBox="0 0 16 16">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+          </svg>
+        </a>
+        
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="/reset-password/">Reset Password</a></li>
+          <li><a class="dropdown-item" href="/logout/">Log Out</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href=""> Logged in as {{user}}</a></li>
+        </ul>
+      </div>
+      {% else %}
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="{% url 'how_it_works' %}" class="nav-links nav-link px-2 link-body-emphasis dropdown-item">How it Works</a></li>
+        <li><a href="{% url 'contact' %}" class="nav-links nav-link px-2 link-body-emphasis">Contact</a></li>
+        
+      </ul>
 
+    
+
+      <div class="col-md-3 text-end">
+        <a type="button" href="{% url 'sign_up' %}" class="btn btn-green">Sign Up</a>
+        <a type="button" href="{% url 'login' %}" class="btn btn-gold">Log In</a>
+      </div>
+      {% endif %} 
+    </div>
+  </div>
+</header>
+
+   
     <body>
     
     

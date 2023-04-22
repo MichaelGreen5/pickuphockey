@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-
-
-
+{% extends 'base.html' %} 
 {% block body_block %}
 <div class="container">
 
@@ -33,7 +30,7 @@
             <tbody>
                 {% for item in todays_events %}
               <tr>
-                <th scope="row"><a href="{{item.id}}">View Event</a></th>
+                <th scope="row"><a type="button" class="btn btn-blue" href="{{item.id}}">View Event</a></th>
                 <td>{{item.date}}</td>
                 <td>{{item.time}}</td>
                 <td>{{item.location}}</td>
@@ -69,7 +66,7 @@
             <tbody>
                 {% for item in upcoming_events %}
               <tr>
-                <th scope="row"><a href="{{item.id}}">View Event</a></th>
+                <th scope="row"><a type="button" class="btn btn-blue" href="{{item.id}}">View Event</a></th>
                 <td>{{item.date}}</td>
                 <td>{{item.time}}</td>
                 <td>{{item.location}}</td>
@@ -106,7 +103,7 @@
             <tbody>
                 {% for item in past_events %}
                 <tr>
-                <th scope="row"><a href="{{item.id}}">View Event</a></th>
+                <th scope="row"><a type="button" class="btn btn-blue" href="{{item.id}}">View Event</a></th>
                 <td>{{item.date}}</td>
                 <td>{{item.time}}</td>
                 <td>{{item.location}}</td>
@@ -130,6 +127,4 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
   </script>
-
-
-{% endblock %}
+  {% endblock %} 

@@ -12,7 +12,7 @@ class CreateEventForm(forms.ModelForm):
     
     class Meta:
         fields = (
-            'host','date', 'time', 'location', 'price', 'max_guests', 
+            'host','date', 'time', 'location', 'price', 'max_players', 'max_goalies',
             'recurring_event',  )
         model = Skate
 
@@ -28,7 +28,7 @@ class CreateEventForm(forms.ModelForm):
 class UpdateEventForm(forms.ModelForm):
     class Meta:
         fields = (
-            'date', 'time', 'location', 'price', 'max_guests', 'recurring_event',
+            'date', 'time', 'location', 'price', 'max_players', 'recurring_event', 'max_goalies'
               )
         model = Skate
 
@@ -57,8 +57,7 @@ class InitEventRepeatForm(forms.ModelForm):
            'recurring_event','frequency', 'group_to_invite', 'send_invite_days_before', 'finalize_event_hours_before'
         )
         model = Skate
-        widgets = {
-        }
+       
 
 
 
@@ -74,12 +73,11 @@ class CreateInviteForm(forms.ModelForm):
         model = Invitation
 
 class InviteUpdateForm(forms.ModelForm):
-    
     def __init__(self, *args, **kwargs):
-        
         super(InviteUpdateForm,self).__init__(*args, **kwargs)
-        
         self.fields['guest'].disabled = True
+        self.fields['will_you_attend'].choices = ('Yes', 'Yes'),('No','No')
+
 
 
     
@@ -102,17 +100,21 @@ class InviteWaitlistForm(forms.ModelForm):
         model = Invitation
 
 class CreatePlayerForm(forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         super(CreatePlayerForm, self).__init__(*args, **kwargs)
         self.fields['created_by'].disabled = True
+        
     
     class Meta:
-        fields = ('created_by', 'first_name','last_name', 'email', 'skill')
+        fields = ('created_by', 'first_name','last_name', 'email', 'skill', 'goalie')
         model = Player
+
+       
 
 class PlayerUpdateForm(forms.ModelForm):
     class Meta:
-        fields = ('first_name', 'last_name', 'email', 'skill')
+        fields = ('first_name', 'last_name', 'email', 'skill', 'goalie')
         model = Player
 
 
@@ -143,5 +145,12 @@ class UpdatePlayerGroupForm(forms.ModelForm):
         }
         
         
-
+# class CreateGoalieForm(forms.ModelForm):
+#     def __init__(self, *args, **kwargs):
+#         super(CreateGoalieForm, self).__init__(*args, **kwargs)
+#         self.fields['created_by'].disabled = True
+    
+#     class Meta:
+#         fields = ('created_by', 'player')
+#         model = Goalie
 

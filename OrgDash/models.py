@@ -16,6 +16,7 @@ class Player(models.Model):
     email = models.EmailField(max_length=150, default= None)
     skill = models.DecimalField(max_digits=4, decimal_places=1)
     created_by = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
+    goalie = models.BooleanField(default= False, null= True)
    
 
     def get_absolute_url(self):
@@ -32,14 +33,14 @@ class Player(models.Model):
 
 
 
-
 class Skate(models.Model):
     host = models.ForeignKey(User, on_delete= models.CASCADE, default= 1)
     date = models.DateField(auto_now = False, default= None)
     time = models.TimeField(auto_now=False, default= None)
     location = models.CharField(max_length=200)
     price = models.IntegerField()
-    max_guests = models.IntegerField(default=0)
+    max_players = models.IntegerField(default=0)
+    max_goalies = models.IntegerField(default=2)
     recurring_event = models.BooleanField(default= False)
     
     STATUS_CHOICES = [
@@ -153,6 +154,7 @@ class LightTeam(models.Model):
     event = models.ForeignKey(Skate, on_delete= models.CASCADE)
     team = models.ManyToManyField('Player')
     skill = models.FloatField(default=0)
+   
 
     def get_total_skill(self):
         light_team_members = self.team.all()
@@ -161,9 +163,10 @@ class LightTeam(models.Model):
         self.skill = total_skill
 
 class DarkTeam(models.Model):
-    event = models.ForeignKey(Skate, on_delete= models.CASCADE)
+    event = models.ForeignKey(Skate, on_delete= models.CASCADE, default=1)
     team = models.ManyToManyField('Player')
     skill = models.FloatField(default=0)
+    
 
     def get_total_skill(self):
         light_team_members = self.team.all()

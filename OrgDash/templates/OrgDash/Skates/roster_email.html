@@ -24,8 +24,13 @@
     
     <ul>
         {% for member in light_team_members %}
+        {% if member.goalie %}
+        <li><strong>Goalie: {{member}}</strong></li>
+        {% else %} 
         <li>{{member}}</li>
-        {% endfor %} 
+        {% endif %} 
+        {% endfor %}
+        
     </ul>
     <br>
     
@@ -34,7 +39,11 @@
     
     <ul>
         {% for member in dark_team_members %}
+        {% if member.goalie %}
+        <li><strong>Goalie: {{member}}</strong></li>
+        {% else %} 
         <li>{{member}}</li>
+        {% endif %} 
         {% endfor %} 
     </ul>
 

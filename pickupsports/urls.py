@@ -26,6 +26,9 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(), name= 'logout'),
     path("login/", views.CustomLogin.as_view(), name = 'login'),
     path("thanks/", views.Thanks, name = 'thanks'),
+    path('contact/', views.Contact, name = 'contact'),
+    path('message-sent', views.MessageSent, name = 'message_sent'),
+    path('how-it-works', views.HowItWorks, name = 'how_it_works'),
 
     path('reset-password/', views.PasswordReset.as_view(), name ='reset_password'),
     path('reset-password-sent/', views.PasswordResetSent.as_view(), name ='password_reset_done'),

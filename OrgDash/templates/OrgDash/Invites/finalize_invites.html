@@ -3,36 +3,48 @@
 {% load static %} 
 
 <div class="container">
-    <div class="col-md-10"></div>
-        <h1>Send A Message to Your Guests</h1>
-        <h3>You are inviting {{num_of_guests}} guests to this event</h3>
+  <div class="d-flex justify-content-center">
+    <div class="col-md-10 py-4">
+      
+        <h1 class="display-5 fw-bold">Send A Message to Your Guests</h1>
+        <h3>Message will automatically include a greeting and RSVP link</h3>
+        <p class="col-md-8 fs-4">You are inviting {{num_of_guests}} guests to this event</p>
+        
+      
     </div>
-    
+    </div>
+      
+      
+          
+          
         
-        
+    <div class="d-flex justify-content-center">
+      <div class="col-md-10 py-2">
         <form method="POST">
-        {% csrf_token %} 
-    
-    <div class="col-md-10">
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <script src="https://cdn.tiny.cloud/1/z2lkkeysf567ryhr41rvr5gu6c82r2gfo7e588kwm8viqrn7/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-            <style></style>
-        </head>
-        <body>
-        <textarea id="textarea" name="tinymce_email_invite">
-            {% include 'OrgDash/Invites/invitation_email_2.html'%}
-        </textarea>
-        <input type="submit" value="Send">
+          {% csrf_token %} 
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <script src="https://cdn.tiny.cloud/1/z2lkkeysf567ryhr41rvr5gu6c82r2gfo7e588kwm8viqrn7/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+              <style></style>
+          </head>
+          <body>
+          <textarea id="textarea" name="tinymce_email_invite">
+              {% include 'OrgDash/Invites/invitation_email_2.html'%}
+          </textarea>
+          <div class="p-2">
+            <input class="btn btn-green" type="submit" value="Send">
+          </div>
         </form>
+      </div>
     </div>
+  </div>
   <script>
     tinymce.init({
       selector: 'textarea',
     //   plugins: 'importcss',
     // content_css: "{% static 'css/bootstrap.min.css' %}",
-      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss template importcss',
+      // plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount  template importcss',
       toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
       extended_valid_elements: 'span[class]',
       tinycomments_mode: 'embedded',

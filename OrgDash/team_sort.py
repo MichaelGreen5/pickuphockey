@@ -20,8 +20,9 @@ def get_skill(player):
 
 
 
-def SortTeams(player_data):
+def SortTeams(player_data, goalie_data):
     player_data.sort(key=get_skill)
+    goalie_data.sort(key=get_skill)
     light=[]
     dark=[]
     pick1= player_data.pop()
@@ -30,11 +31,16 @@ def SortTeams(player_data):
     dark.append(pick2)
     while len(player_data) != 0:
         pick = player_data.pop()
-        if WeakTeam(light, dark) == "light":
+        if WeakTeam(light, dark) == 'light':
             light.append(pick)
         else:
             dark.append(pick)
-
+    while len(goalie_data) != 0:
+        goalie_pick = goalie_data.pop()
+        if WeakTeam(light, dark) == 'light':
+            light.append(goalie_pick)
+        else:
+            dark.append(goalie_pick)
     return light, dark
 
 

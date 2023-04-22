@@ -1,17 +1,10 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from OrgDash.models import Skate, Player, Invitation
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.views.generic import CreateView
 from pickuphockey.forms import SignUp, LoginForm, CustomPasswordResetForm
-from django.contrib.auth.forms import PasswordResetForm
 from django.urls import reverse_lazy
-from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView, PasswordResetCompleteView
-from django.views.generic.edit import FormView
-
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
+from django.core.mail import send_mail
 
 def baseview(request):
     return render(request, 'base.html')
@@ -58,6 +51,28 @@ class PasswordResetComplete(PasswordResetCompleteView):
 
 def Thanks(request):
     return render(request, 'thanks.html')
+def MessageSent(request):
+    return render(request, 'message_sent.html')
+
+def Contact(request):
+    if request.method == 'POST':
+        from_email = request.POST.get('inputemail')
+        message = request.POST.get('message')
+        name = request.POST.get('name')
+        confirm_message = "<h1>Thank you for reaching out</h1><br><p>We are currently reviewing your message and will respond as soon as we can</p><br><h2>Your message:</h2><br> " + message
+        inbound_message = "<h1>Message from " + name + "<h1><br><h2>Email: " + from_email + "<br><h2>Message: " + message
+        # email to site
+        send_mail("Contact form recieved from " + name, 'message' , from_email,  ['pickuphockey1@gmail.com'], html_message=inbound_message)
+        # email copy for sender
+        send_mail("Hi " + name +" thanks for your message,", 'message', 'pickuphockey1@gmail.com' ,  [from_email], html_message=confirm_message)
+       
+        return redirect('message_sent')
+    else:
+        return render(request, 'contact.html')
+    
+def HowItWorks(request):
+    return render(request, 'how_it_works.html')
+
 
 
 

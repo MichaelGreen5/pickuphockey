@@ -14,10 +14,13 @@
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %} 
             {% bootstrap_form form %}
-            <input class="btn btn-primary" type="submit" value="Upload">
+            <div class="p-2">
+              <input class="btn btn-blue" type="submit" value="Upload">
+            </div>
         </form>
-       
-            <a href="{% url 'OrgDash:player_dash' %}" class="btn btn-warning">Cancel</a>
+        <div class="p-2">
+            <a href="{% url 'OrgDash:player_dash' %}" class="btn btn-gold">Cancel</a>
+        </div>
         
         
         </div>

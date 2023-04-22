@@ -1,7 +1,7 @@
 {% extends 'base.html' %} 
 {% block body_block %}
 {% load django_bootstrap5 %} 
-<h1>Please Log In</h1>
+<h1>Please Sign In</h1>
 <br>
 <br>
 <div class="d-flex justify-content-center">
@@ -13,7 +13,7 @@
                 {% csrf_token %}
                 
                 {% bootstrap_form form %}
-                <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                <button class="w-100 btn btn-lg btn-green" type="submit">Sign in</button>
                 </form> 
         </main>
         </body>

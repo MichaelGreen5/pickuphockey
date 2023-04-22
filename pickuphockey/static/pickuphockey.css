@@ -11,7 +11,12 @@ h1, h2, h3, h4, h5{
 }
 
 .nav-links{
-  -webkit-text-fill-color: #e1ece3;
+  -webkit-text-fill-color: #ffffff;
+  font-size: 125%;
+}
+
+.nav-links:hover{
+  background-color:#18536a ;
 }
 
 .btn-green{
@@ -23,15 +28,55 @@ h1, h2, h3, h4, h5{
   background-color: #11655b;
 
 }
-
+.bg-gray{
+  background-color: #adc9c5;
+}
 .btn-blue{
   background-color: #04425B;
   -webkit-text-fill-color: #e1ece3;
   
 }
 .btn-blue:hover{
-  background-color: #11655b;
+  background-color: #066f99;
 
+}
+
+.btn-gold{
+  background-color: #FF9E1F;
+}
+
+.btn-gold:hover{
+  background-color: #ffb655;
+}
+.btn-purple{
+  background-color: #483a58;
+}
+
+.btn-purple:hover{
+  background-color: #5b5265;
+  
+}
+
+.btn-blue-outline{
+  -webkit-text-fill-color: #04425B;
+  border-color: #04425B;
+}
+.btn-blue-outline:hover{
+  -webkit-text-fill-color: #dfdfdf;
+  background-color: #04425B;
+  border-color: #04425B;
+}
+
+.btn-blue-inverse:hover{
+  background-color: #ffffff;
+  border-color: #04425B;
+  -webkit-text-fill-color: #04425B;
+}
+
+.btn-blue-inverse{
+  background-color: #04425B;
+  -webkit-text-fill-color: #e1ece3;
+  
 }
 
 .table-label{

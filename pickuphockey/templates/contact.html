@@ -1,0 +1,42 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<div class="container p-2">
+    <div class="d-flex justify-content-center">
+        <div class="col-md-8">
+            <div class="py-5">
+                <h1 class="py-3">Contact Us</h1>
+                <p>Please share any questions, comments or concerns about our site. For assistance using our event hosting application, 
+                    visit our <a href="{% url 'how_it_works' %}">How it Works </a> page.</p>
+            </div>
+        <form class="row g-3" method="post">
+        {% csrf_token %}
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name = "name">
+    
+        <label for="inputemail" class="form-label">Email</label>
+        <input type="email" class="form-control" id="inputemail" name = "inputemail">
+        <label for="message" class="form-label">Message</label>
+            <textarea class="form-control" placeholder="Your message here" id="message" name="message" style="height: 300px"></textarea>
+        <div class="col-8">
+        <button type="submit" class="btn btn-green">Send</button>
+        </div>
+    </form>
+    </div>
+</div>
+<script src="https://cdn.tiny.cloud/1/z2lkkeysf567ryhr41rvr5gu6c82r2gfo7e588kwm8viqrn7/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+      selector: 'textarea',
+    
+      // plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss template importcss',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      extended_valid_elements: 'span[class]',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' },
+      ],
+    });
+  </script>
+  {% endblock %} 
