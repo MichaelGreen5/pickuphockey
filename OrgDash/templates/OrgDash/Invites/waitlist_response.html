@@ -7,19 +7,21 @@
 <div class="container">
     <div class="col-md-6 create-form">
         
-        <h1>The guest list for {{object.event.host}}'s event at {{object.event.location}} is full</h1>
-        <h2>{{object.event.date}} {{object.event.time}}</h2>
-        <h3>If you would still like to attend, you can be added to the waitlist below:</h3>
+        <h1 class="p-2">The guest list for {{object.event.host}}'s event at {{object.event.location}} is full</h1>
+        <h2 class="p-2">{{object.event.date}} {{object.event.time}}</h2>
+        <h3 class="p-2">If you would still like to attend, you can be added to the waitlist below:</h3>
         <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         <div class="p-2">
-            <input class="btn btn-success" type="submit" value="Update">
+            <button class="w-100 btn btn-lg btn-green" type="submit">Respond</button>
         </div>
         </form>
+        {% if user.is_authenticated %} 
         <div class="p-2">
-        <input type=button class="btn btn-danger" value="Cancel" onClick="javascript:history.go(-1);">
+            <button class="w-100 btn btn-lg btn-danger" type="submit" onClick="javascript:history.go(-1);">Cancel</button>
         </div>
+        {% endif %} 
     </div>
 </div>
 

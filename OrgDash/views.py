@@ -213,6 +213,7 @@ def FinalizeRosters(request, pk):
         subject = "Rosters for" + event_host.first_name + "'s event at " + current_event.location
         message = message_field 
         recipient_list = player_emails
+        recipient_list.append(current_event.host.email)
         try:
             send_mail(subject, message,  'pickuphockey1@gmail.com', recipient_list, html_message=message_field)
 
@@ -258,7 +259,9 @@ class UpdateInvite(UpdateView):
         all_invites = super().get_queryset()
         current_invite = Invitation.objects.get(pk=self.kwargs['pk'])
         current_host = current_invite.event.host
-        guest_list = all_invites.filter(Q(host = current_host) & Q(event= current_invite.event) & Q(will_you_attend = 'Yes'))
+        all_invited = all_invites.filter(Q(host = current_host) & Q(event= current_invite.event))
+        guest_list = all_invited.filter(will_you_attend = 'Yes')
+        waitlist= Waitlist.objects.get_or_create(event=current_invite.event)
         player_guest_list = []
         goalie_guest_list = []
         for guest in guest_list:
@@ -266,29 +269,42 @@ class UpdateInvite(UpdateView):
                 goalie_guest_list.append(guest)
             else:
                 player_guest_list.append(guest)
-
+        
+        if len(goalie_guest_list) == current_invite.event.max_goalies:
+            current_invite.event.goalie_full = True
+        if len(player_guest_list) == current_invite.event.max_players:
+            current_invite.event.player_full = True
+        
+        if len(waitlist[0].guests.all()) > 0 : # TODO waitlist manager
+            if current_invite.event.player_full == False:
+                print("a spot opened up")
+        # else:
+        #     current_invite.event.goalie_full == False
+        #     current_invite.event.player_full == False
+        
         if current_invite.guest.goalie:
-            if len(goalie_guest_list) == current_invite.event.max_goalies:
+            if current_invite.event.goalie_full:
                 return InviteWaitlistForm
             else:
                 return InviteUpdateForm
         else: 
-            if len(player_guest_list) == current_invite.event.max_players:
+            if current_invite.event.player_full:
                 return InviteWaitlistForm
             else:
                 return InviteUpdateForm
-        
-   
+
+
            
     def get_success_url(self):
         current_event = Invitation.objects.get(pk=self.kwargs['pk'])
         event_pk =current_event.event.pk
         return reverse_lazy('OrgDash:invite_list',args = [event_pk])
     
-    def form_valid(self, form): #Manages Waitlist guests and sends out emails. TODO does not remove from waitlist if guest is on waitlist and then says no
+    def form_valid(self, form): #Manages Waitlist guests and sends out emails. 
         current_invite = Invitation.objects.get(pk=self.kwargs['pk'])
         current_event = current_invite.event
         waitlist= Waitlist.objects.get_or_create(event=current_event)
+        
         wait_guest = form.cleaned_data.get('guest')
         context = {'current_event':current_event, 'guest':wait_guest}
     
@@ -304,9 +320,6 @@ class UpdateInvite(UpdateView):
             elif form.cleaned_data.get('will_you_attend') == 'Yes':
                 html_message = render_to_string('OrgDash/emails/RSVP_yes.html', context)
                 subject = "You have responded yes to " + str(current_event.host) + "'s event"
-
-          
-                
 
             email = EmailMessage(subject, html_message, settings.DEFAULT_FROM_EMAIL, [current_invite.guest.email])
             email.content_subtype = 'html'
@@ -554,16 +567,7 @@ def PlayerDash(request):
 
     return  render(request, 'OrgDash/Players/player_dash.html', {'my_groups': my_groups, 'my_players':my_players, 'my_goalies':my_goalies})
 
-# def GetPlayerGroups(request):
-#     my_groups = PlayerGroup.objects.filter(created_by=request.user)
-#     group_data = []
-#     for group in my_groups:
-#         group_members = group.members.all()
-#         name = group.name
-#         member_list = [(member.first_name, member.last_name) for member in group_members]
-#         group_obj = {'name': name, 'members':member_list}
-#         group_data.append(group_obj)
-#         return JsonResponse({'group_data': group_data})
+
 
 def UploadSheet(request):
     import openpyxl

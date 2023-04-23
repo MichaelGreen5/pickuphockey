@@ -42,7 +42,8 @@ class Skate(models.Model):
     max_players = models.IntegerField(default=0)
     max_goalies = models.IntegerField(default=2)
     recurring_event = models.BooleanField(default= False)
-    
+    player_full = models.BooleanField(default=False)
+    goalie_full = models.BooleanField(default=False)
     STATUS_CHOICES = [
         (7,'Every Week'),
         (14,'Every Two Weeks'),    
@@ -54,7 +55,7 @@ class Skate(models.Model):
 
        
 
-    def get_absolute_url(self):
+    def get_absolute_url(self): #delete?
         return reverse('OrgDash:organizer_dashboard',kwargs={'slug': (str(self.date) + str(self.time))})
     
     def get_next_skate_info(self):
@@ -66,6 +67,7 @@ class Skate(models.Model):
         return {'host': self.host, 'date': next_event_date, 'time':self.time,'price': self.price, 'location': self.location,
                  'max_guests': self.max_guests, 'recurring_event': self.recurring_event,'frequency': self.frequency,
                    'send_invites_datetime':next_invite_date, 'finalize_event_datetime': next_finalize_event_datetime}
+  
 
     def __str__(self):
         return ("Skate at " + self.location + " "  + str(self.date) + " " + str(self.time))
