@@ -1,125 +1,373 @@
 {% extends 'base.html' %} 
 {% block body_block %}
-<div class="container">
-
-    <div class="col-md-6 p-2">
-    <h1>My Events</h1>
-        <div class="p-2">
-            <a type="button" class="btn btn-green" href="{% url 'OrgDash:create_event' %}">Create New Event</a>
-        </div>
+<div class="container col-md-8">
+  <div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold text-body-emphasis">My Events</h1>
+    <div class="col-lg-6 mx-auto">
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center p-2">
+        <a type="button" class=" w-100 btn-lg btn btn-green" href="{% url 'OrgDash:create_event' %}">Create New Event</a>
+       
+      </div>
     </div>
+  </div>
+    
+
+<!-- modals containg event details? -->
+
+
+
+<div class="accordion py-5" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item ">
+    <h2 class="accordion-header">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        <h2>Today's Events</h2>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+      <div class="accordion-body">
+        <table class="table table-hover table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in todays_events %}
+            <tr>
+            <td><a type="button" class="btn btn-blue" data-bs-toggle="offcanvas" data-bs-target="#event{{item.id}}" aria-controls="offcanvasExample" >Event Details</a></td>
+            <td>{{item.date}}</td>
+            <td>{{item.time}}</td>
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="event{{item.id}}" aria-labelledby="offcanvasExampleLabel">
+              <div class="offcanvas-header text-bg-dark">
+                <h2 class="offcanvas-title text-white" id="offcanvasExampleLabel">Event on {{item.date}}</h2>
+                <button type="button" class="btn-close" style="background-color: white;" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body">
+                <div>
+                  
+                  <div class="container ">
+                    <div class="row py-2">
+                      <a type="button" class="  btn-lg btn btn-green" href="{% url 'OrgDash:event_detail' pk=item.pk %}">Go to event</a>
+                      <hr>
+                    </div>
+                    <div class="row py-2">
+                      <h3>Time: {{item.time}}</h3>
+                      <hr>
+                    </div>
+                    <div class="row py-2">
+                      <h3>Location: {{item.location}}</h3>
+                      <hr>
+                    </div>
+                      
+                    <div class="row py-2">
+                      <h3>Price: ${{item.price}}</h3> 
+                      <hr>
+                    </div>
+                    <div class="row py-2">
+                      <h3>Recurring:  {% if item.recurring_event == True %}
+                        <a class="link-success" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Set to repeat every {{item.frequency}} days"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                          </svg></a>
+                       {% else %}
+                       <a class="link-danger" href="{% url 'OrgDash:event_update' item.pk %}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit this event to make it repeat"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                      </svg></a>
+                      
+                        {% endif %} 
+                        <hr>
+                        <div class="row py-2">
+                          <h3>Max Players: {{item.max_players}}</h3> 
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          <h3>Max Goalies: {{item.max_goalies}}</h3> 
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          <a type="button" class="  btn-lg btn btn-gold" href="{% url 'OrgDash:event_update' pk=item.pk %}">Edit Event</a>
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          {% if item.recurring_event == True %}
+                          <a type="button" class="  btn-lg btn btn-blue" href="{% url 'OrgDash:skate_repeat_settings' pk=item.pk %}">Recurring Event Settings</a>
+                          {% else %} 
+                          <a type="button" class="  btn-lg btn btn-green" href="{% url 'OrgDash:init_skate_repeat_settings' pk=item.pk %}">Make This Event Repeat</a>
+                          {% endif %} 
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          <a type="button" class="  btn-lg btn btn-danger" href="{% url 'OrgDash:delete_event' pk=item.pk %}">Delete Event</a>
+                          <hr>
+                        </div>
+
+
+                      
+                    </div>
+                      
+                    
+                    
+                      
+                      
+                      
+                  </div>
+                
+
+
+                </div>
+                
+              </div>
+              
+            </div>
+             
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+        <h2>Upcoming Events</h2>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+      <div class="accordion-body">
+        <table class="table table-hover table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              
+             
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in upcoming_events %}
+            <tr>
+            <td><a type="button" class="btn btn-blue" data-bs-toggle="offcanvas" data-bs-target="#event{{item.id}}" aria-controls="offcanvasExample" >Event Details</a></td>
+            <td>{{item.date}}</td>
+            <td>{{item.time}}</td>
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="event{{item.id}}" aria-labelledby="offcanvasExampleLabel">
+              <div class="offcanvas-header text-bg-dark">
+                <h2 class="offcanvas-title text-white" id="offcanvasExampleLabel">Event on {{item.date}}</h2>
+                <button type="button" class="btn-close" style="background-color: white;" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body">
+                <div>
+                  
+                  <div class="container ">
+                    <div class="row py-2">
+                      <a type="button" class="  btn-lg btn btn-green" href="{% url 'OrgDash:event_detail' pk=item.pk %}">Go to event</a>
+                      <hr>
+                    </div>
+                    <div class="row py-2">
+                      <h3>Time: {{item.time}}</h3>
+                      <hr>
+                    </div>
+                    <div class="row py-2">
+                      <h3>Location: {{item.location}}</h3>
+                      <hr>
+                    </div>
+                      
+                    <div class="row py-2">
+                      <h3>Price: ${{item.price}}</h3> 
+                      <hr>
+                    </div>
+                    <div class="row py-2">
+                      <h3>Recurring:  {% if item.recurring_event == True %}
+                        <a class="link-success" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Set to repeat every {{item.frequency}} days"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                          </svg></a>
+                       {% else %}
+                       <a class="link-danger" href="{% url 'OrgDash:event_update' item.pk %}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit this event to make it repeat"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                      </svg></a>
+                      
+                        {% endif %} 
+                        <hr>
+                        <div class="row py-2">
+                          <h3>Max Players: {{item.max_players}}</h3> 
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          <h3>Max Goalies: {{item.max_goalies}}</h3> 
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          <a type="button" class="  btn-lg btn btn-gold" href="{% url 'OrgDash:event_update' pk=item.pk %}">Edit Event</a>
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          {% if item.recurring_event == True %}
+                          <a type="button" class="  btn-lg btn btn-blue" href="{% url 'OrgDash:skate_repeat_settings' pk=item.pk %}">Recurring Event Settings</a>
+                          {% else %} 
+                          <a type="button" class="  btn-lg btn btn-green" href="{% url 'OrgDash:init_skate_repeat_settings' pk=item.pk %}">Make This Event Repeat</a>
+                          {% endif %} 
+                          <hr>
+                        </div>
+                        <div class="row py-2">
+                          <a type="button" class="  btn-lg btn btn-danger" href="{% url 'OrgDash:delete_event' pk=item.pk %}">Delete Event</a>
+                          <hr>
+                        </div>
+
+
+                      
+                    </div>
+                      
+                    
+                    
+                      
+                      
+                      
+                  </div>
+                
+
+
+                </div>
+                
+              </div>
+              
+            </div>
+             
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+       <h2>Past Events</h2>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+      <div class="accordion-body">
+        <table class="table table-hover table">
+          <thead>
+              <tr>
+              <th scope="col"></th>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+          
+              
+              </tr>
+          </thead>
+          <tbody>
+              {% for item in past_events %}
+              <tr>
+              <td><a type="button" class="btn btn-blue" data-bs-toggle="offcanvas" data-bs-target="#event{{item.id}}" aria-controls="offcanvasExample" >Event Details</a></td>
+              <td>{{item.date}}</td>
+              <td>{{item.time}}</td>
+              <div class="offcanvas offcanvas-start" tabindex="-1" id="event{{item.id}}" aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header text-bg-dark">
+                  <h2 class="offcanvas-title text-white" id="offcanvasExampleLabel">Event on {{item.date}}</h2>
+                  <button type="button" class="btn-close" style="background-color: white;" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <div>
+                    
+                    <div class="container ">
+                      <div class="row py-2">
+                        <a type="button" class="  btn-lg btn btn-green" href="{% url 'OrgDash:event_detail' pk=item.pk %}">Go to event</a>
+                        <hr>
+                      </div>
+                      <div class="row py-2">
+                        <h3>Time: {{item.time}}</h3>
+                        <hr>
+                      </div>
+                      <div class="row py-2">
+                        <h3>Location: {{item.location}}</h3>
+                        <hr>
+                      </div>
+                        
+                      <div class="row py-2">
+                        <h3>Price: ${{item.price}}</h3> 
+                        <hr>
+                      </div>
+                      <div class="row py-2">
+                        <h3>Recurring:  {% if item.recurring_event == True %}
+                          <a class="link-success" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Set to repeat every {{item.frequency}} days"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg></a>
+                         {% else %}
+                         <a class="link-danger" href="{% url 'OrgDash:event_update' item.pk %}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit this event to make it repeat"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                        </svg></a>
+                        
+                          {% endif %} 
+                          <hr>
+                          <div class="row py-2">
+                            <h3>Max Players: {{item.max_players}}</h3> 
+                            <hr>
+                          </div>
+                          <div class="row py-2">
+                            <h3>Max Goalies: {{item.max_goalies}}</h3> 
+                            <hr>
+                          </div>
+                          <div class="row py-2">
+                            <a type="button" class="  btn-lg btn btn-gold" href="{% url 'OrgDash:event_update' pk=item.pk %}">Edit Event</a>
+                            <hr>
+                          </div>
+                          <div class="row py-2">
+                            {% if item.recurring_event == True %}
+                            <a type="button" class="  btn-lg btn btn-blue" href="{% url 'OrgDash:skate_repeat_settings' pk=item.pk %}">Recurring Event Settings</a>
+                            {% else %} 
+                            <a type="button" class="  btn-lg btn btn-green" href="{% url 'OrgDash:init_skate_repeat_settings' pk=item.pk %}">Make This Event Repeat</a>
+                            {% endif %} 
+                            <hr>
+                          </div>
+                          <div class="row py-2">
+                            <a type="button" class="  btn-lg btn btn-danger" href="{% url 'OrgDash:delete_event' pk=item.pk %}">Delete Event</a>
+                            <hr>
+                          </div>
+
+
+                        
+                      </div>
+                        
+                      
+                      
+                        
+                        
+                        
+                    </div>
+                  
+
+
+                  </div>
+                  
+                </div>
+                
+              </div>
+               
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    
+      
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
 
 
 
     
 
-    <div class="col-md-10 p-4">
-        <div class="table-header">
-            <h2>Today's Events</h2>
-        </div>
-        <table class="table table-hover table">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Date</th>
-                <th scope="col">Time</th>
-                <th scope="col">Location</th>
-                <th scope="col">Recurring</th> 
-              </tr>
-            </thead>
-            <tbody>
-                {% for item in todays_events %}
-              <tr>
-                <th scope="row"><a type="button" class="btn btn-blue" href="{{item.id}}">View Event</a></th>
-                <td>{{item.date}}</td>
-                <td>{{item.time}}</td>
-                <td>{{item.location}}</td>
-                {% if item.recurring_event == True %}
-                <td><a class="link-success" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Set to repeat every {{item.frequency}} days"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                  </svg></a></td>
-               {% else %}
-               <td><a class="link-danger" href="{% url 'OrgDash:event_update' item.pk %}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit this event to make it repeat"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-              </svg></a></td>
-                {% endif %} 
-                {% endfor %}  
-              </tr>
-            </tbody>
-          </table>
-    </div>
-   
-    <div class="col-md-10 p-4">
-        <div class="table-header">
-            <h2>Upcoming Events</h2>
-        </div>
-        <table class="table table-hover table">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Date</th>
-                <th scope="col">Time</th>
-                <th scope="col">Location</th>
-                <th scope="col">Recurring</th> 
-              </tr>
-            </thead>
-            <tbody>
-                {% for item in upcoming_events %}
-              <tr>
-                <th scope="row"><a type="button" class="btn btn-blue" href="{{item.id}}">View Event</a></th>
-                <td>{{item.date}}</td>
-                <td>{{item.time}}</td>
-                <td>{{item.location}}</td>
-                {% if item.recurring_event == True %}
-                <td><a class="link-success" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Set to repeat every {{item.frequency}} days"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                  </svg></a></td>
-               {% else %}
-               <td><a class="link-danger" href="{% url 'OrgDash:event_update' item.pk %}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit this event to make it repeat"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-              </svg></a></td>
-                {% endif %} 
-                {% endfor %}  
-              </tr>
-            </tbody>
-          </table>
-    </div>
-
-      <div class="col-md-10 p-4">
-        <div class="table-header">
-            <h2>Past Events</h2>
-        </div>
-        <table class="table table-hover table">
-            <thead>
-                <tr>
-                <th scope="col"></th>
-                <th scope="col">Date</th>
-                <th scope="col">Time</th>
-                <th scope="col">Location</th>
-                <th scope="col">Recurring</th>
-                
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in past_events %}
-                <tr>
-                <th scope="row"><a type="button" class="btn btn-blue" href="{{item.id}}">View Event</a></th>
-                <td>{{item.date}}</td>
-                <td>{{item.time}}</td>
-                <td>{{item.location}}</td>
-                {% if item.recurring_event == True %}
-                <td><a class="link-success" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Set to repeat every {{item.frequency}} days"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                  </svg></a></td>
-                {% else %}
-                <td><a class="link-danger" href="{% url 'OrgDash:event_update' item.pk %}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Edit this event to make it repeat"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-                  </svg></a></td>
-                {% endif %} 
-                {% endfor %}  
-                </tr>
-            </tbody>
-        </table>
+    
     </div>
 </div>
 

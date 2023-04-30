@@ -153,7 +153,7 @@ class InviteList(models.Model):
                 
 
 class LightTeam(models.Model):
-    event = models.ForeignKey(Skate, on_delete= models.CASCADE)
+    event = models.ForeignKey(Skate, on_delete= models.CASCADE, )
     team = models.ManyToManyField('Player')
     skill = models.FloatField(default=0)
    
@@ -165,7 +165,7 @@ class LightTeam(models.Model):
         self.skill = total_skill
 
 class DarkTeam(models.Model):
-    event = models.ForeignKey(Skate, on_delete= models.CASCADE, default=1)
+    event = models.ForeignKey(Skate, on_delete= models.CASCADE, default=1 )
     team = models.ManyToManyField('Player')
     skill = models.FloatField(default=0)
     

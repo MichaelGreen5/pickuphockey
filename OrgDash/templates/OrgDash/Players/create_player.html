@@ -9,11 +9,13 @@
         {% csrf_token %}
         {% bootstrap_form form %}
         <div class="p-2">
-            <input class="btn btn-green" type="submit" value="Create">
+            <button class="w-100 btn btn-lg btn-green" type="submit">Create</button>
+            
         </div>
         </form>
         <div class="p-2">
-        <input type=button class="btn btn-danger" value="Cancel" onClick="javascript:history.go(-1);">
+            <button class="w-100 btn btn-lg btn-gold" type="submit" onClick="javascript:history.go(-1);">Cancel</button>
+        
         </div>
     </div>
 </div>

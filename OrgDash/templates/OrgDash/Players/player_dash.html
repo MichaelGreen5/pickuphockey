@@ -1,15 +1,60 @@
 {% extends 'base.html' %} 
 {% block body_block %}
+{% load static %} 
 
 <div class="container">
+
   
-  <div class=" col-md-10 d-flex justify-content-between">
-    <div class="container-fluid py-5">
-      <h1 class="display-5 fw-bold">Player Dashboard</h1>
-      <p class="col-md-8 fs-4">Manage the players you plan on inviting to your events</p>
-      <a type="button" class="btn btn-blue p-2" href="{% url 'OrgDash:create_player' %}">Create Player</a>
-      <a type="button" class="btn btn-blue p-2" href="{% url 'OrgDash:upload_sheet' %}">Create Players from Spreadsheet</a>
-      <a type="button" class="btn btn-green p-2" href="{% url 'OrgDash:create_player_group' %}">Create Player Group</a>
+  
+  <div class="d-flex">
+    <div class="container-fluid py-3 ">
+      <div class="px-4 py-5 my-5 text-center">
+        
+        <h1 class="display-5 fw-bold text-body-emphasis">Player Dashboard</h1>
+        <div class="col-lg-6 mx-auto">
+          <p class="lead mb-4">Create and manage players to invite them to your events.</p>
+        </div>
+      </div>
+      <hr>
+      <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+        <div class="col">
+         <a data-bs-toggle="offcanvas" data-bs-target="#myplayers" aria-controls="offcanvasExample"><div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg tile-lg" style="background-image: url('{% static 'photos/forest-green.jpg' %}'); background-size: cover;
+          background-repeat: no-repeat;">
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+              <h3 class="text-center py-5 display-6 lh-1 fw-bold">My Players</h3>
+              <p class="text-center">Click to Manage Players</p>
+              
+            </div>
+          </div>
+          </a>
+        </div>
+  
+        <div class="col">
+          <a data-bs-toggle="offcanvas" data-bs-target="#mygoalies" aria-controls="offcanvasExample"><div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg tile-lg" style="background-image: url('{% static 'photos/blue-fabric.webp' %}'); background-size: cover;
+          background-repeat: no-repeat;">
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+              <h3 class="text-center py-5 display-6 lh-1 fw-bold">My Goalies</h3>
+              <p class="text-center">Click to Manage Goalies</p>
+            
+            </div>
+          </div>
+          </a>
+        </div>
+        
+  
+        <div class="col">
+          <a data-bs-toggle="offcanvas" data-bs-target="#mygroups" aria-controls="offcanvasExample"><div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg tile-lg" style="background-image: url('{% static 'photos/linen-canvas-texture_1373-423.avif' %}'); background-size: cover;
+          background-repeat: no-repeat;">
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+              <h3 class="text-center py-5 display-6 lh-1 fw-bold text-dark">My Player Groups</h3>
+              <p class="text-center text-dark">Click to Manage Player Groups</p>
+           
+            </div>
+          </div>
+        </a>
+        </div>
+      </div>
+     <hr>
     </div>
     
  
@@ -20,43 +65,72 @@
 
   </div>
 
-  <div class="d-flex justify-content-between">
-    <div class="col-md-4 ">
-      <div class="table-header">
-        <h3>My Players</h3>
-      </div>
-      <table class="table table-hover table">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Skill <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Player skill is used to make even teams. Rate your players on a scale from 1-10 as accurately as possible."><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-              </svg></a>
-                </th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for player in my_players %}
-            <tr>
-              
-              <td>{{player.first_name}} {{player.last_name}}</td>
-              <td>{{player.skill}}</td>
-              <td><a type="button" class="btn btn-gold" href="{% url 'OrgDash:update_player' player.pk %}">Manage</a></td>
-              
-              {% endfor %}  
-            </tr>
-          </tbody>
-        </table>
-      
 
 
+  
+ 
+ 
+
+</div>
+  
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mygroups" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h3 class="offcanvas-title" id="offcanvasExampleLabel"><strong>My Player Groups</strong> <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="If you usually invite the same group of players to your events, invite them all at once with a group. Groups are required for recurring events"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+      </svg></a></h3>
+      <hr>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="col-md-4 justify-content-right">
-      <div class="table-header">
-        <h3>My Goalies</h3>
+    <div class="offcanvas-body">
+      <div class="row py-1">
+        <a type="button" class="btn btn-gold p-2" href="{% url 'OrgDash:create_player_group' %}">Create Player Group</a>
       </div>
+      
+      <div class="justify-content-right">
+        <div class="table-header">
+          
+        </div>
+        <table class="table table-hover table">
+            <thead>
+              <tr>
+                <th scope="col">Group Name</th>
+                
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for group in my_groups %}
+              <tr>
+                
+                <td>{{group.name}}</td>
+                <td><a type="button" class="btn btn-gold" href="{% url 'OrgDash:player_group_update' pk=group.pk %}">Manage</a></td>
+                {% endfor %}  
+              </tr>
+            </tbody>
+          </table>
+        
+  
+  
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mygoalies" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="offcanvasExampleLabel"><strong>My Goalies</strong></h2>
+      <hr>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="row py-1">
+        <a type="button" class="btn btn-blue p-2" href="{% url 'OrgDash:create_player' %}">Create Goalie</a>
+      </div>
+      
+       <div class="">
+      
       <table class="table table-hover table">
           <thead>
             <tr>
@@ -84,36 +158,58 @@
 
 
     </div>
-
-    <div class="col-md-4 justify-content-right">
-      <div class="table-header">
-        <h3>My Groups <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="If you usually invite the same group of players to your events, invite them all at once with a group. Groups are required for recurring events"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-        </svg></a></h3>
-      </div>
-      <table class="table table-hover table">
-          <thead>
-            <tr>
-              <th scope="col">Group Name</th>
-              
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for group in my_groups %}
-            <tr>
-              
-              <td>{{group.name}}</td>
-              <td><a type="button" class="btn btn-gold" href="{% url 'OrgDash:player_group_update' pk=group.pk %}">Manage</a></td>
-              {% endfor %}  
-            </tr>
-          </tbody>
-        </table>
-      
-
-
     </div>
+  </div>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="myplayers" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="offcanvasExampleLabel"><strong> My Players</strong></h2>
+      <hr>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="row py-1">
+        <a type="button" class="btn btn-green p-2" href="{% url 'OrgDash:create_player' %}">Create Player</a>
+      </div>
+      <div class="row py-1">
+        <a type="button" class="btn btn-blue p-2" href="{% url 'OrgDash:upload_sheet' %}">Create Players from Spreadsheet</a>
+      </div>
+      <div class="d-flex">
+        <div class="py-2 ">
+          
+          <table class="table table-hover table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Skill <a href="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Player skill is used to make even teams. Rate your players on a scale from 1-10 as accurately as possible."><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                  </svg></a>
+                    </th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for player in my_players %}
+                <tr>
+                  
+                  <td>{{player.first_name}} {{player.last_name}}</td>
+                  <td>{{player.skill}}</td>
+                  <td><a type="button" class="btn btn-gold" href="{% url 'OrgDash:update_player' player.pk %}">Manage</a></td>
+                  
+                  {% endfor %}  
+                </tr>
+              </tbody>
+            </table>
+          
+    
+    
+        </div>
+        </div>
+    </div>
+  </div>
+
+
   </div>
 </div>
 

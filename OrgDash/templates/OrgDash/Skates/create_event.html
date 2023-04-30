@@ -8,13 +8,16 @@
     <form action="" method="post">
         {% csrf_token %} 
         {% bootstrap_form form %}    
-      
-<input type="submit" value="Create" class="btn btn-green">
+        <div class="p-1">
+            <button class="w-100 btn btn-lg btn-green" type="submit">Create</button>
+        </div>
     </form>
     <br>
-    <button type="button" class="btn btn-gold" onClick="javascript:history.go(-1);">Cancel</button>
+        <div class="p-1">
+            <button type="button" class="w-100 btn btn-lg btn btn-gold" onClick="javascript:history.go(-1);">Cancel</button>
+        </div>
     </div>
-    </div>
+</div>
 
 
 

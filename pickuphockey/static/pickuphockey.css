@@ -31,6 +31,20 @@ h1, h2, h3, h4, h5{
 .bg-gray{
   background-color: #adc9c5;
 }
+
+.bg-blue{
+  background-color: #04425B;
+}
+.bg-blue-outline{
+  border-color: #04425B;
+  -webkit-text-fill-color: #04425B;
+}
+.bg-yeti-blue{
+  background-image: url( 'navy-blue.jpg' ) ;
+  background-size: cover;
+  background-repeat: no-repeat;
+  
+}
 .btn-blue{
   background-color: #04425B;
   -webkit-text-fill-color: #e1ece3;
@@ -62,9 +76,9 @@ h1, h2, h3, h4, h5{
   border-color: #04425B;
 }
 .btn-blue-outline:hover{
-  -webkit-text-fill-color: #dfdfdf;
-  background-color: #04425B;
-  border-color: #04425B;
+  background-color: #e7e7e8;
+  -webkit-text-fill-color: #07678e;
+  border-color: #07678e;
 }
 
 .btn-blue-inverse:hover{
@@ -81,6 +95,12 @@ h1, h2, h3, h4, h5{
 
 .table-label{
   background-color: #BBCBBE;
+}
+.tile-lg{
+transition: transform 0.3s ease-in-out;
+}
+.tile-lg:hover{
+transform: scale(1.05);
 }
 
 /* 

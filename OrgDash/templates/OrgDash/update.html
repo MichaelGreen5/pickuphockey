@@ -3,17 +3,22 @@
 {% load django_bootstrap5 %}
 
 <div class="container">
+    <div class="px-4 py-5 my-5 text-center">
+        <h1 class="display-5 fw-bold text-body-emphasis">Edit {{object}}</h1>
+        <div class="col-lg-6 mx-auto">
+        </div>
+      </div>
     <div class="col-md-6 create-form">
-        <h2>Edit {{object}}</h2>
+        <h2></h2>
         <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         <div class="p-2">
-            <input class="btn btn-green" type="submit" value="Update">
+            <input class=" w-100 btn btn-green btn-lg" type="submit" value="Update">
         </div>
         </form>
         <div class="p-2">
-        <input type=button class="btn btn-gold" value="Cancel" onClick="javascript:history.go(-1);">
+        <input type=button class="btn btn-gold btn-lg w-100" value="Cancel" onClick="javascript:history.go(-1);">
         </div>
     </div>
     

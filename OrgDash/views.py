@@ -169,12 +169,93 @@ def TeamsView(request, pk):
         return redirect(reverse('OrgDash:make_teams', args=[active_event.pk]), context)
     else:
     
-        return render (request,'OrgDash/Skates/make_teams.html',context)
+        return render (request,'OrgDash/Skates/make_teams2.html',context)
 
+def QuickTeams(request):
+    from OrgDash.team_sort import SortTeams, SetTeams, RemoveFromTeam, AddToTeam
+    active_user = request.user.pk
+    my_players = Player.objects.filter(created_by=active_user)
+    skaters = []
+    goalies = []
+    for player in my_players:
+        if player.goalie:
+            goalies.append(player)
+        else:
+            skaters.append(player)
+
+    #Take player skill and make teams
+    player_data =[((player), float(player.skill)) for player in skaters]
+    goalie_data = [((player), float(player.skill)) for player in goalies]
+    
+    # #set light team
+    light_team_tup = LightTeam.objects.create()
+    light_team_obj = light_team_tup[0]
+    light_team_obj.get_total_skill()
+    
+    # set dark team
+    dark_team_tup = DarkTeam.objects.create()
+    dark_team_obj = dark_team_tup[0]
+    dark_team_obj.get_total_skill()
+    
+    # set bench
+    bench_obj = Bench.objects.create()
+    bench_obj[0].SetBench(my_players, light_team_obj, dark_team_obj)
+   
+    total_skill = (float(dark_team_obj.skill) + float(light_team_obj.skill))
+
+    context = {'light_team': light_team_obj.team.all(), 'dark_team': dark_team_obj.team.all(), 'total_skill':total_skill, 'my_players':my_players,
+                'light_team_skill' : light_team_obj.skill, 'dark_team_skill': dark_team_obj.skill, 'bench_members': bench_obj[0].bench_members.all()}
+    if request.method == 'POST':
+        sort_action = request.POST.get('auto_sort')
+        light_form_action = request.POST.get('light_form_action')
+        dark_form_action = request.POST.get('dark_form_action')
+        bench_action = request.POST.get('bench_action')
+        
+        if sort_action == 'auto_sort':
+            teams = SortTeams(player_data, goalie_data)
+            
+            # set light teams
+            light_team_members = [player[0] for player in teams[0]]
+            light_team_tup = LightTeam.objects.create()
+            light_team_obj = light_team_tup[0]
+            light_team_obj.team.set(light_team_members)
+
+    
+            # set dark team
+            dark_team_members = [player[0] for player in teams[1]]
+            dark_team_tup = DarkTeam.objects.create()
+            dark_team_obj = dark_team_tup[0]
+            dark_team_obj.team.set(dark_team_members)
+            
+            
+            
+        if light_form_action == 'remove_player_light':
+            selected_player_ids = request.POST.getlist('light_player')
+            RemoveFromTeam(light_team_obj, selected_player_ids)
+            
+        if dark_form_action == 'remove_player_dark':
+            selected_player_ids = request.POST.getlist('dark_player')
+            RemoveFromTeam(dark_team_obj, selected_player_ids)
+            
+        if bench_action == 'add_to_light':
+            selected_player_ids = request.POST.getlist('bench_player')
+            AddToTeam(light_team_obj, selected_player_ids)
+            
+        elif bench_action == 'add_to_dark':
+            selected_player_ids = request.POST.getlist('bench_player')
+            AddToTeam(dark_team_obj, selected_player_ids)
+
+        return redirect(reverse('OrgDash:quick_teams', context))
+    else:
+        return render (request,'OrgDash/Skates/quick_teams.html',context)
 
 def EventDash(request, pk): #TODO waitlist. button to change rsvp to no. Be able to update auto settings.
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
+    my_player_groups = PlayerGroup.objects.filter(created_by = active_user).all()
+    invite_list_tup = InviteList.objects.get_or_create(event= active_event)
+    if invite_list_tup[1] == False:
+        invite_list_tup[0].guests.clear()
     all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
     invites_sent = len(all_invited)
     guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
@@ -189,9 +270,34 @@ def EventDash(request, pk): #TODO waitlist. button to change rsvp to no. Be able
     wait_list = wait_list_obj[0].guests.all()
     spots_left = active_event.max_players - len(player_list)
     goalie_spots_left = active_event.max_goalies - len(goalie_list)
-    context = {'event': active_event, 'guest_list': player_list, 'goalie_list':goalie_list, 'spots_left': spots_left, 'goalie_spots_left': goalie_spots_left,
-                 'invites_sent':invites_sent, 'wait_list':wait_list}
-    return render(request, 'OrgDash/Skates/event_detail.html', context)
+    context = {'event': active_event, 'guest_list': player_list, 'goalie_list':goalie_list, 'guest_num':(len(player_list) + len(goalie_list)), 
+               'spots_left': spots_left, 'goalie_spots_left': goalie_spots_left, 'player_groups':my_player_groups,
+                 'invites_sent':invites_sent, 'wait_list':wait_list, 'wait_num':len(wait_list), 'all_invited': all_invited }
+    if request.method == "POST":
+        group_id = request.POST.get('invite_group')
+        selected_group_members = PlayerGroup.objects.get(id=group_id).members.all()
+        for member in selected_group_members:
+            invite_list_tup[0].guests.add(member)
+    
+        return redirect(reverse('OrgDash:finalize_invites' ,args=[active_event.pk]), context)
+    else:
+        return render(request, 'OrgDash/Skates/event_detail2.html', context)
+
+# def GuestListView(request,pk):
+#     active_event = Skate.objects.get(pk=pk)
+#     event_max_guests = active_event.max_players 
+#     active_user = request.user.pk
+#     all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
+#     guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
+#     players_attending = [guest for guest in guest_list if guest.guest.goalie == False]
+#     wait_list = Waitlist.objects.get_or_create(event=active_event)#might be able to delete this
+#     wait_list_members = wait_list[0].guests.all()
+
+#     player_spots_left = event_max_guests - len(players_attending)
+#     context = {'all_invited':all_invited, 'active_event': active_event, 
+#                 'spots_left': player_spots_left, 'waitlist':wait_list_members}
+#     return render(request, 'OrgDash/Invites/invite_list.html', context)
+
 
 def FinalizeRosters(request, pk):
     current_event = Skate.objects.get(pk=pk)
@@ -354,72 +460,63 @@ def WaitListManager(request, pk): #TODO make this work. More try and accept with
         print('a spot opened up!')
 
 
-def GuestListView(request,pk):
-    active_event = Skate.objects.get(pk=pk)
-    event_max_guests = active_event.max_players 
-    active_user = request.user.pk
-    all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
-    guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
-    players_attending = [guest for guest in guest_list if guest.guest.goalie == False]
-    wait_list = Waitlist.objects.get_or_create(event=active_event)#might be able to delete this
-    wait_list_members = wait_list[0].guests.all()
 
-    player_spots_left = event_max_guests - len(players_attending)
-    context = {'all_invited':all_invited, 'active_event': active_event, 
-                'spots_left': player_spots_left, 'waitlist':wait_list_members}
-    return render(request, 'OrgDash/Invites/invite_list.html', context)
 
 
 def AddToInviteList(request, pk):
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
     my_players = Player.objects.filter(created_by=active_user)
-    my_groups = PlayerGroup.objects.filter(created_by=active_user)
+    # my_groups = PlayerGroup.objects.filter(created_by=active_user)
     existing_invites = Invitation.objects.filter(event=active_event)
     player_already_invited =[player.guest for player in existing_invites]
+    
     invite_list_tup = InviteList.objects.get_or_create(event= active_event)
     if invite_list_tup[1] == False:
-        for player in player_already_invited:
-            invite_list_tup[0].guests.remove(player)
+        invite_list_tup[0].guests.clear()
+        # for player in player_already_invited:
+        #     invite_list_tup[0].guests.remove(player)
    
     invite_list =  list(invite_list_tup[0].guests.all())
     yet_to_invite = []
     for player in my_players:
-        if player not in player_already_invited + invite_list:
+        if player not in player_already_invited:
                 yet_to_invite.append(player)
-
+    
+    
     context={
     'active_event':active_event, 'yet_to_invite':yet_to_invite, 
-    'my_groups':my_groups, 'invite_list':invite_list, 'inv_obj': invite_list_tup[0]
+     'invite_list':invite_list, 'inv_obj': invite_list_tup[0]
     
     }
-    
+    #TODO make this work with new front end
     if request.method == 'POST':
-        form_action = request.POST.get('form_action')
-        if form_action == 'add_player':
-            selected_player_ids = request.POST.getlist('selected_players_to_add')
-            for player_id in selected_player_ids:
-     
-                invite_list_tup[0].guests.add(player_id)
+        # form_action = request.POST.get('form_action')
+        # if form_action == 'add_player':
+        selected_player_ids = request.POST.getlist('selected_players_to_add')
+        for player_id in selected_player_ids:
+            
+            invite_list_tup[0].guests.add(player_id)
 
-        elif form_action == 'remove_player':
-            selected_player_ids = request.POST.getlist('selected_players_to_remove')
-            for player_id in selected_player_ids:
-                invite_list_tup[0].guests.remove(player_id)
+        # elif form_action == 'remove_player':
+        #     selected_player_ids = request.POST.getlist('selected_players_to_remove')
+        #     for player_id in selected_player_ids:
+        #         invite_list_tup[0].guests.remove(player_id)
 
-        else: 
-            group_id = request.POST.get('add_group')
-            selected_group_members = PlayerGroup.objects.get(id=group_id).members.all()
-            for member in selected_group_members:
-                invite_list_tup[0].guests.add(member)
+        # else: 
+        #     group_id = request.POST.get('add_group')
+        #     selected_group_members = PlayerGroup.objects.get(id=group_id).members.all()
+        #     for member in selected_group_members:
+        #         invite_list_tup[0].guests.add(member)
          
-        return redirect(reverse('OrgDash:add_invites', args=[active_event.pk]), context)
+        return redirect(reverse('OrgDash:finalize_invites', args=[active_event.pk]), context)
     else:  
-        return render(request, 'OrgDash/Invites/invite_dash.html', context )
+        return render(request, 'OrgDash/Invites/invitedash2.html', context )
 
 
 def FinalizeInvites(request, pk): #TODO needs to be unique invite objs only. no duplicates. Need to have a way for individuals to acess their own invite
-    invite_list_obj = InviteList.objects.get(pk=pk)
+    active_event = Skate.objects.get(pk=pk)
+    invite_list_obj = InviteList.objects.get(event=active_event)
     invite_list = invite_list_obj.guests.all()
     num_of_guests = len(invite_list)
     player_emails = [player.email for player in invite_list]
@@ -430,6 +527,7 @@ def FinalizeInvites(request, pk): #TODO needs to be unique invite objs only. no 
         subject = "Invitation to " + str(current_event.host) + "'s event at " + current_event.location
         message = message_field 
         recipient_list = player_emails
+        print(recipient_list)
         for guest in invite_list:
             greeting = '<h1>Hello ' + guest.first_name + ',</h1>'
             url = 'http://127.0.0.1:8000/organize/manage-invites/respond/183'
@@ -517,7 +615,7 @@ def Playergroups(request):
         return redirect(reverse('OrgDash:player_dash'))
     else:
 
-        return render(request, 'OrgDash/Players/create_player_group.html', context)
+        return render(request, 'OrgDash/Players/create_player_group2.html', context)
     
 class PlayerGroupDetail(DetailView):
     model= PlayerGroup
@@ -557,7 +655,7 @@ def UpdatePlayerGroup(request,pk):
         return redirect(reverse('OrgDash:player_group_update', args=[current_group.pk]))
 
     context={'non_members': non_members, 'members':members, 'current_group': current_group}
-    return render(request, 'OrgDash/Players/update_group.html', context)
+    return render(request, 'OrgDash/Players/update_group2.html', context)
 
 
 def PlayerDash(request):

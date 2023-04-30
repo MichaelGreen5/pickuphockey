@@ -1,15 +1,30 @@
 {% extends 'base.html' %} 
 {% block body_block %}
 {% load django_bootstrap5 %} 
-<h1>Make this event repeat</h1>
+
+
+
 <div class="container">
-    
-    <form method="post">
+    <div class="p-3 my-5 text-center">
+        <h1 class="display-5 fw-bold text-body-emphasis">Make this event repeat</h1>
+        <hr>
+        
+      </div>
+    <div class="col-md-6 create-form">
+        <form method="post" >
         {% csrf_token %}
         {% bootstrap_form form %}
-        <input class="btn btn-blue" type="submit" value="Update">
-    </form>
-
+        <div class="p-2">
+            <input class=" w-100 btn btn-green btn-lg" type="submit" value="Update">
+        </div>
+        </form>
+        <div class="p-2">
+        <input type=button class="btn btn-gold btn-lg w-100" value="Cancel" onClick="javascript:history.go(-1);">
+        </div>
+    </div>
+    
 </div>
+
+
 
 {% endblock %} 
