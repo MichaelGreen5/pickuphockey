@@ -27,8 +27,8 @@
                 </div>
                 {% else %} 
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                  <button type="button" class="btn btn-green">Sign Up</button>
-                  <button type="button" class="btn btn-blue">Sign in</button>
+                  <a type="button" href= "{% url 'sign_up' %}" class="btn btn-green">Sign Up</a>
+                  <a type="button" href= "{% url 'login' %}" class="btn btn-blue">Sign in</a>
                 </div>
                 {% endif %} 
               </div>
