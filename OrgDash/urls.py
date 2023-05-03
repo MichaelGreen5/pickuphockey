@@ -15,7 +15,7 @@ path('<int:pk>/edit/', views.EventUpdateView.as_view(), name = 'event_update'),
 path('<int:pk>/recurring', views.SkateRepeatUpdate.as_view(), name = 'skate_repeat_settings'),
 path('<int:pk>/init/recurring', views.InitSkateRepeatUpdate.as_view(), name = 'init_skate_repeat_settings'),
 path('<int:pk>/teams', views.TeamsView, name = 'make_teams'),
-path('quick-teams/', views.QuickTeams, name='quick_teams'),
+
 path('<int:pk>/teams/finalize', views.FinalizeRosters, name = 'finalize_rosters'),
 
 

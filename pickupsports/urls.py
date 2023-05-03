@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from pickuphockey import views
+from quickteams.views import QuickTeams, CreateQuickPlayer
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 
@@ -30,12 +31,15 @@ urlpatterns = [
     path('message-sent', views.MessageSent, name = 'message_sent'),
     path('how-it-works', views.HowItWorks, name = 'how_it_works'),
 
+    
+
     path('reset-password/', views.PasswordReset.as_view(), name ='reset_password'),
     path('reset-password-sent/', views.PasswordResetSent.as_view(), name ='password_reset_done'),
     path('reset/<uidb64>/<token>', views.PasswordResetFormView.as_view(), name ='password_reset_confirm'),
     path('reset-password-complete/', views.PasswordResetComplete.as_view(), name ='password_reset_complete'),
     
     path('organize/', include('OrgDash.urls')), 
+    path('quick_teams/', include('quickteams.urls'))
 
 ]
 

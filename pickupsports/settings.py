@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'OrgDash',
     'huey.contrib.djhuey',
+    'quickteams',
 ]
 
 HUEY = {

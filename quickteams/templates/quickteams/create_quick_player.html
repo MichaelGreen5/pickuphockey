@@ -1,0 +1,22 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+{% load django_bootstrap5 %} 
+
+<div class="container">
+    <div class="col-md-6 create-form">
+        <h2>Create Player</h1>
+        <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div class="p-2">
+            <button class="w-100 btn btn-lg btn-green" type="submit">Create</button>
+            
+        </div>
+        </form>
+        <div class="p-2">
+            <button class="w-100 btn btn-lg btn-gold" type="submit" onClick="javascript:history.go(-1);">Cancel</button>
+        
+        </div>
+    </div>
+</div>
+{% endblock %} 
