@@ -6,7 +6,8 @@
     <div class="container p-4" id="featured-3">
       <div class="p-4 text-center">
         <h1 class="display-5 fw-bold text-body-emphasis">Send A Message to Your Guests</h1>
-        <h3>Message will automatically include a greeting and RSVP link</h3>
+        <h3>Message will automatically include a greeting, RSVP link, and details about the event</h3>
+        <h4>{{event.date}} {{event.time}} at {{event.location}}</h4>
       </div>
       <div class="col-lg-6 mx-auto">
         <p class="lead mb-4 text-center">You are inviting {{num_of_guests}} guests to this event</p>
@@ -31,7 +32,7 @@
           </head>
           <body>
           <textarea id="textarea" name="tinymce_email_invite">
-              {% include 'OrgDash/Invites/invitation_email_2.html'%}
+              
           </textarea>
           <div class="py-3 mx-auto">
             <input class="btn btn-green btn-lg w-100" type="submit" value="Send">

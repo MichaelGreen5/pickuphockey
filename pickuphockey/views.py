@@ -6,6 +6,9 @@ from django.contrib.auth.views import LoginView, PasswordResetView, PasswordRese
 from django.contrib.auth import login
 from django.core.mail import send_mail
 
+
+
+
 def baseview(request):
     return render(request, 'base.html')
 
@@ -17,7 +20,7 @@ def homepage(request):
 
 class SignUp(CreateView):
     form_class = SignUp
-    success_url = reverse_lazy('OrgDash:organizer_dashboard')
+    success_url = reverse_lazy('home')
     template_name = 'sign_up.html'
 
     def form_valid(self, form):

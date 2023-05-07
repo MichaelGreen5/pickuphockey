@@ -103,22 +103,18 @@ class EventUpdateView(UpdateView):
         return reverse('OrgDash:event_detail', args=[self.object.pk])
 
 
-def TeamsView(request, pk): 
+def TeamsView(request, pk):
     from OrgDash.team_sort import SortTeams, SetTeams, RemoveFromTeam, AddToTeam
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
     guests = Invitation.objects.filter(Q(host= active_user) & Q(event= active_event) & Q(will_you_attend= 'Yes'))
-    skaters = []
-    goalies = []
-    for player in guests:
-        if player.guest.goalie:
-            goalies.append(player)
-        else:
-            skaters.append(player)
+    skaters = active_event.player_guests.all()
+    goalies = active_event.goalie_guests.all()
+    
    
     #Take player skill and make teams
-    player_data =[((guest.guest), float(guest.guest.skill)) for guest in skaters]
-    goalie_data = [((guest.guest), float(guest.guest.skill)) for guest in goalies]
+    player_data =[((guest), float(guest.skill)) for guest in skaters]
+    goalie_data = [((guest), float(guest.skill)) for guest in goalies]
     
     # #set light team
     light_team_tup = LightTeam.objects.get_or_create(event=active_event)
@@ -173,54 +169,39 @@ def TeamsView(request, pk):
 
 
 
-def EventDash(request, pk): #TODO waitlist. button to change rsvp to no. Be able to update auto settings.
+def EventDash(request, pk): 
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
     my_player_groups = PlayerGroup.objects.filter(created_by = active_user).all()
-    invite_list_tup = InviteList.objects.get_or_create(event= active_event)
-    if invite_list_tup[1] == False:
-        invite_list_tup[0].guests.clear()
+    invite_list_obj, created = InviteList.objects.get_or_create(event= active_event)
+    if created == False:
+        invite_list_obj.guests.clear()
+    
     all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
-    invites_sent = len(all_invited)
-    guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
-    goalie_list = []
-    player_list = []
-    for guest in guest_list:
-        if guest.guest.goalie:
-            goalie_list.append(guest)
-        else:
-            player_list.append(guest)
-    wait_list_obj = Waitlist.objects.get_or_create(event=active_event)
-    wait_list = wait_list_obj[0].guests.all()
-    spots_left = active_event.max_players - len(player_list)
-    goalie_spots_left = active_event.max_goalies - len(goalie_list)
+    
+    player_list = active_event.player_guests.all()
+    goalie_list = active_event.goalie_guests.all()
+    wait_list_obj, created = Waitlist.objects.get_or_create(event=active_event)
+    wait_list = wait_list_obj.guests.all()
+    spots_left = active_event.max_players - len(active_event.player_guests.all())
+    goalie_spots_left = active_event.max_goalies - len(active_event.goalie_guests.all())
+    
+    
+    
     context = {'event': active_event, 'guest_list': player_list, 'goalie_list':goalie_list, 'guest_num':(len(player_list) + len(goalie_list)), 
                'spots_left': spots_left, 'goalie_spots_left': goalie_spots_left, 'player_groups':my_player_groups,
-                 'invites_sent':invites_sent, 'wait_list':wait_list, 'wait_num':len(wait_list), 'all_invited': all_invited }
+                  'wait_list':wait_list, 'wait_num':len(wait_list), 'all_invited': all_invited }
     if request.method == "POST":
         group_id = request.POST.get('invite_group')
         selected_group_members = PlayerGroup.objects.get(id=group_id).members.all()
         for member in selected_group_members:
-            invite_list_tup[0].guests.add(member)
+            invite_list_obj.guests.add(member)
     
         return redirect(reverse('OrgDash:finalize_invites' ,args=[active_event.pk]), context)
     else:
         return render(request, 'OrgDash/Skates/event_detail2.html', context)
 
-# def GuestListView(request,pk):
-#     active_event = Skate.objects.get(pk=pk)
-#     event_max_guests = active_event.max_players 
-#     active_user = request.user.pk
-#     all_invited = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event))
-#     guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
-#     players_attending = [guest for guest in guest_list if guest.guest.goalie == False]
-#     wait_list = Waitlist.objects.get_or_create(event=active_event)#might be able to delete this
-#     wait_list_members = wait_list[0].guests.all()
 
-#     player_spots_left = event_max_guests - len(players_attending)
-#     context = {'all_invited':all_invited, 'active_event': active_event, 
-#                 'spots_left': player_spots_left, 'waitlist':wait_list_members}
-#     return render(request, 'OrgDash/Invites/invite_list.html', context)
 
 
 def FinalizeRosters(request, pk):
@@ -278,112 +259,66 @@ class CreateInvite(CreateView):
 
     def get_initial(self):
         return {'host': self.request.user, 'event': self.kwargs['pk']}
-    
 
-class UpdateInvite(UpdateView): 
-    model = Invitation
-    form_class = InviteUpdateForm
+def RespondToIinvite(request, pk): 
+    current_invite = Invitation.objects.get(pk=pk)
+    link = reverse('OrgDash:update_invite', kwargs={'pk': current_invite.pk})
+
+    active_event = current_invite.event
    
+    waitlist, created = Waitlist.objects.get_or_create(event=active_event)
+    context = {'guest':current_invite.guest, 'event':active_event, 'link':link}
 
-    def get_form_class(self): #TODO do i need to do thes qs again?
-        all_invites = super().get_queryset()
-        current_invite = Invitation.objects.get(pk=self.kwargs['pk'])
-        current_host = current_invite.event.host
-        all_invited = all_invites.filter(Q(host = current_host) & Q(event= current_invite.event))
-        guest_list = all_invited.filter(will_you_attend = 'Yes')
-        waitlist= Waitlist.objects.get_or_create(event=current_invite.event)
-        player_guest_list = []
-        goalie_guest_list = []
-        for guest in guest_list:
-            if guest.guest.goalie:
-                goalie_guest_list.append(guest)
-            else:
-                player_guest_list.append(guest)
-        
-        if len(goalie_guest_list) == current_invite.event.max_goalies:
-            current_invite.event.goalie_full = True
-        if len(player_guest_list) == current_invite.event.max_players:
-            current_invite.event.player_full = True
-        
-        if len(waitlist[0].guests.all()) > 0 : # TODO waitlist manager
-            if current_invite.event.player_full == False:
-                print("a spot opened up")
-        # else:
-        #     current_invite.event.goalie_full == False
-        #     current_invite.event.player_full == False
-        
-        if current_invite.guest.goalie:
-            if current_invite.event.goalie_full:
-                return InviteWaitlistForm
-            else:
-                return InviteUpdateForm
-        else: 
-            if current_invite.event.player_full:
-                return InviteWaitlistForm
-            else:
-                return InviteUpdateForm
-
-
-           
-    def get_success_url(self):
-        current_event = Invitation.objects.get(pk=self.kwargs['pk'])
-        event_pk =current_event.event.pk
-        return reverse_lazy('OrgDash:invite_list',args = [event_pk])
-    
-    def form_valid(self, form): #Manages Waitlist guests and sends out emails. 
-        current_invite = Invitation.objects.get(pk=self.kwargs['pk'])
-        current_event = current_invite.event
-        waitlist= Waitlist.objects.get_or_create(event=current_event)
-        
-        wait_guest = form.cleaned_data.get('guest')
-        context = {'current_event':current_event, 'guest':wait_guest}
-    
-        if self.request.method == 'POST':
-            if form.cleaned_data.get('will_you_attend') == 'Waitlist':
-                waitlist[0].guests.add(wait_guest)
-                html_message = render_to_string('OrgDash/emails/add_to_waitlist.html', context)
-                subject = "You have been added to the waitlist for " + str(current_event.host) + "'s event"
-            elif form.cleaned_data.get('will_you_attend') == 'No':
-                html_message = render_to_string('OrgDash/emails/RSVP_no.html', context)
-                subject = "You have responded no to " + str(current_event.host) + "'s event"
-                waitlist[0].guests.remove(wait_guest)
-            elif form.cleaned_data.get('will_you_attend') == 'Yes':
+    if (current_invite.guest.goalie and active_event.goalie_full) or (not current_invite.guest.goalie and active_event.player_full):
+        form_class = InviteWaitlistForm
+    else:
+        form_class = InviteUpdateForm
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=current_invite)
+        if form.is_valid():
+            current_invite.update_event(waitlist)
+            current_invite.check_full()
+            waitlist.notify_open_spot(current_invite)
+            form.save()
+            
+            if current_invite.will_you_attend == "Yes":
                 html_message = render_to_string('OrgDash/emails/RSVP_yes.html', context)
-                subject = "You have responded yes to " + str(current_event.host) + "'s event"
+                subject = "You have responded yes to " + str(active_event.host) + "'s event"
+            elif current_invite.will_you_attend == "No":
+                html_message = render_to_string('OrgDash/emails/RSVP_no.html', context)
+                subject = "You have responded no to " + str(active_event.host) + "'s event"
+            elif current_invite.will_you_attend == "Waitlist":
+                html_message = render_to_string('OrgDash/emails/add_to_waitlist.html', context)
+                subject = "You have been added to the waitlist for " + str(active_event.host) + "'s event"
+            send_mail(subject, 'message',active_event.host.email, [current_invite.guest.email] , html_message=html_message)
+         
+            return redirect('OrgDash:invite_confirm_landing', pk=current_invite.pk)
+            
 
-            email = EmailMessage(subject, html_message, settings.DEFAULT_FROM_EMAIL, [current_invite.guest.email])
-            email.content_subtype = 'html'
-            email.send()
-            return super().form_valid(form)
+    else:
+        form = form_class(instance=current_invite)
+        if form_class == InviteWaitlistForm:
+            return render(request, 'OrgDash/Invites/waitlist_response.html', {'form': form, 'event':active_event})
     
-    def get_template_names(self):
-        if isinstance(self.get_form(), InviteWaitlistForm):
-            return ['OrgDash/Invites/waitlist_response.html'] 
-        else:
-            return ['OrgDash/Invites/invite_response.html']
+    return render(request, 'OrgDash/Invites/invite_response.html', {'form': form, 'event':active_event})
+    
+
+def InviteConfirm(request, pk):
+    current_invite = Invitation.objects.get(pk=pk)
+    link = reverse('OrgDash:update_invite', kwargs={'pk': current_invite.pk})
+    active_event = current_invite.event
+    context = {'event':active_event, 'invite':current_invite, 'link':link}
+    return render(request, 'OrgDash/Skates/invite_response_landing.html', context)
         
-  
 
-
-class DeleteInvite(DeleteView):
+class DeleteInvite(DeleteView): #TODO should you be allowed to delete invites? might cause issues
     model = Invitation
     template_name = 'OrgDash/confirm_delete.html'
 
     def get_success_url(self):
         current_event = Invitation.objects.get(pk=self.kwargs['pk'])
         event_pk =current_event.event.pk
-        return reverse_lazy('OrgDash:invite_list',args = [event_pk])
-
-def WaitListManager(request, pk): #TODO make this work. More try and accept with emails. CC organizer that rosters were sent. guest confirmation that they already rsvped yes
-    active_event = Skate.objects.get(pk=pk)
-    wait_list = Waitlist.objects.get_or_create(event=active_event)
-    active_user = request.user.pk
-    wait_list_members = wait_list[0].guests.all()
-    guest_list = Invitation.objects.filter(Q(host= active_user) & Q(event=active_event) & Q(will_you_attend= 'Yes'))
-    if active_event.max_players <= guest_list:
-        print('a spot opened up!')
-
-
+        return reverse_lazy('OrgDash:event_detail',args = [event_pk])
 
 
 
@@ -413,7 +348,7 @@ def AddToInviteList(request, pk):
      'invite_list':invite_list, 'inv_obj': invite_list_tup[0]
     
     }
-    #TODO make this work with new front end
+   
     if request.method == 'POST':
         # form_action = request.POST.get('form_action')
         # if form_action == 'add_player':
@@ -438,25 +373,29 @@ def AddToInviteList(request, pk):
         return render(request, 'OrgDash/Invites/invitedash2.html', context )
 
 
-def FinalizeInvites(request, pk): #TODO needs to be unique invite objs only. no duplicates. Need to have a way for individuals to acess their own invite
+def FinalizeInvites(request, pk): 
     active_event = Skate.objects.get(pk=pk)
     invite_list_obj = InviteList.objects.get(event=active_event)
     invite_list = invite_list_obj.guests.all()
     num_of_guests = len(invite_list)
     player_emails = [player.email for player in invite_list]
     current_event = invite_list_obj.event
-    if request.method == 'POST':
+    if request.method == 'POST': 
         message_field = request.POST['tinymce_email_invite']
         invite_list_obj.create_invites()
         subject = "Invitation to " + str(current_event.host) + "'s event at " + current_event.location
-        message = message_field 
+       
         recipient_list = player_emails
-        print(recipient_list)
+        
+        
         for guest in invite_list:
-            greeting = '<h1>Hello ' + guest.first_name + ',</h1>'
-            url = 'http://127.0.0.1:8000/organize/manage-invites/respond/183'
-            link = "<a href=" + "'"+ url + "'"+ "><h3>Click Here to RSVP<h3></a>"
-            send_mail(subject, 'message',   'pickuphockey1@gmail.com', [guest.email], html_message=greeting + message + link)
+            invite = Invitation.objects.get(Q(event=active_event) & Q (guest=guest))
+            link = reverse('OrgDash:update_invite', kwargs={'pk': invite.pk})
+           
+            context = {'message': message_field, 'event': current_event, 'guest':guest, 'link':link}
+            html_message = render_to_string('OrgDash/emails/invitation_email.html', context)
+            
+            send_mail(subject, 'message', active_event.host.email, [guest.email] , html_message=html_message)
 
         
         
@@ -469,7 +408,7 @@ def FinalizeInvites(request, pk): #TODO needs to be unique invite objs only. no 
         
         return redirect(reverse('OrgDash:event_detail' ,args=[invite_list_obj.event.pk]))
     else:
-        return render(request, 'OrgDash/Invites/finalize_invites.html', {'inv_obj': invite_list_obj, 'invite_list':invite_list, 'num_of_guests': num_of_guests})
+        return render(request, 'OrgDash/Invites/finalize_invites.html', {'inv_obj': invite_list_obj, 'invite_list':invite_list, 'num_of_guests': num_of_guests, 'event':active_event})
 
 
 

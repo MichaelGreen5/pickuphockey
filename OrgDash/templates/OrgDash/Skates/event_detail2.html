@@ -107,17 +107,23 @@
           <div>
             
             <div class="container ">
+                <div style= "background-color: #04425B;">
+                    <h3 class="offcanvas-title text-white text-center">Skaters</h3>
+                </div>
+                <hr>
                 {% for guest in guest_list %}
               <div class="row py-2">
-                <p>{{guest.guest}}</p>
+                <h5>{{guest}}</h5>
                 <hr>
               </div>
               {% endfor %} 
-              <h3>Goalies</h3>
+              <div style= "background-color: #04425B;">
+                <h3 class="offcanvas-title text-white text-center">Goalies</h3>
+            </div>
               <hr>
               {% for guest in goalie_list %} 
               <div class="row py-2">
-                <p>{{guest.guest}}<p>
+                <h5>{{guest}}<h5>
                 <hr>
               </div>
               {% endfor %}  

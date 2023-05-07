@@ -4,7 +4,8 @@ import os
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
-from django.utils.text import slugify
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from django.urls import reverse
 
@@ -44,6 +45,8 @@ class Skate(models.Model):
     recurring_event = models.BooleanField(default= False)
     player_full = models.BooleanField(default=False)
     goalie_full = models.BooleanField(default=False)
+    player_guests = models.ManyToManyField('Player', related_name= 'player_guests')
+    goalie_guests = models.ManyToManyField('Player', related_name= 'goalie_guests')
     STATUS_CHOICES = [
         (7,'Every Week'),
         (14,'Every Two Weeks'),    
@@ -52,21 +55,21 @@ class Skate(models.Model):
     send_invite_days_before = models.IntegerField(default= 3, blank= True)
     finalize_event_hours_before = models.IntegerField(default=1, blank= True)
     group_to_invite = models.ForeignKey('PlayerGroup', on_delete= models.CASCADE, blank= True, null=True)
+    already_duplicated = models.BooleanField(default= False)
 
-       
+    
 
-    def get_absolute_url(self): #delete?
-        return reverse('OrgDash:organizer_dashboard',kwargs={'slug': (str(self.date) + str(self.time))})
+    
     
     def get_next_skate_info(self):
         added_days = timedelta(days=int(self.frequency))
+        
         next_event_date = self.date + added_days
-        next_invite_date = self.send_invites_datetime + added_days
-        next_finalize_event_datetime = self.send_invites_datetime + added_days
+      
 
         return {'host': self.host, 'date': next_event_date, 'time':self.time,'price': self.price, 'location': self.location,
-                 'max_guests': self.max_guests, 'recurring_event': self.recurring_event,'frequency': self.frequency,
-                   'send_invites_datetime':next_invite_date, 'finalize_event_datetime': next_finalize_event_datetime}
+                 'max_players': self.max_players, 'max_goalies' : self.max_goalies, 'recurring_event': self.recurring_event,'frequency': self.frequency,
+                   'send_invite_days_before':self.send_invite_days_before, 'finalize_event_hours_before': self.finalize_event_hours_before}
   
 
     def __str__(self):
@@ -88,8 +91,37 @@ class Invitation(models.Model):
     will_you_attend = models.CharField(max_length=256, choices=STATUS_CHOICES, default ='No')
     
 
-    def get_absolute_url(self):
-        return reverse('OrgDash:invite_list')
+
+    def update_event(self, waitlist_obj):
+        if self.will_you_attend == 'Yes':
+            if self.guest.goalie:
+                self.event.goalie_guests.add(self.guest)
+                waitlist_obj.guests.remove(self.guest)
+            else:
+                self.event.player_guests.add(self.guest)
+                waitlist_obj.guests.remove(self.guest)
+        elif self.will_you_attend == 'No':
+            if self.guest.goalie:
+                self.event.goalie_guests.remove(self.guest)
+                waitlist_obj.guests.remove(self.guest)
+            else:
+                self.event.player_guests.remove(self.guest)
+                waitlist_obj.guests.remove(self.guest)
+        elif self.will_you_attend == 'Waitlist':
+            waitlist_obj.guests.add(self.guest)
+            waitlist_obj.save()
+        self.event.save()
+    
+    def check_full(self):
+        if len(self.event.player_guests.all()) == self.event.max_players:
+            self.event.player_full = True
+        else:
+            self.event.player_full = False
+        if len(self.event.goalie_guests.all()) == self.event.max_goalies:
+            self.event.goalie_full = True
+        else:
+            self.event.goalie_full = False
+        self.event.save()
 
     def __str__(self):
         if self.will_you_attend == 'Yes':
@@ -105,8 +137,23 @@ class Waitlist(models.Model):
     event = models.ForeignKey(Skate, on_delete=models.CASCADE, blank= True)
     guests = models.ManyToManyField('Player')
 
+   
     def __str__(self):
         return "Waitlist for " + self.event.location
+    
+    def notify_open_spot(self, inv_obj):
+        for guest in self.guests.all():
+                link = reverse('OrgDash:update_invite', kwargs={'pk': inv_obj.pk})
+                subject = "A spot has opened up for " + str(self.event.host) + "'s event at " + self.event.location
+                context = { 'event': self.event, 'guest':guest, 'link':link}
+                if guest.goalie:
+                    if self.event.goalie_full == False:
+                        html_message = render_to_string('OrgDash/emails/spot_open_goalie.html', context)
+                        send_mail(subject, 'message',self.event.host.email, [guest.email] , html_message=html_message)     
+                else:
+                    if self.event.player_full == False:
+                        html_message = render_to_string('OrgDash/emails/spot_open_player.html', context)
+                        send_mail(subject, 'message',self.event.host.email, [guest.email] , html_message=html_message)
 
 
 

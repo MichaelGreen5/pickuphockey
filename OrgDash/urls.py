@@ -22,7 +22,8 @@ path('<int:pk>/teams/finalize', views.FinalizeRosters, name = 'finalize_rosters'
 
 path('<int:pk>/invite/', views.CreateInvite.as_view(), name = 'create_invite'),
 # path('<int:pk>/manage-invites', views.GuestListView, name = 'invite_list'),
-path('manage-invites/respond/<int:pk>', views.UpdateInvite.as_view(), name = 'update_invite'),
+path('manage-invites/respond/<int:pk>', views.RespondToIinvite, name = 'update_invite'),
+path('manage-invites/respond/confirm/<int:pk>/', views.InviteConfirm, name = 'invite_confirm_landing'),
 path('<int:pk>/add-invites/', views.AddToInviteList, name='add_invites'),
 path('finalize-invites/<int:pk>', views.FinalizeInvites, name = 'finalize_invites'),
 path('<int:pk>/manage-invites/delete', views.DeleteInvite.as_view(), name = 'delete_invite'),

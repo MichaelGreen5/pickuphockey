@@ -6,8 +6,8 @@
 
 <div class="container">
     <div class="col-md-6 create-form">
-        <h1 class="p-2">You're Invited to {{object.event.host}}'s event at {{object.event.location}}</h1>
-        <h2 class="p-2">{{object.event.date}} {{object.event.time}}</h2>
+        <h1 class="p-2">You're Invited to {{event.host}}'s event at {{event.location}}</h1>
+        <h2 class="p-2">{{event.date}} {{event.time}}</h2>
         <h3 class="p-2">Please RSVP below:</h3>
         <form method="post">
         {% csrf_token %}

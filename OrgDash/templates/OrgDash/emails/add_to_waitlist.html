@@ -1,10 +1,14 @@
 <h2>Hello {{guest}}, </h2>
-<br>
-<h2>You are on the waitlist for {{current_event.host}}'s event at {{current_event.location}}.</h2> 
+<hr>
+<h2>You are on the waitlist for {{event.host}}'s event at {{event.location}}.</h2> 
 
-<h3>{{current_event.date}} {{current_event.time}}</h3>
+<h3>{{event.date}} {{event.time}}</h3>
 <br>
 <p>If a spot opens up for this event, we will notify you</p>
 <br>
+<br>
+<p>You can always visit the link below to change your RSVP status</p>
+<br>
+<a href="{{link}}"><h3>Click here to change RSVP</h3></a>
 <br>
 <p>Thank you,</p>

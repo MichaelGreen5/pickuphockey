@@ -1,10 +1,10 @@
 <h2>Hello {{guest}}, </h2>
-<br>
-<h2>Thank you for your RSVP to {{current_event.host}}'s event at {{current_event.location}}.</h2> 
-<h3>{{current_event.date}} {{current_event.time}}</h3>
+<hr>
+<h2>Thank you for your RSVP to {{event.host}}'s event at {{event.location}}.</h2> 
+<h3>{{event.date}} {{event.time}}</h3>
 
 <p>You have informed us you will not be attending</p>
 
 <p>If you change your mind, you can always visit the link below to change your RSVP status</p>
 <br>
-<a href="{{RSVP}}"><h3>Click here to change RSVP</h3></a>
+<a href="{{link}}"><h3>Click here to change RSVP</h3></a>

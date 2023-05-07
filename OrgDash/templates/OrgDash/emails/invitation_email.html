@@ -13,13 +13,17 @@
  
 </head>
 <body>
-    
-    <h2>You're Invited to {{inv_obj.event.host}}'s Event at {{inv_obj.event.location}}</h1>
-    <h4=3>{{inv_obj.event.date}} {{inv_obj.event.time}}</h2>
+    <h1>Hello {{guest}},</h1>
+    <hr>
+    <h2>You're Invited to {{event.host}}'s Event at {{event.location}}</h2>
+    <h2>{{event.date}} {{event.time}}</h2>
+    <p>{{event.price}}$ per player. Cash or Venmo accepted</p>
     <br>
-    <br>
-    <p>{{inv_obj.event.price}}$ per player. Cash or Venmo accepted</p>
-    <br>
+    {% if message %} 
+    <h3>Message from the host: </h3>
+    {{message|safe}}
+    {% endif %} 
+    <a href="{{link}}"> <h3>Click Here to RSVP</h3></a>
     
 
 

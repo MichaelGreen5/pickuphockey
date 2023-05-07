@@ -1,0 +1,25 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+<div class="px-4 py-5 my-5 text-center">
+    
+    <h1 class="display-5 fw-bold text-body-emphasis">Thank you for your response</h1>
+    <div class="col-lg-6 mx-auto">
+        {% if invite.will_you_attend == 'Yes'%}
+      <p class="lead mb-4">You have responded yes to {{event.host}}'s event at {{event.location}}</p>
+        {% elif invite.will_you_attend == 'No'%}
+        <p class="lead mb-4">You have responded no to {{event.host}}'s event at {{event.location}}</p>
+        {% elif invite.will_you_attend == 'Waitlist'%}
+        <p class="lead mb-4">You have been placed on the waitlist for {{event.host}}'s event at {{event.location}}</p>
+        <p class="lead mb-4">If a spot opens up, you will be notified</p>
+        {% endif %}
+      <p class="lead mb-4">{{event.date}} {{event.time}}</p>
+      <h3 class="lead mb-4">You will receive a confirmation email shortly</h3>
+      
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a type="button" href="{{link}}" class="btn btn-green btn-lg w-50">Change RSVP</a>
+        <a type="button" href="{% url 'home' %}" class="btn btn-blue btn-lg w-50">Site Home</a>
+      </div>
+    </div>
+  </div>
+
+{% endblock %} 
