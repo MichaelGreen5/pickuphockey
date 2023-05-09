@@ -91,6 +91,7 @@
         <div class="table-header">
           
         </div>
+        {% if my_groups %} 
         <table class="table table-hover table">
             <thead>
               <tr>
@@ -109,8 +110,11 @@
               </tr>
             </tbody>
           </table>
-        
-  
+        {% else %} 
+        <div class="text-center">
+          <h3>No player groups created yet</h3>
+         </div>
+        {% endif %} 
   
       </div>
     </div>
@@ -130,7 +134,7 @@
       </div>
       
        <div class="">
-      
+      {% if my_goalies %}
       <table class="table table-hover table">
           <thead>
             <tr>
@@ -154,7 +158,11 @@
             </tr>
           </tbody>
         </table>
-      
+        {% else %} 
+        <div class="text-center">
+          <h3>No goalies created yet</h3>
+         </div>
+      {% endif %} 
 
 
     </div>
@@ -176,7 +184,7 @@
       </div>
       <div class="d-flex">
         <div class="py-2 ">
-          
+          {% if my_players %} 
           <table class="table table-hover table">
               <thead>
                 <tr>
@@ -201,7 +209,12 @@
                 </tr>
               </tbody>
             </table>
-          
+           {% else %}
+           <div class="text-center">
+            <h3>No players created yet</h3>
+           </div>
+
+          {% endif %} 
     
     
         </div>

@@ -33,7 +33,7 @@ class DeleteQuickPlayer(DeleteView):
 
  
 def QuickTeams(request):
-    #TODO prevent pop from empty list, reset button
+    
     from OrgDash.team_sort import SortTeams
     active_user = request.user
     my_players = QuickPlayer.objects.filter(created_by=active_user)

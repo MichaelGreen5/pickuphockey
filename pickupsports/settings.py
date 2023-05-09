@@ -46,11 +46,7 @@ INSTALLED_APPS = [
     'quickteams',
 ]
 
-HUEY = {
-    'name': 'pickuphockey.huey',
-    'immediate': False,
-    'result_store': False,
-}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

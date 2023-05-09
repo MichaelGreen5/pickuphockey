@@ -8,6 +8,7 @@
                 <hr>
                 <h2 class="display-7 text-white">{{event.date}} {{event.time}}</h2>
                 <p class="col-md-8 fs-4 text-white">Price: ${{event.price}} Per person</p>
+               
             
             
             </div>
@@ -308,7 +309,10 @@ const alertPlaceholder = document.getElementById('invite-sucess')
 {% endfor %}
 {% endif %} 
 
-
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 
 
 {% endblock %} 

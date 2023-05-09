@@ -1,15 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from OrgDash.models import Skate, Invitation, Player, PlayerGroup, InviteList, Waitlist, LightTeam, DarkTeam, Bench
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
 from OrgDash.forms import (CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,
 PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm,EventRepeatForm, InitEventRepeatForm, UploadSheetForm, 
 )
-# from OrgDash.models import UploadSheet
-from django.core.mail import send_mail, EmailMessage
-from django.conf import settings
+
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.db.models import Q
 from django.urls import reverse_lazy, reverse
@@ -52,9 +49,7 @@ class SkateCreateView(CreateView):
             else:
                 return super().get_success_url()
             
-    # def dispatch(self, request, *args, **kwargs):
-    #     messages.success(request, 'Your form was submitted successfully!')
-    #     return super().dispatch(request, *args, **kwargs)
+   
 
 
 class SkateRepeatUpdate(UpdateView):
@@ -326,15 +321,14 @@ def AddToInviteList(request, pk):
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
     my_players = Player.objects.filter(created_by=active_user)
-    # my_groups = PlayerGroup.objects.filter(created_by=active_user)
+   
     existing_invites = Invitation.objects.filter(event=active_event)
     player_already_invited =[player.guest for player in existing_invites]
     
     invite_list_tup = InviteList.objects.get_or_create(event= active_event)
     if invite_list_tup[1] == False:
         invite_list_tup[0].guests.clear()
-        # for player in player_already_invited:
-        #     invite_list_tup[0].guests.remove(player)
+       
    
     invite_list =  list(invite_list_tup[0].guests.all())
     yet_to_invite = []
@@ -350,23 +344,12 @@ def AddToInviteList(request, pk):
     }
    
     if request.method == 'POST':
-        # form_action = request.POST.get('form_action')
-        # if form_action == 'add_player':
         selected_player_ids = request.POST.getlist('selected_players_to_add')
         for player_id in selected_player_ids:
             
             invite_list_tup[0].guests.add(player_id)
 
-        # elif form_action == 'remove_player':
-        #     selected_player_ids = request.POST.getlist('selected_players_to_remove')
-        #     for player_id in selected_player_ids:
-        #         invite_list_tup[0].guests.remove(player_id)
-
-        # else: 
-        #     group_id = request.POST.get('add_group')
-        #     selected_group_members = PlayerGroup.objects.get(id=group_id).members.all()
-        #     for member in selected_group_members:
-        #         invite_list_tup[0].guests.add(member)
+      
          
         return redirect(reverse('OrgDash:finalize_invites', args=[active_event.pk]), context)
     else:  
@@ -449,14 +432,14 @@ class PlayerDetail(DetailView):
     template_name = 'OrgDash/Players/player_detail.html'
 
 
-class PlayerListiview(ListView):
-    model = Player
-    template_name = 'OrgDash/Players/player_list.html'
+# class PlayerListiview(ListView):
+#     model = Player
+#     template_name = 'OrgDash/Players/player_list.html'
 
-    def get_queryset(self):
-        all_players = super().get_queryset()
-        my_players = all_players.filter(created_by = self.request.user)
-        return my_players
+#     def get_queryset(self):
+#         all_players = super().get_queryset()
+#         my_players = all_players.filter(created_by = self.request.user)
+#         return my_players
     
 
 def Playergroups(request): 
@@ -480,15 +463,15 @@ def Playergroups(request):
 
         return render(request, 'OrgDash/Players/create_player_group2.html', context)
     
-class PlayerGroupDetail(DetailView):
-    model= PlayerGroup
-    context_object_name = 'group'
-    template_name = 'OrgDash/Players/group_detail.html'
+# class PlayerGroupDetail(DetailView):
+#     model= PlayerGroup
+#     context_object_name = 'group'
+#     template_name = 'OrgDash/Players/group_detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['members'] = self.object.members.all()
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['members'] = self.object.members.all()
+#         return context
 
 
 class PlayerGroupDelete(DeleteView):

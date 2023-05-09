@@ -36,7 +36,7 @@ path('my-players/create/', views.CreatePlayer.as_view(), name = 'create_player')
 path('my-players/<int:pk>', views.PlayerDetail.as_view(), name = 'player_detail'),
 path('my-players/<int:pk>/edit/', views.PlayerUpdateView.as_view(), name = 'update_player'),
 path('my-players/<int:pk>/delete/', views.PlayerDeleteView.as_view(), name = 'delete_player'),
-path('my-players/list', views.PlayerListiview.as_view(), name = 'player_list'),
+# path('my-players/list', views.PlayerListiview.as_view(), name = 'player_list'),
 path('my-players/upload-sheet', views.UploadSheet, name = 'upload_sheet'),
 
 # path('my-players/goalies/', views.GoalieDash, name = 'goalie_dash'),
@@ -45,7 +45,7 @@ path('my-players/upload-sheet', views.UploadSheet, name = 'upload_sheet'),
 # path('my-players/goalies/<int:pk>/edit/', views.GoalieUpdateView.as_view(), name = 'update_goalie'),
 
 
-path('my-players/group/<int:pk>', views.PlayerGroupDetail.as_view(), name = 'player_group_detail'),
+# path('my-players/group/<int:pk>', views.PlayerGroupDetail.as_view(), name = 'player_group_detail'),
 path('my-players/group/<int:pk>/delete', views.PlayerGroupDelete.as_view(), name = 'player_group_delete'),
 path('my-players/new-group', views.Playergroups, name = 'create_player_group'),
 path('my-players/group/<int:pk>/edit', views.UpdatePlayerGroup, name= 'player_group_update'),
