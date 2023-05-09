@@ -1,8 +1,26 @@
+def auto_make_teams(skate_obj):
+    from OrgDash.team_sort import SortTeams, SetTeams, RemoveFromTeam, AddToTeam
+    skaters = skate_obj.player_guests.all()
+    goalies = skate_obj.goalie_guests.all()
+     #Take player skill and make teams
+    player_data =[((guest), float(guest.skill)) for guest in skaters]
+    goalie_data = [((guest), float(guest.skill)) for guest in goalies]
+    
+    #Sort Teams
+    teams = SortTeams(player_data, goalie_data)
+    
+    # Sets up team obj for each team
+    SetTeams(teams, skate_obj)
+
+
+
+
+
 def auto_finalize_rosters(skate_obj):
     from OrgDash.models import DarkTeam, LightTeam
     from django.core.mail import send_mail
     from django.template.loader import render_to_string
-    #TODO need to have html email rendered and sent
+    
     dark_team = DarkTeam.objects.get(event=skate_obj)
     light_team = LightTeam.objects.get(event=skate_obj)
     dark_team_members = dark_team.team.all()

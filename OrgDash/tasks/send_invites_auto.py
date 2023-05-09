@@ -26,3 +26,4 @@ def auto_send_invites(skate_obj):
 
 
 
+

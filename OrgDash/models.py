@@ -56,6 +56,8 @@ class Skate(models.Model):
     finalize_event_hours_before = models.IntegerField(default=1, blank= True)
     group_to_invite = models.ForeignKey('PlayerGroup', on_delete= models.CASCADE, blank= True, null=True)
     already_duplicated = models.BooleanField(default= False)
+    auto_invites_sent = models.BooleanField(default=False)
+    auto_rosters_sent = models.BooleanField(default= False)
 
     
 
@@ -69,11 +71,12 @@ class Skate(models.Model):
 
         return {'host': self.host, 'date': next_event_date, 'time':self.time,'price': self.price, 'location': self.location,
                  'max_players': self.max_players, 'max_goalies' : self.max_goalies, 'recurring_event': self.recurring_event,'frequency': self.frequency,
+                 'group_to_invite':self.group_to_invite,
                    'send_invite_days_before':self.send_invite_days_before, 'finalize_event_hours_before': self.finalize_event_hours_before}
   
 
     def __str__(self):
-        return ("Skate at " + self.location + " "  + str(self.date) + " " + str(self.time))
+        return ("Event at " + self.location + " "  + str(self.date) + " " + str(self.time))
 
 
 
