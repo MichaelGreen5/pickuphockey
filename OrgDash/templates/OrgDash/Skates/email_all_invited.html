@@ -1,0 +1,64 @@
+{% extends 'base.html' %} 
+{% block body_block %}
+{% load static %}
+
+<div class="container p-4" id="featured-3">
+    <div class="p-4 text-center">
+    <h1 class="display-5 fw-bold text-body-emphasis">Send a message to your all who have been invited</h1>
+    <div class="col-lg-6 mx-auto">
+    {% if email_num == 1 %}
+    <p class="lead mb-4">You are sending this message to 1 reciepient</p>
+    {% else %}
+    <p class="lead mb-4">You are sending this message to {{email_num}} reciepients</p>
+    {% endif %} 
+    </div>
+</div>
+
+
+      
+<div class="d-flex justify-content-center">   
+    <form method="POST">
+    {% csrf_token %} 
+    
+
+<div class="col-md-12 py-2">
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <script src="https://cdn.tiny.cloud/1/s238kxbjuhmteauqdtczt0r4hlpafcw6lr6lytndfv7jvz0j/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+          <style></style>
+      </head>
+      <body>
+      <textarea id="textarea" name="tinymce_email">
+      </textarea>
+      <br>
+      <div class="p-2 col md-6 text-center">
+        <input type="submit" class="btn btn-green btn-lg w-100" value="Send">
+      </div>
+      </form>
+  </div>
+<script>
+  tinymce.init({
+    selector: 'textarea',
+  //   plugins: 'importcss',
+  // content_css: "{% static 'css/bootstrap.min.css' %}",
+    // plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss template importcss',
+    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    extended_valid_elements: 'span[class]',
+    tinycomments_mode: 'embedded',
+    tinycomments_author: 'Author name',
+    mergetags_list: [
+      { value: 'First.Name', title: 'First Name' },
+      { value: 'Email', title: 'Email' },
+    ],
+  });
+</script>
+
+</body>
+</html>
+</div>
+</div>
+
+
+
+{% endblock %} 

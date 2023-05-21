@@ -1,22 +1,29 @@
 
 body{
-  background-color: whitesmoke;
+  background-color: white;
 }
 .main-nav{
-  background-color: #04425B;
+  background-color: #0d324d;
+  
   
 }
 h1, h2, h3, h4, h5{
   font-family: 'Barlow', sans-serif;
 }
 
-.nav-links{
+.nav-links, .brand-link{
   -webkit-text-fill-color: #ffffff;
   font-size: 125%;
+  transition: transform 0.3s ease-in-out;
 }
 
 .nav-links:hover{
   background-color:#18536a ;
+}
+
+.brand-link:hover{
+  transform: scale(1.05);
+
 }
 
 .btn-green{
@@ -101,6 +108,12 @@ transition: transform 0.3s ease-in-out;
 }
 .tile-lg:hover{
 transform: scale(1.05);
+}
+
+
+.user-greet{
+  position: relative;
+
 }
 
 /* 

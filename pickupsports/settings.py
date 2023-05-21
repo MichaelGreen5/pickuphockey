@@ -23,7 +23,8 @@ STATIC_ROOT = Path.joinpath(BASE_DIR, 'static')
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2n*hweul%99dd&(wa2p6l0&9@1tpr2tloaw8cpmvgnf@m@9ih4'
+from decouple import config
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -117,7 +118,7 @@ AUTHENTICATION_BACKENDS = ["pickuphockey.auth_backend.EmailBackend"]
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -125,8 +126,8 @@ USE_TZ = True
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'pickuphockey1@gmail.com'
-EMAIL_HOST_PASSWORD = 'mxtxgpxbdnxqrqjn'
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 
 # Static files (CSS, JavaScript, Images)

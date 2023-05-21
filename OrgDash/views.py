@@ -231,10 +231,66 @@ def FinalizeRosters(request, pk):
         except:
             messages.error(request, "Error sending email")
         
-        
+        current_event.auto_rosters_sent = True
+        current_event.save()
         return redirect(reverse('OrgDash:event_detail' ,args=[current_event.pk]))
     else:
         return render(request, 'OrgDash/Skates/finalize_rosters.html', context)
+
+def EmailGuests(request, pk):
+    active_event = Skate.objects.get(pk=pk)
+
+    guest_emails = []
+    for guest in active_event.player_guests.all():
+        guest_emails.append(guest.email)
+    for guest in active_event.goalie_guests.all():
+        guest_emails.append(guest.email)
+    subject =  "Message from " + str(active_event.host) + " regarding upcoming event"
+   
+    context = {'email_num': len(guest_emails), 'event': active_event}
+    if request.method == 'POST':
+        message_field = request.POST['tinymce_email']
+        try:
+            send_mail(subject, message_field,  'pickuphockey1@gmail.com', guest_emails, html_message=message_field)
+
+            if len(guest_emails) == 1:
+                confirm_message = str(len(guest_emails)) + ' Email Sent'
+            else:
+                confirm_message = str(len(guest_emails)) + ' Emails Sent'
+            messages.success(request, confirm_message )
+        except:
+            messages.error(request, "Error sending email")
+        return redirect(reverse('OrgDash:event_detail' ,args=[active_event.pk]))
+    else:
+        return render(request, 'OrgDash/Skates/email_guests.html', context)
+    
+def EmailAllInvited(request, pk):
+    active_event = Skate.objects.get(pk=pk)
+    all_invited = Invitation.objects.filter(event=active_event).all()
+    all_invited_emails = []
+    for invite in all_invited:
+        all_invited_emails.append(invite.guest.email)
+   
+    subject =  "Message from " + str(active_event.host) + " regarding upcoming event"
+   
+
+    
+    context = {'email_num': len(all_invited_emails), 'event': active_event}
+    if request.method == 'POST':
+        message_field = request.POST['tinymce_email']
+        try:
+            send_mail(subject, message_field,  'pickuphockey1@gmail.com', all_invited_emails, html_message=message_field)
+
+            if len(all_invited_emails) == 1:
+                confirm_message = str(len(all_invited_emails)) + ' Email Sent'
+            else:
+                confirm_message = str(len(all_invited_emails)) + ' Emails Sent'
+            messages.success(request, confirm_message )
+        except:
+            messages.error(request, "Error sending email")
+        return redirect(reverse('OrgDash:event_detail' ,args=[active_event.pk]))
+    else:
+        return render(request, 'OrgDash/Skates/email_all_invited.html', context)
 
 ##########################INVITATIONS################################
 
@@ -373,7 +429,7 @@ def FinalizeInvites(request, pk):
         
         for guest in invite_list:
             invite = Invitation.objects.get(Q(event=active_event) & Q (guest=guest))
-            link = reverse('OrgDash:update_invite', kwargs={'pk': invite.pk})
+            link = 'http://www.pickuppuck.com/organize/manage-invites/respond/' + str(invite.pk)
            
             context = {'message': message_field, 'event': current_event, 'guest':guest, 'link':link}
             html_message = render_to_string('OrgDash/emails/invitation_email.html', context)
@@ -387,6 +443,8 @@ def FinalizeInvites(request, pk):
         else:
             confirm_message = str(len(recipient_list)) + ' Invitations Sent'
         messages.success(request, confirm_message )
+        active_event.auto_invites_sent = True
+        active_event.save()
         
         
         return redirect(reverse('OrgDash:event_detail' ,args=[invite_list_obj.event.pk]))
@@ -432,15 +490,7 @@ class PlayerDetail(DetailView):
     template_name = 'OrgDash/Players/player_detail.html'
 
 
-# class PlayerListiview(ListView):
-#     model = Player
-#     template_name = 'OrgDash/Players/player_list.html'
-
-#     def get_queryset(self):
-#         all_players = super().get_queryset()
-#         my_players = all_players.filter(created_by = self.request.user)
-#         return my_players
-    
+   
 
 def Playergroups(request): 
     active_user = request.user
@@ -462,16 +512,7 @@ def Playergroups(request):
     else:
 
         return render(request, 'OrgDash/Players/create_player_group2.html', context)
-    
-# class PlayerGroupDetail(DetailView):
-#     model= PlayerGroup
-#     context_object_name = 'group'
-#     template_name = 'OrgDash/Players/group_detail.html'
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['members'] = self.object.members.all()
-#         return context
 
 
 class PlayerGroupDelete(DeleteView):

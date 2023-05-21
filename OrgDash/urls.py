@@ -15,7 +15,8 @@ path('<int:pk>/edit/', views.EventUpdateView.as_view(), name = 'event_update'),
 path('<int:pk>/recurring', views.SkateRepeatUpdate.as_view(), name = 'skate_repeat_settings'),
 path('<int:pk>/init/recurring', views.InitSkateRepeatUpdate.as_view(), name = 'init_skate_repeat_settings'),
 path('<int:pk>/teams', views.TeamsView, name = 'make_teams'),
-
+path('<int:pk>/send-message/', views.EmailGuests, name = 'email_guests'),
+path('<int:pk>/message-all-invited/', views.EmailAllInvited, name = 'email_all_invited'),
 path('<int:pk>/teams/finalize', views.FinalizeRosters, name = 'finalize_rosters'),
 
 

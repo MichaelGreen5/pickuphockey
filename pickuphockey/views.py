@@ -9,6 +9,7 @@ from django.core.mail import send_mail
 
 
 
+
 def baseview(request):
     return render(request, 'base.html')
 

@@ -34,6 +34,17 @@
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item">{{spots_left}}/{{event.max_players}} player spots left</li>
                   <li class="list-group-item">{{goalie_spots_left}}/{{event.max_goalies}} goalie spots left</li>
+                  <li class="list-group-item"><div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-gold dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false">
+                      Send Email
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{% url 'OrgDash:email_all_invited' event.pk %}">Send Email to All Invited</a></li>
+                      <li><a class="dropdown-item" href="{% url 'OrgDash:email_guests' event.pk %}">Send Email to Guests Only</a></li>
+                    </ul>
+                  </div>
+                  </li>
+                  
                   <li class="list-group-item "><a type="button" class="btn btn-green w-100" data-bs-toggle="offcanvas" data-bs-target="#invitelist" aria-controls="offcanvasExample" >Manage Event Invitations</a></li>
                   <li class="list-group-item "><a type="button" class="btn btn-blue w-100" data-bs-toggle="offcanvas" data-bs-target="#invitegroup" aria-controls="offcanvasExample" >Invite a Group</a></li>
                   {% if spots_left != event.max_players %}
@@ -56,10 +67,18 @@
                 <ul class="list-group list-group-flush">
                     {% if event.recurring_event %} 
                   <li class="list-group-item">Event repeats every {{event.frequency}} days</li>
+                  {% if event.auto_invites_sent %}
+                  <li class="list-group-item text-bg-success">Invites sent to {{event.group_to_invite}}</li>
+                  {% else %} 
                   <li class="list-group-item">{{event.group_to_invite}} will be invited</li>
+          
                   <li class="list-group-item">Invitations will go out {{event.send_invite_days_before}} days before event</li>
+                  {% endif %} 
+                  {% if event.auto_rosters_sent %}
+                  <li class="list-group-item text-bg-success">Teams created and rosters sent</li>
+                  {% else %} 
                   <li class="list-group-item">Rosters will go out {{event.finalize_event_hours_before}} hour before event</li>
-                  
+                  {% endif %}
                   <li class="list-group-item "><a class="btn btn-gold  w-100 " role="button" href="{% url 'OrgDash:skate_repeat_settings' event.pk %}">Recurring Event Settings</a></li>
                   {% else %}
                   <li class="list-group-item "><a class="btn btn-gold w-100" role="button" href="{% url 'OrgDash:init_skate_repeat_settings' event.pk %}">Make This Event Repeat</a></li>
