@@ -314,7 +314,7 @@ class CreateInvite(LoginRequiredMixin, CreateView):
     def get_initial(self):
         return {'host': self.request.user, 'event': self.kwargs['pk']}
 
-@login_required
+
 def RespondToIinvite(request, pk): 
     current_invite = Invitation.objects.get(pk=pk)
     link = 'http://www.pickuppuck.com/organize/manage-invites/respond/' + str(current_invite.pk)
@@ -357,7 +357,7 @@ def RespondToIinvite(request, pk):
     
     return render(request, 'OrgDash/Invites/invite_response.html', {'form': form, 'event':active_event})
     
-@login_required
+
 def InviteConfirm(request, pk):
     current_invite = Invitation.objects.get(pk=pk)
     link = reverse('OrgDash:update_invite', kwargs={'pk': current_invite.pk})
@@ -399,7 +399,8 @@ def AddToInviteList(request, pk):
     
     context={
     'active_event':active_event, 'yet_to_invite':yet_to_invite, 
-     'invite_list':invite_list, 'inv_obj': invite_list_tup[0]
+     'invite_list':invite_list, 'yet_to_invite_len': len(yet_to_invite),
+     'inv_obj': invite_list_tup[0]
     
     }
    

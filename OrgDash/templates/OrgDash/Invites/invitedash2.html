@@ -19,7 +19,7 @@
         {% csrf_token %} 
         <div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center" id="chosen-container">
             
-            
+        {% if yet_to_invite_len != 0 %}  
         <ul class="list-group">
             <h1>Select Players to Invite</h1>
             <hr class="py-2">
@@ -51,8 +51,13 @@
             {% endfor %} 
         
         </ul>
-
-       
+        {% else %} 
+        <div class="text-center p-3 col-md-8">
+            <h1>You have not created any players yet</h1>
+            <p class="lead mb-4"> Visit the player dashboard to create players before you can invite them.</p>
+            <a type="button" class="btn btn-lg btn-gold w-50" href="{% url 'OrgDash:player_dash' %}">Player Dashboard</a>
+        </div>
+       {% endif %} 
         </div>
       
     </form>

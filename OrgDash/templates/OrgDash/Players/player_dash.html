@@ -14,6 +14,12 @@
         <div class="col-lg-6 mx-auto">
           <p class="lead mb-4">Create and manage players to invite them to your events.</p>
         </div>
+        
+  {% if messages %}
+  <br>
+  <div class="p-2" role="alert" id="player-create-sucess"></div>
+  <br>
+  {% endif %}
       </div>
       <hr>
       <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
@@ -59,9 +65,6 @@
     
  
 
-  {% if messages %}
-  <div class="" role="alert" id="player-create-sucess"></div>
-  {% endif %}
 
   </div>
 
