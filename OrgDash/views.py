@@ -5,7 +5,8 @@ from django.views.generic import CreateView, DetailView, DeleteView, UpdateView,
 from OrgDash.forms import (CreateEventForm, UpdateEventForm, CreateInviteForm, CreatePlayerForm,
 PlayerUpdateForm, InviteUpdateForm, InviteWaitlistForm,EventRepeatForm, InitEventRepeatForm, UploadSheetForm, 
 )
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.db.models import Q
@@ -20,8 +21,8 @@ from django.utils import timezone
 
 
 
-# Create your views here.
 
+@login_required
 def OrganizerDashboard(request):
     today=timezone.now()
     active_user = request.user.pk
@@ -34,7 +35,7 @@ def OrganizerDashboard(request):
 
 ##################SKATES/EVENTS##########################
 
-class SkateCreateView(CreateView):
+class SkateCreateView(LoginRequiredMixin, CreateView):
     template_name = 'OrgDash/Skates/create_event.html'
     success_url = reverse_lazy('OrgDash:organizer_dashboard')
     form_class= CreateEventForm
@@ -52,7 +53,7 @@ class SkateCreateView(CreateView):
    
 
 
-class SkateRepeatUpdate(UpdateView):
+class SkateRepeatUpdate(LoginRequiredMixin, UpdateView):
     model = Skate
     template_name = 'OrgDash/Skates/skate_repeat_form.html'
     form_class = EventRepeatForm
@@ -66,7 +67,7 @@ class SkateRepeatUpdate(UpdateView):
         return modelform
     
 
-class InitSkateRepeatUpdate(UpdateView):
+class InitSkateRepeatUpdate(LoginRequiredMixin, UpdateView):
     model = Skate
     template_name = 'OrgDash/Skates/skate_repeat_form.html'
     form_class = InitEventRepeatForm
@@ -83,13 +84,13 @@ class InitSkateRepeatUpdate(UpdateView):
         return {'recurring_event': True} 
 
     
-class SkateDeleteView(DeleteView): 
+class SkateDeleteView(LoginRequiredMixin, DeleteView): 
     model = Skate
     template_name = 'OrgDash/confirm_delete.html'
     success_url = reverse_lazy('OrgDash:organizer_dashboard')
 
     
-class EventUpdateView(UpdateView):
+class EventUpdateView(LoginRequiredMixin, UpdateView):
     model = Skate
     form_class = UpdateEventForm
     template_name = 'OrgDash/update.html'
@@ -97,7 +98,7 @@ class EventUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('OrgDash:event_detail', args=[self.object.pk])
 
-
+@login_required
 def TeamsView(request, pk):
     from OrgDash.team_sort import SortTeams, SetTeams, RemoveFromTeam, AddToTeam
     active_user = request.user.pk
@@ -163,7 +164,7 @@ def TeamsView(request, pk):
         return render (request,'OrgDash/Skates/make_teams2.html',context)
 
 
-
+@login_required
 def EventDash(request, pk): 
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
@@ -198,7 +199,7 @@ def EventDash(request, pk):
 
 
 
-
+@login_required
 def FinalizeRosters(request, pk):
     current_event = Skate.objects.get(pk=pk)
     dark_team = DarkTeam.objects.get(event=current_event)
@@ -237,6 +238,7 @@ def FinalizeRosters(request, pk):
     else:
         return render(request, 'OrgDash/Skates/finalize_rosters.html', context)
 
+@login_required
 def EmailGuests(request, pk):
     active_event = Skate.objects.get(pk=pk)
 
@@ -263,7 +265,8 @@ def EmailGuests(request, pk):
         return redirect(reverse('OrgDash:event_detail' ,args=[active_event.pk]))
     else:
         return render(request, 'OrgDash/Skates/email_guests.html', context)
-    
+
+@login_required   
 def EmailAllInvited(request, pk):
     active_event = Skate.objects.get(pk=pk)
     all_invited = Invitation.objects.filter(event=active_event).all()
@@ -295,7 +298,7 @@ def EmailAllInvited(request, pk):
 ##########################INVITATIONS################################
 
 
-class CreateInvite(CreateView): 
+class CreateInvite(LoginRequiredMixin, CreateView): 
     template_name = 'OrgDash/Invites/create_invite.html'
     form_class= CreateInviteForm
     model = Invitation
@@ -311,9 +314,10 @@ class CreateInvite(CreateView):
     def get_initial(self):
         return {'host': self.request.user, 'event': self.kwargs['pk']}
 
+@login_required
 def RespondToIinvite(request, pk): 
     current_invite = Invitation.objects.get(pk=pk)
-    link = reverse('OrgDash:update_invite', kwargs={'pk': current_invite.pk})
+    link = 'http://www.pickuppuck.com/organize/manage-invites/respond/' + str(current_invite.pk)
 
     active_event = current_invite.event
    
@@ -353,7 +357,7 @@ def RespondToIinvite(request, pk):
     
     return render(request, 'OrgDash/Invites/invite_response.html', {'form': form, 'event':active_event})
     
-
+@login_required
 def InviteConfirm(request, pk):
     current_invite = Invitation.objects.get(pk=pk)
     link = reverse('OrgDash:update_invite', kwargs={'pk': current_invite.pk})
@@ -362,7 +366,7 @@ def InviteConfirm(request, pk):
     return render(request, 'OrgDash/Skates/invite_response_landing.html', context)
         
 
-class DeleteInvite(DeleteView): #TODO should you be allowed to delete invites? might cause issues
+class DeleteInvite(LoginRequiredMixin, DeleteView):
     model = Invitation
     template_name = 'OrgDash/confirm_delete.html'
 
@@ -372,7 +376,7 @@ class DeleteInvite(DeleteView): #TODO should you be allowed to delete invites? m
         return reverse_lazy('OrgDash:event_detail',args = [event_pk])
 
 
-
+@login_required
 def AddToInviteList(request, pk):
     active_user = request.user.pk
     active_event = Skate.objects.get(pk=pk)
@@ -411,7 +415,7 @@ def AddToInviteList(request, pk):
     else:  
         return render(request, 'OrgDash/Invites/invitedash2.html', context )
 
-
+@login_required
 def FinalizeInvites(request, pk): 
     active_event = Skate.objects.get(pk=pk)
     invite_list_obj = InviteList.objects.get(event=active_event)
@@ -457,7 +461,7 @@ def FinalizeInvites(request, pk):
 ####################PLAYERS##############################
 
 
-class CreatePlayer(CreateView): 
+class CreatePlayer(LoginRequiredMixin, CreateView): 
     template_name = 'OrgDash/Players/create_player.html'
     form_class= CreatePlayerForm
     model = Player
@@ -470,7 +474,7 @@ class CreatePlayer(CreateView):
         return reverse('OrgDash:player_dash')
 
 
-class PlayerUpdateView(UpdateView):
+class PlayerUpdateView(LoginRequiredMixin, UpdateView):
     model = Player
     form_class = PlayerUpdateForm
     template_name = 'OrgDash/Players/update_player.html'
@@ -479,19 +483,19 @@ class PlayerUpdateView(UpdateView):
         return reverse('OrgDash:player_dash')
 
 
-class PlayerDeleteView(DeleteView): 
+class PlayerDeleteView(LoginRequiredMixin, DeleteView): 
     model = Player
     template_name = 'OrgDash/confirm_delete.html'
     success_url = reverse_lazy('OrgDash:player_dash')
 
-class PlayerDetail(DetailView):
+class PlayerDetail(LoginRequiredMixin, DetailView):
     model = Player
     context_object_name = 'player'
     template_name = 'OrgDash/Players/player_detail.html'
 
 
    
-
+@login_required
 def Playergroups(request): 
     active_user = request.user
     my_players = Player.objects.filter(created_by=active_user.pk)
@@ -515,12 +519,12 @@ def Playergroups(request):
 
 
 
-class PlayerGroupDelete(DeleteView):
+class PlayerGroupDelete(LoginRequiredMixin, DeleteView):
     model = PlayerGroup
     template_name = 'OrgDash/confirm_delete.html'
     success_url = reverse_lazy('OrgDash:player_dash')
 
-
+@login_required
 def UpdatePlayerGroup(request,pk): 
     active_user = request.user
     my_players = Player.objects.filter(created_by=active_user.pk)
@@ -544,7 +548,7 @@ def UpdatePlayerGroup(request,pk):
     context={'non_members': non_members, 'members':members, 'current_group': current_group}
     return render(request, 'OrgDash/Players/update_group2.html', context)
 
-
+@login_required
 def PlayerDash(request):
     my_players = Player.objects.filter(created_by=request.user)
     my_groups = PlayerGroup.objects.filter(created_by=request.user)
@@ -553,7 +557,7 @@ def PlayerDash(request):
     return  render(request, 'OrgDash/Players/player_dash.html', {'my_groups': my_groups, 'my_players':my_players, 'my_goalies':my_goalies})
 
 
-
+@login_required
 def UploadSheet(request):
     import openpyxl
     my_players = Player.objects.filter(created_by = request.user)

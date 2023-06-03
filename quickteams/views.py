@@ -5,7 +5,10 @@ from OrgDash.models import Player
 from django.views.generic import CreateView, UpdateView, DeleteView
 from quickteams.forms import CreateQuickPlayer, QuickPlayerUpdateForm
 
-class CreatePlayer(CreateView): 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
+class CreatePlayer(LoginRequiredMixin, CreateView): 
     template_name = 'quickteams/create_quick_player.html'
     form_class= CreateQuickPlayer
     model = Player
@@ -14,13 +17,13 @@ class CreatePlayer(CreateView):
     def get_initial(self):
         return {'created_by': self.request.user}
     
-class EditQuickPlayer(UpdateView):
+class EditQuickPlayer(LoginRequiredMixin, UpdateView):
     template_name = 'quickteams/update_quick_player.html'
     form_class = QuickPlayerUpdateForm
     model = QuickPlayer
     success_url = reverse_lazy('quickteams:quick_teams')
 
-class DeleteQuickPlayer(DeleteView): 
+class DeleteQuickPlayer(LoginRequiredMixin, DeleteView): 
     model = QuickPlayer
     template_name = 'OrgDash/confirm_delete.html'
     success_url = reverse_lazy('quickteams:quick_teams')
@@ -31,7 +34,7 @@ class DeleteQuickPlayer(DeleteView):
 
 
 
- 
+@login_required 
 def QuickTeams(request):
     
     from OrgDash.team_sort import SortTeams
