@@ -55,6 +55,7 @@ class PasswordResetComplete(PasswordResetCompleteView):
 
 def Thanks(request):
     return render(request, 'thanks.html')
+
 def MessageSent(request):
     return render(request, 'message_sent.html')
 

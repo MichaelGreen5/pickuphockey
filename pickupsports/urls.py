@@ -37,7 +37,6 @@ urlpatterns = [
     path('reset-password-sent/', views.PasswordResetSent.as_view(), name ='password_reset_done'),
     path('reset/<uidb64>/<token>', views.PasswordResetFormView.as_view(), name ='password_reset_confirm'),
     path('reset-password-complete/', views.PasswordResetComplete.as_view(), name ='password_reset_complete'),
-    
     path('organize/', include('OrgDash.urls')), 
     path('quick_teams/', include('quickteams.urls'))
 
